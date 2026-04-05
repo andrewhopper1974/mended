@@ -40,20 +40,20 @@ export default function RootLayout({
         {/* Desktop (md+): two columns — quiz left, sidebar right */}
         <div className="min-h-screen flex justify-center md:justify-start md:max-w-6xl md:mx-auto">
 
+          {/* Sidebar — desktop only, LEFT side */}
+          <div
+            className="hidden md:block flex-1 border-r"
+            style={{ borderColor: "rgba(255,255,255,0.08)" }}
+          >
+            <DesktopSidebar />
+          </div>
+
           {/* Quiz column — always 480px max, full width on mobile */}
           <div
             className="w-full relative overflow-x-hidden"
             style={{ maxWidth: "480px" }}
           >
             {children}
-          </div>
-
-          {/* Sidebar — desktop only */}
-          <div
-            className="hidden md:block flex-1 border-l"
-            style={{ borderColor: "rgba(255,255,255,0.08)" }}
-          >
-            <DesktopSidebar />
           </div>
 
         </div>
