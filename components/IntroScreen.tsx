@@ -9,6 +9,13 @@ interface Props {
   onStart: () => void;
 }
 
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-40px" },
+  transition: { duration: 0.5, delay, ease: "easeOut" },
+});
+
 export default function IntroScreen({ onStart }: Props) {
   const [selectedGender, setSelectedGender] = useState<"male" | "female" | null>(null);
 
@@ -35,7 +42,7 @@ export default function IntroScreen({ onStart }: Props) {
       {/* Divider */}
       <div className="mb-10 mx-auto" style={{ width: "60%", height: 1, background: "linear-gradient(90deg, transparent 0%, #8A5EFF 40%, #34CBBF 60%, transparent 100%)" }} />
 
-      {/* Hero image — moved up, no headline */}
+      {/* Hero image */}
       <div className="flex-1 flex flex-col justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -58,7 +65,7 @@ export default function IntroScreen({ onStart }: Props) {
         </motion.div>
 
         {/* Gender Selection */}
-        <div className="mb-10 text-center">
+        <motion.div {...fadeUp(0)} className="mb-10 text-center">
           <p className="text-xs font-semibold mb-5 tracking-wide uppercase" style={{
             background: "linear-gradient(90deg, #34CBBF 0%, #8A5EFF 100%)",
             WebkitBackgroundClip: "text",
@@ -98,18 +105,20 @@ export default function IntroScreen({ onStart }: Props) {
               Female
             </motion.button>
           </div>
-        </div>
+        </motion.div>
 
-        <p
+        {/* Description */}
+        <motion.p
+          {...fadeUp(0.05)}
           className="text-base leading-relaxed mb-10"
           style={{ color: "#ffffff" }}
         >
           Answer 3 minutes of questions and Mended will build your
           personalised hypnosis program — free.
-        </p>
+        </motion.p>
 
         {/* Social proof strip */}
-        <div className="flex items-center gap-3 mb-10">
+        <motion.div {...fadeUp(0.1)} className="flex items-center gap-3 mb-10">
           <div className="flex -space-x-2">
             {["#8A5EFF", "#4675FF", "#34CBBF", "#c4afff"].map((color, i) => (
               <div
@@ -131,7 +140,7 @@ export default function IntroScreen({ onStart }: Props) {
             </span>{" "}
             people broke free
           </p>
-        </div>
+        </motion.div>
       </div>
 
       {/* Testimonials */}
@@ -155,9 +164,7 @@ export default function IntroScreen({ onStart }: Props) {
         ].map((t, i) => (
           <motion.div
             key={i}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 + i * 0.15 }}
+            {...fadeUp(i * 0.1)}
             className="p-4 rounded-2xl"
             style={{
               background: "linear-gradient(135deg, rgba(138,94,255,0.1) 0%, rgba(52,203,191,0.06) 100%)",
@@ -191,9 +198,7 @@ export default function IntroScreen({ onStart }: Props) {
 
       {/* Footer */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2 }}
+        {...fadeUp(0)}
         className="border-t mt-12 pt-10 flex flex-col items-start gap-8"
         style={{ borderColor: "rgba(255,255,255,0.15)" }}
       >
