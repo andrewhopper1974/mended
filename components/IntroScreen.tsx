@@ -57,39 +57,6 @@ export default function IntroScreen({ onStart }: Props) {
           />
         </motion.div>
 
-        <p
-          className="text-base leading-relaxed mb-10"
-          style={{ color: "#ffffff" }}
-        >
-          Answer 3 minutes of questions and Mended will build your
-          personalised hypnosis program — free.
-        </p>
-
-        {/* Social proof strip */}
-        <div className="flex items-center gap-3 mb-10">
-          <div className="flex -space-x-2">
-            {["#8A5EFF", "#4675FF", "#34CBBF", "#c4afff"].map((color, i) => (
-              <div
-                key={i}
-                className="w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold"
-                style={{
-                  background: color,
-                  borderColor: "#07001c",
-                  color: "#fff",
-                }}
-              >
-                {["S", "M", "J", "A"][i]}
-              </div>
-            ))}
-          </div>
-          <p className="text-sm" style={{ color: "#ffffff" }}>
-            <span className="font-semibold" style={{ color: "#c4afff" }}>
-              94,000+
-            </span>{" "}
-            people broke free
-          </p>
-        </div>
-
         {/* Gender Selection */}
         <div className="mb-10 text-center">
           <p className="text-xs font-semibold mb-5 tracking-wide uppercase" style={{
@@ -131,6 +98,39 @@ export default function IntroScreen({ onStart }: Props) {
               Female
             </motion.button>
           </div>
+        </div>
+
+        <p
+          className="text-base leading-relaxed mb-10"
+          style={{ color: "#ffffff" }}
+        >
+          Answer 3 minutes of questions and Mended will build your
+          personalised hypnosis program — free.
+        </p>
+
+        {/* Social proof strip */}
+        <div className="flex items-center gap-3 mb-10">
+          <div className="flex -space-x-2">
+            {["#8A5EFF", "#4675FF", "#34CBBF", "#c4afff"].map((color, i) => (
+              <div
+                key={i}
+                className="w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold"
+                style={{
+                  background: color,
+                  borderColor: "#07001c",
+                  color: "#fff",
+                }}
+              >
+                {["S", "M", "J", "A"][i]}
+              </div>
+            ))}
+          </div>
+          <p className="text-sm" style={{ color: "#ffffff" }}>
+            <span className="font-semibold" style={{ color: "#c4afff" }}>
+              94,000+
+            </span>{" "}
+            people broke free
+          </p>
         </div>
       </div>
 
