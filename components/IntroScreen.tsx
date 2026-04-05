@@ -35,44 +35,21 @@ export default function IntroScreen({ onStart }: Props) {
       {/* Divider */}
       <div className="mb-10 mx-auto" style={{ width: "60%", height: 1, background: "linear-gradient(90deg, transparent 0%, #8A5EFF 40%, #34CBBF 60%, transparent 100%)" }} />
 
-      {/* Headline */}
+      {/* Hero image — moved up, no headline */}
       <div className="flex-1 flex flex-col justify-center">
-        <h1
-          className="text-3xl font-bold leading-tight mb-5"
-          style={{
-            fontFamily: "var(--font-playfair), Georgia, serif",
-            color: "#ffffff",
-            textAlign: "center",
-          }}
-        >
-          Break free from
-          <br />
-          <span
-            style={{
-              background: "linear-gradient(90deg, #8A5EFF 0%, #34CBBF 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            alcohol — for good.
-          </span>
-        </h1>
-
-        {/* Hero image with simple border */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1, duration: 0.5 }}
           className="w-full rounded-2xl mb-10 overflow-hidden"
           style={{
-            minHeight: "280px",
             border: "3px solid rgba(52,203,191,0.5)",
             boxShadow: "0 10px 30px rgba(52,203,191,0.15)",
           }}
         >
           <img
             src="/images/hero.png"
-            alt="Quit alcohol hypnosis"
+            alt="Break free from alcohol"
             className="w-full h-full object-cover"
             onError={(e) => {
               e.currentTarget.style.display = "none";
