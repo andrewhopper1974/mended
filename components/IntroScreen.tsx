@@ -107,10 +107,10 @@ export default function IntroScreen({ onStart }: Props) {
         className="mb-6 text-center"
       >
         <h1
-          className="text-2xl font-bold leading-snug"
-          style={{ fontFamily: "var(--font-playfair), Georgia, serif", color: "#ffffff" }}
+          className="text-2xl font-bold leading-tight mb-2"
+          style={{ color: "#ffffff", letterSpacing: "-0.01em" }}
         >
-          Why do{" "}
+          How{" "}
           <span
             style={{
               background: "linear-gradient(90deg, #8A5EFF 0%, #34CBBF 100%)",
@@ -120,8 +120,11 @@ export default function IntroScreen({ onStart }: Props) {
           >
             94,000 people
           </span>
-          {" "}quit alcohol without willpower, AA, or medication?
+          {" "}quit alcohol for good.
         </h1>
+        <p className="text-sm" style={{ color: "rgba(255,255,255,0.45)", letterSpacing: "0.01em" }}>
+          No willpower. No AA. No medication.
+        </p>
       </motion.div>
 
       {/* Hero image */}
@@ -174,23 +177,30 @@ export default function IntroScreen({ onStart }: Props) {
               <motion.button
                 key={gender}
                 onClick={() => handleGenderSelect(gender)}
-                whileHover={{ scale: 1.03 }}
+                whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
-                className="flex flex-col items-center py-6 rounded-2xl transition-all"
+                animate={!isSelected ? {
+                  boxShadow: [
+                    "0 4px 16px rgba(138,94,255,0.2)",
+                    "0 4px 28px rgba(138,94,255,0.45), 0 0 20px rgba(52,203,191,0.15)",
+                    "0 4px 16px rgba(138,94,255,0.2)",
+                  ],
+                } : {
+                  boxShadow: "0 0 32px rgba(52,203,191,0.3), 0 4px 20px rgba(138,94,255,0.25)",
+                }}
+                transition={!isSelected ? { repeat: Infinity, duration: 2.4, ease: "easeInOut" } : {}}
+                className="flex flex-col items-center py-7 rounded-2xl"
                 style={{
                   background: isSelected
-                    ? "linear-gradient(135deg, rgba(138,94,255,0.28) 0%, rgba(52,203,191,0.18) 100%)"
-                    : "linear-gradient(135deg, rgba(138,94,255,0.1) 0%, rgba(52,203,191,0.06) 100%)",
+                    ? "linear-gradient(135deg, rgba(138,94,255,0.32) 0%, rgba(52,203,191,0.2) 100%)"
+                    : "linear-gradient(135deg, rgba(138,94,255,0.16) 0%, rgba(52,203,191,0.09) 100%)",
                   border: isSelected
-                    ? "1.5px solid rgba(52,203,191,0.85)"
-                    : "1.5px solid rgba(138,94,255,0.35)",
-                  boxShadow: isSelected
-                    ? "0 0 28px rgba(52,203,191,0.25), 0 4px 16px rgba(138,94,255,0.2)"
-                    : "0 4px 14px rgba(138,94,255,0.12)",
+                    ? "1.5px solid rgba(52,203,191,0.9)"
+                    : "1.5px solid rgba(138,94,255,0.5)",
                 }}
               >
                 <span
-                  className="text-3xl mb-2 leading-none"
+                  className="text-4xl mb-2 leading-none"
                   style={{
                     background: "linear-gradient(135deg, #8A5EFF, #34CBBF)",
                     WebkitBackgroundClip: "text",

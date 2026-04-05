@@ -418,54 +418,63 @@ export default function QuizScreen({
             })()}
 
             {/* ── Decorative ambient area ── */}
-            <div className="relative mt-8 pointer-events-none" style={{ height: 140 }}>
-              {/* Floating particles — varied sizes, colors, speeds */}
+            <div className="relative mt-8 pointer-events-none" style={{ height: 160 }}>
+              {/* Floating particles — scattered, varied sizes/speeds/drift */}
               {[
-                { x: "8%",  y: "15%", size: 3,   color: "#8A5EFF", delay: 0,   dur: 3.2 },
-                { x: "78%", y: "8%",  size: 2,   color: "#34CBBF", delay: 0.7, dur: 4.0 },
-                { x: "50%", y: "55%", size: 5,   color: "#8A5EFF", delay: 1.2, dur: 3.6 },
-                { x: "22%", y: "70%", size: 2,   color: "#34CBBF", delay: 0.3, dur: 5.0 },
-                { x: "88%", y: "50%", size: 3,   color: "#4675FF", delay: 0.9, dur: 3.8 },
-                { x: "38%", y: "25%", size: 2,   color: "#c4afff", delay: 0.5, dur: 4.5 },
-                { x: "65%", y: "75%", size: 4,   color: "#34CBBF", delay: 1.6, dur: 3.3 },
-                { x: "15%", y: "45%", size: 2,   color: "#4675FF", delay: 1.1, dur: 4.2 },
-                { x: "92%", y: "25%", size: 2,   color: "#c4afff", delay: 0.2, dur: 3.9 },
-                { x: "55%", y: "88%", size: 3,   color: "#8A5EFF", delay: 0.8, dur: 4.7 },
-                { x: "30%", y: "10%", size: 1.5, color: "#34CBBF", delay: 1.4, dur: 5.2 },
-                { x: "72%", y: "40%", size: 2.5, color: "#8A5EFF", delay: 0.6, dur: 3.5 },
+                { x: "4%",  y: "12%", size: 2,   color: "#8A5EFF", delay: 0,    dur: 3.2, driftX: 4  },
+                { x: "83%", y: "5%",  size: 1.5, color: "#34CBBF", delay: 0.7,  dur: 4.0, driftX: -3 },
+                { x: "47%", y: "52%", size: 5,   color: "#8A5EFF", delay: 1.2,  dur: 3.6, driftX: 2  },
+                { x: "18%", y: "78%", size: 2,   color: "#34CBBF", delay: 0.3,  dur: 5.0, driftX: -4 },
+                { x: "91%", y: "48%", size: 3,   color: "#4675FF", delay: 0.9,  dur: 3.8, driftX: -2 },
+                { x: "33%", y: "22%", size: 1.5, color: "#c4afff", delay: 0.5,  dur: 4.5, driftX: 3  },
+                { x: "62%", y: "82%", size: 4,   color: "#34CBBF", delay: 1.6,  dur: 3.3, driftX: -3 },
+                { x: "11%", y: "40%", size: 2,   color: "#4675FF", delay: 1.1,  dur: 4.2, driftX: 5  },
+                { x: "96%", y: "20%", size: 1.5, color: "#c4afff", delay: 0.2,  dur: 3.9, driftX: -2 },
+                { x: "57%", y: "92%", size: 3,   color: "#8A5EFF", delay: 0.8,  dur: 4.7, driftX: 3  },
+                { x: "26%", y: "8%",  size: 1.5, color: "#34CBBF", delay: 1.4,  dur: 5.2, driftX: -4 },
+                { x: "74%", y: "35%", size: 2.5, color: "#8A5EFF", delay: 0.6,  dur: 3.5, driftX: 2  },
+                { x: "42%", y: "68%", size: 2,   color: "#4675FF", delay: 1.8,  dur: 4.1, driftX: -3 },
+                { x: "7%",  y: "60%", size: 3,   color: "#c4afff", delay: 0.4,  dur: 3.7, driftX: 4  },
+                { x: "68%", y: "15%", size: 2,   color: "#34CBBF", delay: 1.0,  dur: 4.8, driftX: -2 },
               ].map((p, i) => (
                 <motion.div
                   key={i}
                   className="absolute rounded-full"
-                  style={{
-                    left: p.x, top: p.y,
-                    width: p.size, height: p.size,
-                    background: p.color,
-                  }}
+                  style={{ left: p.x, top: p.y, width: p.size, height: p.size, background: p.color }}
                   animate={{
-                    y: [-6, 6, -6],
-                    x: [0, i % 2 === 0 ? 3 : -3, 0],
-                    opacity: [0.25, 0.75, 0.25],
-                    scale: [1, 1.3, 1],
+                    y: [-7, 7, -7],
+                    x: [0, p.driftX, 0],
+                    opacity: [0.2, 0.8, 0.2],
+                    scale: [1, 1.4, 1],
                   }}
                   transition={{ repeat: Infinity, duration: p.dur, delay: p.delay, ease: "easeInOut" }}
                 />
               ))}
 
-              {/* Left glow orb */}
+              {/* Glow auras — 4 of them, scattered */}
               <div className="absolute" style={{
-                left: "15%", top: "50%", transform: "translateY(-50%)",
-                width: 120, height: 120,
-                background: "radial-gradient(ellipse, rgba(138,94,255,0.15) 0%, transparent 70%)",
-                filter: "blur(24px)",
+                left: "5%", top: "20%",
+                width: 130, height: 130,
+                background: "radial-gradient(ellipse, rgba(138,94,255,0.18) 0%, transparent 70%)",
+                filter: "blur(28px)",
               }} />
-
-              {/* Right glow orb */}
               <div className="absolute" style={{
-                right: "10%", top: "30%",
-                width: 100, height: 100,
-                background: "radial-gradient(ellipse, rgba(52,203,191,0.12) 0%, transparent 70%)",
-                filter: "blur(20px)",
+                right: "5%", top: "10%",
+                width: 110, height: 110,
+                background: "radial-gradient(ellipse, rgba(52,203,191,0.14) 0%, transparent 70%)",
+                filter: "blur(22px)",
+              }} />
+              <div className="absolute" style={{
+                left: "35%", bottom: "5%",
+                width: 150, height: 80,
+                background: "radial-gradient(ellipse, rgba(70,117,255,0.12) 0%, transparent 70%)",
+                filter: "blur(30px)",
+              }} />
+              <div className="absolute" style={{
+                right: "20%", bottom: "15%",
+                width: 90, height: 90,
+                background: "radial-gradient(ellipse, rgba(196,175,255,0.1) 0%, transparent 70%)",
+                filter: "blur(18px)",
               }} />
             </div>
           </div>
