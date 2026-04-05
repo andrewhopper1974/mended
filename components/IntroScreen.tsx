@@ -236,7 +236,7 @@ export default function IntroScreen({ onStart }: Props) {
               key={link.href}
               href={link.href}
               className="hover:opacity-80 transition-opacity font-medium"
-              style={{ color: "rgba(255,255,255,0.5)" }}
+              style={{ color: "rgba(255,255,255,0.75)" }}
             >
               {link.label}
             </a>
@@ -245,10 +245,10 @@ export default function IntroScreen({ onStart }: Props) {
 
         {/* Copyright + Disclaimer */}
         <div className="flex flex-col items-start gap-2 pb-2">
-          <p className="text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>
+          <p className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
             © 2026 Mended. All rights reserved.
           </p>
-          <p className="text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>
+          <p className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
             Results may vary from person to person.
           </p>
         </div>
