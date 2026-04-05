@@ -126,7 +126,7 @@ export default function PrivacyPage() {
           </h2>
           <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: "1.6" }}>
             Depending on your location, you may have the right to access, modify, or delete your personal data.
-            To exercise these rights, please email support@quitwithhypnosis.com. We will respond to requests within 30 days.
+            To exercise these rights, please email support@mended.health. We will respond to requests within 30 days.
           </p>
         </section>
 
@@ -144,7 +144,7 @@ export default function PrivacyPage() {
             Contact Us
           </h2>
           <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: "1.6" }}>
-            For privacy-related questions, please contact support@quitwithhypnosis.com
+            For privacy-related questions, please contact support@mended.health
           </p>
         </section>
       </div>

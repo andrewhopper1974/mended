@@ -141,11 +141,11 @@ export default function ContactPage() {
           Or email us directly:
         </p>
         <a
-          href="mailto:support@quitwithhypnosis.com"
+          href="mailto:support@mended.health"
           className="text-base font-semibold"
           style={{ color: "#34CBBF" }}
         >
-          support@quitwithhypnosis.com
+          support@mended.health
         </a>
       </div>
     </motion.div>

@@ -82,11 +82,11 @@ export default function ManagePage() {
               Email our support team:
             </p>
             <a
-              href="mailto:support@quitwithhypnosis.com"
+              href="mailto:support@mended.health"
               className="text-lg font-bold"
               style={{ color: "#34CBBF" }}
             >
-              support@quitwithhypnosis.com
+              support@mended.health
             </a>
             <p className="text-sm mt-3" style={{ color: "rgba(255,255,255,0.6)" }}>
               Include your email address and let us know what change you'd like to make (change plan, pause,

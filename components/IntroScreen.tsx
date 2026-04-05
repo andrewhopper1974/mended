@@ -82,7 +82,7 @@ export default function IntroScreen({ onStart }: Props) {
 
         <p
           className="text-base leading-relaxed mb-10"
-          style={{ color: "rgba(255,255,255,0.7)" }}
+          style={{ color: "#ffffff" }}
         >
           Answer 3 minutes of questions and Mended will build your
           personalised hypnosis program — free.
@@ -105,7 +105,7 @@ export default function IntroScreen({ onStart }: Props) {
               </div>
             ))}
           </div>
-          <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>
+          <p className="text-sm" style={{ color: "#ffffff" }}>
             <span className="font-semibold" style={{ color: "#c4afff" }}>
               94,000+
             </span>{" "}
@@ -113,10 +113,14 @@ export default function IntroScreen({ onStart }: Props) {
           </p>
         </div>
 
-        {/* Gender Selection - Clean Gradient Buttons */}
-        <div className="mb-8">
-          <p className="text-xs font-semibold mb-5 tracking-wide uppercase" style={{ color: "rgba(255,255,255,0.6)" }}>
-            I'm identifying as:
+        {/* Gender Selection */}
+        <div className="mb-10 text-center">
+          <p className="text-xs font-semibold mb-5 tracking-wide uppercase" style={{
+            background: "linear-gradient(90deg, #34CBBF 0%, #8A5EFF 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}>
+            Start by selecting your gender:
           </p>
           <div className="flex gap-3">
             <motion.button
@@ -151,13 +155,6 @@ export default function IntroScreen({ onStart }: Props) {
             </motion.button>
           </div>
         </div>
-
-        <p
-          className="text-center text-sm"
-          style={{ color: "rgba(255,255,255,0.45)" }}
-        >
-          🔒 Mended · Science-backed · Used by 94,000+ people
-        </p>
       </div>
 
       {/* Testimonials */}
@@ -208,7 +205,7 @@ export default function IntroScreen({ onStart }: Props) {
                 {t.tag}
               </span>
             </div>
-            <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.78)" }}>
+            <p className="text-sm leading-relaxed" style={{ color: "#ffffff" }}>
               {t.text}
             </p>
           </motion.div>
@@ -220,41 +217,42 @@ export default function IntroScreen({ onStart }: Props) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2 }}
-        className="border-t flex justify-center items-center gap-3 pt-6 text-xs mt-12 flex-nowrap overflow-x-auto"
-        style={{
-          borderColor: "rgba(255,255,255,0.15)",
-        }}
+        className="border-t mt-12 pt-10 flex flex-col items-start gap-8"
+        style={{ borderColor: "rgba(255,255,255,0.15)" }}
       >
-        <a href="/terms" style={{ color: "rgba(255,255,255,0.9)" }} className="hover:text-white transition-colors font-medium whitespace-nowrap">
-          Terms
-        </a>
-        <span style={{ color: "rgba(255,255,255,0.3)" }}>·</span>
-        <a href="/privacy" style={{ color: "rgba(255,255,255,0.9)" }} className="hover:text-white transition-colors font-medium whitespace-nowrap">
-          Privacy
-        </a>
-        <span style={{ color: "rgba(255,255,255,0.3)" }}>·</span>
-        <a href="/contact" style={{ color: "rgba(255,255,255,0.9)" }} className="hover:text-white transition-colors font-medium whitespace-nowrap">
-          Contact
-        </a>
-        <span style={{ color: "rgba(255,255,255,0.3)" }}>·</span>
-        <a href="/manage" style={{ color: "rgba(255,255,255,0.9)" }} className="hover:text-white transition-colors font-medium whitespace-nowrap">
-          Manage
-        </a>
-        <span style={{ color: "rgba(255,255,255,0.3)" }}>·</span>
-        <a href="/reviews" style={{ color: "rgba(255,255,255,0.9)" }} className="hover:text-white transition-colors font-medium whitespace-nowrap">
-          Reviews
-        </a>
-      </motion.div>
+        {/* Logo */}
+        <MendedLogo size="sm" />
 
-      {/* Copyright + Disclaimer */}
-      <div className="mt-6 px-2 space-y-3">
-        <p className="text-center text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>
-          © 2026 Mended. All rights reserved.
-        </p>
-        <p className="text-center text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>
-          Results may vary from person to person.
-        </p>
-      </div>
+        {/* Links */}
+        <div className="flex flex-col items-start gap-2 text-xs">
+          {[
+            { label: "Terms & Conditions", href: "/terms" },
+            { label: "Privacy", href: "/privacy" },
+            { label: "Contact", href: "/contact" },
+            { label: "Manage Subscription", href: "/manage" },
+            { label: "Reviews", href: "/reviews" },
+          ].map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="hover:opacity-80 transition-opacity font-medium"
+              style={{ color: "rgba(255,255,255,0.5)" }}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+
+        {/* Copyright + Disclaimer */}
+        <div className="flex flex-col items-start gap-2 pb-2">
+          <p className="text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>
+            © 2026 Mended. All rights reserved.
+          </p>
+          <p className="text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>
+            Results may vary from person to person.
+          </p>
+        </div>
+      </motion.div>
     </motion.div>
   );
 }

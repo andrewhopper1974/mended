@@ -74,7 +74,7 @@ export default function RefundPage() {
             <li>
               <strong>1. Email Support</strong>
               <p className="mt-1">
-                Send an email to support@quitwithhypnosis.com with your request. Include your email address and
+                Send an email to support@mended.health with your request. Include your email address and
                 the email address you used to make the purchase.
               </p>
             </li>
@@ -137,8 +137,8 @@ export default function RefundPage() {
           </h2>
           <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: "1.6" }}>
             Contact us at{" "}
-            <a href="mailto:support@quitwithhypnosis.com" style={{ color: "#34CBBF" }}>
-              support@quitwithhypnosis.com
+            <a href="mailto:support@mended.health" style={{ color: "#34CBBF" }}>
+              support@mended.health
             </a>
             {" "}and we'll be happy to answer any questions about this guarantee.
           </p>

@@ -58,7 +58,7 @@ export default function TermsPage() {
           </h2>
           <ul className="space-y-2" style={{ color: "rgba(255,255,255,0.7)", lineHeight: "1.6" }}>
             <li>• Subscriptions renew automatically on a weekly, monthly, or quarterly basis</li>
-            <li>• You can cancel your subscription at any time by emailing support@quitwithhypnosis.com</li>
+            <li>• You can cancel your subscription at any time by emailing support@mended.health</li>
             <li>• Billing occurs on the date of purchase each renewal period</li>
             <li>• All prices are in USD and subject to applicable taxes</li>
           </ul>
@@ -70,7 +70,7 @@ export default function TermsPage() {
           </h2>
           <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: "1.6" }}>
             If you are not satisfied with your purchase within 30 days, you are eligible for a full refund.
-            Simply email support@quitwithhypnosis.com with your request, and we will process your refund within 5 business days.
+            Simply email support@mended.health with your request, and we will process your refund within 5 business days.
           </p>
         </section>
 
@@ -113,7 +113,7 @@ export default function TermsPage() {
             Contact
           </h2>
           <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: "1.6" }}>
-            For questions about these terms, please contact us at support@quitwithhypnosis.com
+            For questions about these terms, please contact us at support@mended.health
           </p>
         </section>
       </div>
