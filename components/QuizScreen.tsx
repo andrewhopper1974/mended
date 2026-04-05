@@ -418,15 +418,21 @@ export default function QuizScreen({
             })()}
 
             {/* ── Decorative ambient area ── */}
-            <div className="relative mt-8 pointer-events-none" style={{ height: 120 }}>
-              {/* Floating particles */}
+            <div className="relative mt-8 pointer-events-none" style={{ height: 140 }}>
+              {/* Floating particles — varied sizes, colors, speeds */}
               {[
-                { x: "10%", y: "20%", size: 3, color: "#8A5EFF", delay: 0 },
-                { x: "80%", y: "10%", size: 2, color: "#34CBBF", delay: 0.8 },
-                { x: "55%", y: "60%", size: 4, color: "#8A5EFF", delay: 1.3 },
-                { x: "25%", y: "75%", size: 2, color: "#34CBBF", delay: 0.4 },
-                { x: "90%", y: "55%", size: 3, color: "#4675FF", delay: 1.0 },
-                { x: "40%", y: "30%", size: 2, color: "#c4afff", delay: 0.6 },
+                { x: "8%",  y: "15%", size: 3,   color: "#8A5EFF", delay: 0,   dur: 3.2 },
+                { x: "78%", y: "8%",  size: 2,   color: "#34CBBF", delay: 0.7, dur: 4.0 },
+                { x: "50%", y: "55%", size: 5,   color: "#8A5EFF", delay: 1.2, dur: 3.6 },
+                { x: "22%", y: "70%", size: 2,   color: "#34CBBF", delay: 0.3, dur: 5.0 },
+                { x: "88%", y: "50%", size: 3,   color: "#4675FF", delay: 0.9, dur: 3.8 },
+                { x: "38%", y: "25%", size: 2,   color: "#c4afff", delay: 0.5, dur: 4.5 },
+                { x: "65%", y: "75%", size: 4,   color: "#34CBBF", delay: 1.6, dur: 3.3 },
+                { x: "15%", y: "45%", size: 2,   color: "#4675FF", delay: 1.1, dur: 4.2 },
+                { x: "92%", y: "25%", size: 2,   color: "#c4afff", delay: 0.2, dur: 3.9 },
+                { x: "55%", y: "88%", size: 3,   color: "#8A5EFF", delay: 0.8, dur: 4.7 },
+                { x: "30%", y: "10%", size: 1.5, color: "#34CBBF", delay: 1.4, dur: 5.2 },
+                { x: "72%", y: "40%", size: 2.5, color: "#8A5EFF", delay: 0.6, dur: 3.5 },
               ].map((p, i) => (
                 <motion.div
                   key={i}
@@ -435,36 +441,32 @@ export default function QuizScreen({
                     left: p.x, top: p.y,
                     width: p.size, height: p.size,
                     background: p.color,
-                    opacity: 0.5,
                   }}
-                  animate={{ y: [-5, 5, -5], opacity: [0.3, 0.7, 0.3] }}
-                  transition={{ repeat: Infinity, duration: 3 + i * 0.5, delay: p.delay, ease: "easeInOut" }}
+                  animate={{
+                    y: [-6, 6, -6],
+                    x: [0, i % 2 === 0 ? 3 : -3, 0],
+                    opacity: [0.25, 0.75, 0.25],
+                    scale: [1, 1.3, 1],
+                  }}
+                  transition={{ repeat: Infinity, duration: p.dur, delay: p.delay, ease: "easeInOut" }}
                 />
               ))}
 
-              {/* Central glow orb */}
-              <div
-                className="absolute"
-                style={{
-                  left: "50%",
-                  top: "50%",
-                  transform: "translate(-50%, -50%)",
-                  width: 200,
-                  height: 80,
-                  background: "radial-gradient(ellipse, rgba(138,94,255,0.12) 0%, transparent 70%)",
-                  filter: "blur(20px)",
-                }}
-              />
+              {/* Left glow orb */}
+              <div className="absolute" style={{
+                left: "15%", top: "50%", transform: "translateY(-50%)",
+                width: 120, height: 120,
+                background: "radial-gradient(ellipse, rgba(138,94,255,0.15) 0%, transparent 70%)",
+                filter: "blur(24px)",
+              }} />
 
-              {/* Divider line with gradient */}
-              <div
-                className="absolute"
-                style={{
-                  bottom: 0, left: "10%",
-                  width: "80%", height: 1,
-                  background: "linear-gradient(90deg, transparent, rgba(138,94,255,0.3) 30%, rgba(52,203,191,0.3) 70%, transparent)",
-                }}
-              />
+              {/* Right glow orb */}
+              <div className="absolute" style={{
+                right: "10%", top: "30%",
+                width: 100, height: 100,
+                background: "radial-gradient(ellipse, rgba(52,203,191,0.12) 0%, transparent 70%)",
+                filter: "blur(20px)",
+              }} />
             </div>
           </div>
         ) : (
