@@ -15,11 +15,11 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Mended — Break free from alcohol, for good.",
+  title: "Break Free From Alcohol",
   description:
     "Mended uses science-backed hypnosis to help you break free from alcohol — for good. Take the free 3-minute quiz and get your personalised program. Used by 94,000+ people.",
   openGraph: {
-    title: "Mended — Break free from alcohol, for good.",
+    title: "Break Free From Alcohol",
     description:
       "Take the free 3-minute quiz and discover your personalised hypnosis program. Break free from alcohol — for good.",
     type: "website",
