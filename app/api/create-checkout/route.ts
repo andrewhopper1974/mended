@@ -27,10 +27,10 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ url: session.url });
-  } catch (err) {
-    console.error("Stripe checkout error:", err);
+  } catch (err: any) {
+    console.error("Stripe checkout error:", err?.message, err?.type, err?.code);
     return NextResponse.json(
-      { error: "Failed to create checkout session" },
+      { error: err?.message || "Failed to create checkout session" },
       { status: 500 }
     );
   }
