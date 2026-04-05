@@ -192,11 +192,11 @@ export default function IntroScreen({ onStart }: Props) {
                 className="flex flex-col items-center py-7 rounded-2xl"
                 style={{
                   background: isSelected
-                    ? "linear-gradient(135deg, rgba(138,94,255,0.32) 0%, rgba(52,203,191,0.2) 100%)"
-                    : "linear-gradient(135deg, rgba(138,94,255,0.16) 0%, rgba(52,203,191,0.09) 100%)",
+                    ? "linear-gradient(135deg, #1e1050 0%, #0d2a28 100%)"
+                    : "linear-gradient(135deg, #140c3a 0%, #0a2020 100%)",
                   border: isSelected
                     ? "1.5px solid rgba(52,203,191,0.9)"
-                    : "1.5px solid rgba(138,94,255,0.5)",
+                    : "1.5px solid rgba(138,94,255,0.65)",
                 }}
               >
                 <span
