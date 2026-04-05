@@ -1,0 +1,46 @@
+import type { Metadata } from "next";
+import { Inter, Playfair_Display } from "next/font/google";
+import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  title: "Mended — Break free from alcohol, for good.",
+  description:
+    "Mended uses science-backed hypnosis to help you break free from alcohol — for good. Take the free 3-minute quiz and get your personalised program. Used by 94,000+ people.",
+  openGraph: {
+    title: "Mended — Break free from alcohol, for good.",
+    description:
+      "Take the free 3-minute quiz and discover your personalised hypnosis program. Break free from alcohol — for good.",
+    type: "website",
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+      <body className="bg-quiz-bg text-white antialiased">
+        <div
+          className="min-h-screen w-full mx-auto relative overflow-x-hidden"
+          style={{ maxWidth: "480px" }}
+        >
+          {children}
+        </div>
+      </body>
+    </html>
+  );
+}
