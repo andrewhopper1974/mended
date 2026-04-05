@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import DesktopSidebar from "@/components/DesktopSidebar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -34,11 +35,27 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body className="bg-quiz-bg text-white antialiased">
-        <div
-          className="min-h-screen w-full mx-auto relative overflow-x-hidden"
-          style={{ maxWidth: "480px" }}
-        >
-          {children}
+
+        {/* Mobile: single column, centered at 480px max */}
+        {/* Desktop (md+): two columns — quiz left, sidebar right */}
+        <div className="min-h-screen flex justify-center md:justify-start md:max-w-6xl md:mx-auto">
+
+          {/* Quiz column — always 480px max, full width on mobile */}
+          <div
+            className="w-full relative overflow-x-hidden"
+            style={{ maxWidth: "480px" }}
+          >
+            {children}
+          </div>
+
+          {/* Sidebar — desktop only */}
+          <div
+            className="hidden md:block flex-1 border-l"
+            style={{ borderColor: "rgba(255,255,255,0.08)" }}
+          >
+            <DesktopSidebar />
+          </div>
+
         </div>
       </body>
     </html>
