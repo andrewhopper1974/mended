@@ -118,6 +118,52 @@ const Q9_HINT =
 const Q21_HYPNOSIS_OPTION = "Subconscious reprogramming through hypnosis";
 const Q21_HINT = "Hypnosis is the core of your program — perfect.";
 
+// Context cards shown below open-ended inputs
+const OPEN_ENDED_CONTEXT: Record<number, { icon: string; color: string; title: string; body: string }> = {
+  28: {
+    icon: "🎯",
+    color: "#8A5EFF",
+    title: "Personalising your program",
+    body: "Your age helps us calibrate session intensity and set realistic milestones tailored specifically to you.",
+  },
+  29: {
+    icon: "📊",
+    color: "#34CBBF",
+    title: "Building your profile",
+    body: "We use your physical stats to personalise the body recovery aspects of your program — no two programs are the same.",
+  },
+  30: {
+    icon: "⚖️",
+    color: "#4675FF",
+    title: "You'll likely lose weight too",
+    body: "Alcohol is full of empty calories. Most Mended members naturally drop weight as a side effect of sobriety — without trying.",
+  },
+  31: {
+    icon: "🏆",
+    color: "#34CBBF",
+    title: "Goals make freedom real",
+    body: "People with a concrete target are 43% more likely to achieve lasting sobriety and the lifestyle transformation that comes with it.",
+  },
+  25: {
+    icon: "🔒",
+    color: "#8A5EFF",
+    title: "This is just for you",
+    body: "Your honesty here directly shapes your hypnosis sessions. The more real you are with yourself, the more powerful your program becomes.",
+  },
+  26: {
+    icon: "💜",
+    color: "#c4afff",
+    title: "This takes real courage",
+    body: "Naming what alcohol has truly cost you is one of the most powerful things you can do. Most people never get this honest with themselves.",
+  },
+  27: {
+    icon: "✨",
+    color: "#34CBBF",
+    title: "Visualisation is already working",
+    body: "Writing your future self into existence is a core technique used in your sessions. What you're doing right now is part of your program.",
+  },
+};
+
 export default function QuizScreen({
   item,
   questionNumber,
@@ -280,55 +326,145 @@ export default function QuizScreen({
 
         {item.type === "open-ended" ? (
           /* ── Open-ended text input ── */
-          <div className="relative">
-            {item.multiline !== false ? (
-              /* Multi-line textarea for reflective questions */
-              <textarea
-                value={selected[0] || ""}
-                onChange={(e) => handleTextChange(e.target.value)}
-                placeholder={item.placeholder || "Type your answer here..."}
-                rows={6}
-                className="w-full rounded-2xl px-4 py-4 text-sm leading-relaxed resize-none outline-none"
+          <div>
+            <div className="relative">
+              {item.multiline !== false ? (
+                /* Multi-line textarea for reflective questions */
+                <textarea
+                  value={selected[0] || ""}
+                  onChange={(e) => handleTextChange(e.target.value)}
+                  placeholder={item.placeholder || "Type your answer here..."}
+                  rows={6}
+                  className="w-full rounded-2xl px-4 py-4 text-sm leading-relaxed resize-none outline-none"
+                  style={{
+                    background: "rgba(255,255,255,0.05)",
+                    border: (selected[0]?.trim().length ?? 0) >= 3
+                      ? "1.5px solid rgba(52,203,191,0.6)"
+                      : "1.5px solid rgba(255,255,255,0.12)",
+                    color: "#ffffff",
+                    caretColor: "#34CBBF",
+                    transition: "border-color 0.2s",
+                  }}
+                />
+              ) : (
+                /* Single-line input for stats (age, height, weight, etc.) */
+                <input
+                  type="text"
+                  inputMode={item.inputMode ?? "text"}
+                  value={selected[0] || ""}
+                  onChange={(e) => handleTextChange(e.target.value)}
+                  placeholder={item.placeholder || "Type your answer here..."}
+                  className="w-full rounded-2xl px-4 outline-none"
+                  style={{
+                    height: "60px",
+                    fontSize: "1.25rem",
+                    fontWeight: 600,
+                    background: "rgba(255,255,255,0.05)",
+                    border: (selected[0]?.trim().length ?? 0) >= 1
+                      ? "1.5px solid rgba(52,203,191,0.6)"
+                      : "1.5px solid rgba(255,255,255,0.12)",
+                    color: "#ffffff",
+                    caretColor: "#34CBBF",
+                    transition: "border-color 0.2s",
+                  }}
+                />
+              )}
+              {/* Character count */}
+              <div
+                className="mt-2 text-xs text-right"
+                style={{ color: "rgba(255,255,255,0.3)" }}
+              >
+                {item.multiline !== false && (selected[0] || "").length > 0 &&
+                  `${(selected[0] || "").length} characters`}
+              </div>
+            </div>
+
+            {/* ── Context card ── */}
+            {OPEN_ENDED_CONTEXT[item.id] && (() => {
+              const ctx = OPEN_ENDED_CONTEXT[item.id];
+              return (
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.25, duration: 0.5, ease: "easeOut" }}
+                  className="mt-6 rounded-2xl p-5 relative overflow-hidden"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(138,94,255,0.1) 0%, rgba(52,203,191,0.06) 100%)",
+                    border: `1px solid rgba(138,94,255,0.2)`,
+                  }}
+                >
+                  {/* Subtle corner glow */}
+                  <div className="absolute top-0 right-0 w-24 h-24 pointer-events-none" style={{
+                    background: `radial-gradient(ellipse at top right, ${ctx.color}22 0%, transparent 70%)`,
+                  }} />
+                  <div className="flex items-start gap-3 relative z-10">
+                    <div
+                      className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+                      style={{ background: `${ctx.color}18`, border: `1px solid ${ctx.color}30` }}
+                    >
+                      {ctx.icon}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold mb-1" style={{ color: ctx.color }}>
+                        {ctx.title}
+                      </p>
+                      <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
+                        {ctx.body}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })()}
+
+            {/* ── Decorative ambient area ── */}
+            <div className="relative mt-8 pointer-events-none" style={{ height: 120 }}>
+              {/* Floating particles */}
+              {[
+                { x: "10%", y: "20%", size: 3, color: "#8A5EFF", delay: 0 },
+                { x: "80%", y: "10%", size: 2, color: "#34CBBF", delay: 0.8 },
+                { x: "55%", y: "60%", size: 4, color: "#8A5EFF", delay: 1.3 },
+                { x: "25%", y: "75%", size: 2, color: "#34CBBF", delay: 0.4 },
+                { x: "90%", y: "55%", size: 3, color: "#4675FF", delay: 1.0 },
+                { x: "40%", y: "30%", size: 2, color: "#c4afff", delay: 0.6 },
+              ].map((p, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute rounded-full"
+                  style={{
+                    left: p.x, top: p.y,
+                    width: p.size, height: p.size,
+                    background: p.color,
+                    opacity: 0.5,
+                  }}
+                  animate={{ y: [-5, 5, -5], opacity: [0.3, 0.7, 0.3] }}
+                  transition={{ repeat: Infinity, duration: 3 + i * 0.5, delay: p.delay, ease: "easeInOut" }}
+                />
+              ))}
+
+              {/* Central glow orb */}
+              <div
+                className="absolute"
                 style={{
-                  background: "rgba(255,255,255,0.05)",
-                  border: (selected[0]?.trim().length ?? 0) >= 3
-                    ? "1.5px solid rgba(52,203,191,0.6)"
-                    : "1.5px solid rgba(255,255,255,0.12)",
-                  color: "#ffffff",
-                  caretColor: "#34CBBF",
-                  transition: "border-color 0.2s",
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: 200,
+                  height: 80,
+                  background: "radial-gradient(ellipse, rgba(138,94,255,0.12) 0%, transparent 70%)",
+                  filter: "blur(20px)",
                 }}
               />
-            ) : (
-              /* Single-line input for stats (age, height, weight, etc.) */
-              <input
-                type="text"
-                inputMode={item.inputMode ?? "text"}
-                value={selected[0] || ""}
-                onChange={(e) => handleTextChange(e.target.value)}
-                placeholder={item.placeholder || "Type your answer here..."}
-                className="w-full rounded-2xl px-4 outline-none"
+
+              {/* Divider line with gradient */}
+              <div
+                className="absolute"
                 style={{
-                  height: "60px",
-                  fontSize: "1.25rem",
-                  fontWeight: 600,
-                  background: "rgba(255,255,255,0.05)",
-                  border: (selected[0]?.trim().length ?? 0) >= 1
-                    ? "1.5px solid rgba(52,203,191,0.6)"
-                    : "1.5px solid rgba(255,255,255,0.12)",
-                  color: "#ffffff",
-                  caretColor: "#34CBBF",
-                  transition: "border-color 0.2s",
+                  bottom: 0, left: "10%",
+                  width: "80%", height: 1,
+                  background: "linear-gradient(90deg, transparent, rgba(138,94,255,0.3) 30%, rgba(52,203,191,0.3) 70%, transparent)",
                 }}
               />
-            )}
-            {/* Character / value hint */}
-            <div
-              className="mt-2 text-xs text-right"
-              style={{ color: "rgba(255,255,255,0.3)" }}
-            >
-              {item.multiline !== false && (selected[0] || "").length > 0 &&
-                `${(selected[0] || "").length} characters`}
             </div>
           </div>
         ) : (
