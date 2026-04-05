@@ -85,15 +85,17 @@ export default function IntroScreen({ onStart }: Props) {
                   onClick={() => handleGenderSelect(gender)}
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
-                  className="flex flex-col items-center py-5 rounded-2xl transition-all"
+                  className="flex flex-col items-center py-6 rounded-2xl transition-all"
                   style={{
                     background: isSelected
-                      ? "linear-gradient(135deg, rgba(138,94,255,0.18) 0%, rgba(52,203,191,0.1) 100%)"
-                      : "rgba(255,255,255,0.04)",
+                      ? "linear-gradient(135deg, rgba(138,94,255,0.28) 0%, rgba(52,203,191,0.18) 100%)"
+                      : "linear-gradient(135deg, rgba(138,94,255,0.1) 0%, rgba(52,203,191,0.06) 100%)",
                     border: isSelected
-                      ? "1.5px solid rgba(52,203,191,0.7)"
-                      : "1.5px solid rgba(255,255,255,0.1)",
-                    boxShadow: isSelected ? "0 0 20px rgba(52,203,191,0.15)" : "none",
+                      ? "1.5px solid rgba(52,203,191,0.85)"
+                      : "1.5px solid rgba(138,94,255,0.35)",
+                    boxShadow: isSelected
+                      ? "0 0 28px rgba(52,203,191,0.25), 0 4px 16px rgba(138,94,255,0.2)"
+                      : "0 4px 14px rgba(138,94,255,0.12)",
                   }}
                 >
                   <span
