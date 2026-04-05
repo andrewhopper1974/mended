@@ -181,14 +181,14 @@ export default function IntroScreen({ onStart }: Props) {
                 whileTap={{ scale: 0.97 }}
                 animate={!isSelected ? {
                   boxShadow: [
-                    "0 4px 16px rgba(138,94,255,0.2)",
-                    "0 4px 28px rgba(138,94,255,0.45), 0 0 20px rgba(52,203,191,0.15)",
-                    "0 4px 16px rgba(138,94,255,0.2)",
+                    "0 0 10px rgba(138,94,255,0.15), 0 0 0px rgba(52,203,191,0.0)",
+                    "0 0 30px rgba(138,94,255,0.5), 0 0 16px rgba(52,203,191,0.2)",
+                    "0 0 10px rgba(138,94,255,0.15), 0 0 0px rgba(52,203,191,0.0)",
                   ],
                 } : {
-                  boxShadow: "0 0 32px rgba(52,203,191,0.3), 0 4px 20px rgba(138,94,255,0.25)",
+                  boxShadow: "0 0 30px rgba(52,203,191,0.35), 0 0 16px rgba(138,94,255,0.3)",
                 }}
-                transition={!isSelected ? { repeat: Infinity, duration: 2.4, ease: "easeInOut" } : {}}
+                transition={!isSelected ? { repeat: Infinity, duration: 3, ease: "easeInOut" } : {}}
                 className="flex flex-col items-center py-7 rounded-2xl"
                 style={{
                   background: isSelected
