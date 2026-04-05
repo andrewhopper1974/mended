@@ -85,6 +85,7 @@ export default function PaywallScreen({ profile, email }: Props) {
   const { mins, secs } = useCountdown(14 * 60 + 59, `${profile}-${email}`);
   const [glowing, setGlowing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
   const [selectedPlan, setSelectedPlan] = useState<string>("monthly");
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
 
@@ -111,6 +112,7 @@ export default function PaywallScreen({ profile, email }: Props) {
   const handleCheckout = async () => {
     vibrate([40, 20, 40]);
     setLoading(true);
+    setCheckoutError("");
     try {
       const selectedPlanObj = PLANS.find((p) => p.id === selectedPlan);
       const priceId = selectedPlanObj?.priceId || "";
@@ -124,9 +126,11 @@ export default function PaywallScreen({ profile, email }: Props) {
       if (data.url) {
         window.location.href = data.url;
       } else {
+        setCheckoutError(data.error || "Something went wrong. Please try again.");
         setLoading(false);
       }
-    } catch (_) {
+    } catch (err: any) {
+      setCheckoutError(err?.message || "Network error. Please try again.");
       setLoading(false);
     }
   };
@@ -305,6 +309,12 @@ export default function PaywallScreen({ profile, email }: Props) {
       >
         {loading ? "Redirecting..." : "Start My Program →"}
       </button>
+
+      {checkoutError && (
+        <p className="text-center text-sm mb-3" style={{ color: "#ff6b6b" }}>
+          {checkoutError}
+        </p>
+      )}
 
       <p
         className="text-center text-xs mb-8"
