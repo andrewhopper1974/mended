@@ -191,7 +191,7 @@ export default function ResultsScreen({ profile, answers, onSeeProgram }: Props)
   const endLabel = showWeightChart ? `${targetWeight} ${unit}` : "Alcohol-free";
 
   const handleSeeProgram = () => {
-    vibrate([40, 20, 40]);
+    vibrate([50, 20, 80]);
     onSeeProgram();
   };
 

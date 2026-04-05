@@ -21,15 +21,17 @@ export default function EmailScreen({ onSubmit }: Props) {
   const handleSubmit = async () => {
     if (!isValidEmail(email)) {
       setError("Please enter a valid email address.");
+      vibrate([80, 20, 80]);
       return;
     }
     if (!agreedPrivacy) {
       setError("Please agree to the Privacy Policy to continue.");
+      vibrate([80, 20, 80]);
       return;
     }
     setError("");
     setLoading(true);
-    vibrate([40, 20, 40]);
+    vibrate([40, 15, 40, 15, 80]);
 
     // Fire-and-forget MailerLite subscribe
     try {
@@ -140,7 +142,7 @@ export default function EmailScreen({ onSubmit }: Props) {
       {/* Checkboxes */}
       <div className="space-y-3 mb-5">
         {/* Body data report opt-in */}
-        <label className="flex items-start gap-3 cursor-pointer" onClick={() => setWantsReport(v => !v)}>
+        <label className="flex items-start gap-3 cursor-pointer" onClick={() => { vibrate(20); setWantsReport(v => !v); }}>
           <div
             className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5 transition-all"
             style={{
@@ -160,7 +162,7 @@ export default function EmailScreen({ onSubmit }: Props) {
         </label>
 
         {/* Privacy policy */}
-        <label className="flex items-start gap-3 cursor-pointer" onClick={() => { setAgreedPrivacy(v => !v); if (error) setError(""); }}>
+        <label className="flex items-start gap-3 cursor-pointer" onClick={() => { vibrate(20); setAgreedPrivacy(v => !v); if (error) setError(""); }}>
           <div
             className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5 transition-all"
             style={{

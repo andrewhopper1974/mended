@@ -97,7 +97,7 @@ export default function PaywallScreen({ profile, email }: Props) {
   };
 
   useEffect(() => {
-    vibrate(80);
+    vibrate([20, 15, 40, 15, 80]);
     resetInactivity();
     const events = ["touchstart", "mousemove", "scroll", "keydown"];
     const handler = () => resetInactivity();
@@ -110,7 +110,7 @@ export default function PaywallScreen({ profile, email }: Props) {
   }, []);
 
   const handleCheckout = async () => {
-    vibrate([40, 20, 40]);
+    vibrate([60, 20, 60]);
     setLoading(true);
     setCheckoutError("");
     try {
@@ -201,7 +201,7 @@ export default function PaywallScreen({ profile, email }: Props) {
           {PLANS.map((plan) => (
             <button
               key={plan.id}
-              onClick={() => setSelectedPlan(plan.id)}
+              onClick={() => { vibrate(30); setSelectedPlan(plan.id); }}
               className="relative w-full text-left rounded-2xl p-4 transition-all"
               style={{
                 background:

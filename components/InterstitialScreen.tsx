@@ -20,7 +20,7 @@ interface Props {
 
 export default function InterstitialScreen({ item, progress, onDone, onBack }: Props) {
   useEffect(() => {
-    vibrate([40, 20, 40, 20, 40]);
+    vibrate([15, 10, 30, 10, 60]);
   }, []);
 
   return (
@@ -221,7 +221,7 @@ export default function InterstitialScreen({ item, progress, onDone, onBack }: P
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.65, type: "spring", stiffness: 180, damping: 28 }}
-          onClick={() => { vibrate([40, 20, 40]); onDone(); }}
+          onClick={() => { vibrate([40, 15, 40]); onDone(); }}
           className="btn-cta w-full py-4 text-base font-semibold"
           style={{ borderRadius: "14px" }}
         >

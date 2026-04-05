@@ -20,7 +20,7 @@ export default function IntroScreen({ onStart }: Props) {
   const [selectedGender, setSelectedGender] = useState<"male" | "female" | null>(null);
 
   const handleGenderSelect = (gender: "male" | "female") => {
-    vibrate([40, 20, 40]);
+    vibrate([30, 10, 60]);
     setSelectedGender(gender);
     onStart();
   };
@@ -65,45 +65,53 @@ export default function IntroScreen({ onStart }: Props) {
         </motion.div>
 
         {/* Gender Selection */}
-        <motion.div {...fadeUp(0)} className="mb-10 text-center">
-          <p className="text-xs font-semibold mb-5 tracking-wide uppercase" style={{
+        <motion.div {...fadeUp(0)} className="mb-10">
+          <p className="text-xs font-semibold mb-4 tracking-wide uppercase text-center" style={{
             background: "linear-gradient(90deg, #34CBBF 0%, #8A5EFF 100%)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
           }}>
             Start by selecting your gender:
           </p>
-          <div className="flex gap-3">
-            <motion.button
-              onClick={() => handleGenderSelect("male")}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-              className="flex-1 py-5 text-2xl font-bold rounded-full transition-all"
-              style={{
-                background: "linear-gradient(135deg, #8A5EFF 0%, #34CBBF 100%)",
-                border: selectedGender === "male" ? "3px solid rgba(255,255,255,0.8)" : "none",
-                color: "#ffffff",
-                boxShadow: "0 8px 25px rgba(52,203,191,0.3)",
-                opacity: selectedGender === null || selectedGender === "male" ? 1 : 0.6,
-              }}
-            >
-              Male
-            </motion.button>
-            <motion.button
-              onClick={() => handleGenderSelect("female")}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-              className="flex-1 py-5 text-2xl font-bold rounded-full transition-all"
-              style={{
-                background: "linear-gradient(135deg, #8A5EFF 0%, #34CBBF 100%)",
-                border: selectedGender === "female" ? "3px solid rgba(255,255,255,0.8)" : "none",
-                color: "#ffffff",
-                boxShadow: "0 8px 25px rgba(52,203,191,0.3)",
-                opacity: selectedGender === null || selectedGender === "female" ? 1 : 0.6,
-              }}
-            >
-              Female
-            </motion.button>
+          <div className="grid grid-cols-2 gap-3">
+            {([
+              { gender: "male" as const, label: "Male", symbol: "♂" },
+              { gender: "female" as const, label: "Female", symbol: "♀" },
+            ]).map(({ gender, label, symbol }) => {
+              const isSelected = selectedGender === gender;
+              return (
+                <motion.button
+                  key={gender}
+                  onClick={() => handleGenderSelect(gender)}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="flex flex-col items-center py-5 rounded-2xl transition-all"
+                  style={{
+                    background: isSelected
+                      ? "linear-gradient(135deg, rgba(138,94,255,0.18) 0%, rgba(52,203,191,0.1) 100%)"
+                      : "rgba(255,255,255,0.04)",
+                    border: isSelected
+                      ? "1.5px solid rgba(52,203,191,0.7)"
+                      : "1.5px solid rgba(255,255,255,0.1)",
+                    boxShadow: isSelected ? "0 0 20px rgba(52,203,191,0.15)" : "none",
+                  }}
+                >
+                  <span
+                    className="text-3xl mb-2 leading-none"
+                    style={{
+                      background: "linear-gradient(135deg, #8A5EFF, #34CBBF)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                    }}
+                  >
+                    {symbol}
+                  </span>
+                  <span className="text-base font-semibold" style={{ color: "#ffffff" }}>
+                    {label}
+                  </span>
+                </motion.button>
+              );
+            })}
           </div>
         </motion.div>
 

@@ -152,7 +152,8 @@ export default function QuizScreen({
   }, [selected, item.id]);
 
   const toggleOption = (opt: string) => {
-    vibrate(40);
+    const isRemoving = selected.includes(opt);
+    vibrate(isRemoving ? 15 : 25);
     setSelected((prev) =>
       prev.includes(opt) ? prev.filter((o) => o !== opt) : [...prev, opt]
     );
@@ -171,12 +172,12 @@ export default function QuizScreen({
 
   const handleContinue = () => {
     if (!canContinue) return;
-    vibrate([40, 20, 40]);
+    vibrate([40, 15, 40]);
     onAdvance(item.id, selected);
   };
 
   const handleBack = () => {
-    vibrate(40);
+    vibrate(20);
     onBack();
   };
 
@@ -406,7 +407,7 @@ export default function QuizScreen({
           className="fixed bottom-0 left-0 right-0 px-4 pb-6 pt-4 z-50"
           style={{
             background: "linear-gradient(to top, #07001c 60%, transparent)",
-            maxWidth: "480px",
+            maxWidth: "680px",
             margin: "0 auto",
           }}
         >
