@@ -451,30 +451,30 @@ export default function QuizScreen({
                 />
               ))}
 
-              {/* Glow auras — 4 of them, scattered */}
+              {/* Glow auras — spread across different vertical positions */}
               <div className="absolute" style={{
-                left: "5%", top: "20%",
-                width: 130, height: 130,
+                left: "-5%", top: "5%",
+                width: 140, height: 140,
                 background: "radial-gradient(ellipse, rgba(138,94,255,0.18) 0%, transparent 70%)",
-                filter: "blur(28px)",
-              }} />
-              <div className="absolute" style={{
-                right: "5%", top: "10%",
-                width: 110, height: 110,
-                background: "radial-gradient(ellipse, rgba(52,203,191,0.14) 0%, transparent 70%)",
-                filter: "blur(22px)",
-              }} />
-              <div className="absolute" style={{
-                left: "35%", bottom: "5%",
-                width: 150, height: 80,
-                background: "radial-gradient(ellipse, rgba(70,117,255,0.12) 0%, transparent 70%)",
                 filter: "blur(30px)",
               }} />
               <div className="absolute" style={{
-                right: "20%", bottom: "15%",
-                width: 90, height: 90,
-                background: "radial-gradient(ellipse, rgba(196,175,255,0.1) 0%, transparent 70%)",
-                filter: "blur(18px)",
+                right: "-5%", top: "40%",
+                width: 120, height: 120,
+                background: "radial-gradient(ellipse, rgba(52,203,191,0.15) 0%, transparent 70%)",
+                filter: "blur(24px)",
+              }} />
+              <div className="absolute" style={{
+                left: "30%", top: "55%",
+                width: 160, height: 90,
+                background: "radial-gradient(ellipse, rgba(70,117,255,0.13) 0%, transparent 70%)",
+                filter: "blur(32px)",
+              }} />
+              <div className="absolute" style={{
+                right: "15%", top: "10%",
+                width: 100, height: 100,
+                background: "radial-gradient(ellipse, rgba(196,175,255,0.11) 0%, transparent 70%)",
+                filter: "blur(20px)",
               }} />
             </div>
           </div>
