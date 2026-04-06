@@ -5,7 +5,8 @@ export type QuizItem =
 
 export const QUIZ_FLOW: QuizItem[] = [
 
-  // ─── Phase 1: Quick identification (Q1–Q6) ───────────────────────────────
+  // ─── Phase 1: Hook & Identity — "this gets me" (Q1, Q3, Q4, Q2, Q6) ──────
+  // Q1 first: identity mirror. Immediate "oh, this is about me" response.
   {
     type: "question",
     id: 1,
@@ -20,20 +21,7 @@ export const QUIZ_FLOW: QuizItem[] = [
     ],
     emojis: ["📅", "🎉", "😰", "🔄", "👥", "😶"],
   },
-  {
-    type: "question",
-    id: 2,
-    question: "How long has alcohol been a real problem in your life?",
-    options: [
-      "Less than a year",
-      "1–3 years",
-      "3–5 years",
-      "5–10 years",
-      "More than 10 years",
-      "Most of my adult life — I can't remember it being different",
-    ],
-    emojis: ["🌱", "📆", "🗓️", "⏳", "⌛", "💭"],
-  },
+  // Q3 second: most empathetic question — earns trust immediately
   {
     type: "question",
     id: 3,
@@ -48,6 +36,7 @@ export const QUIZ_FLOW: QuizItem[] = [
     ],
     emojis: ["🧘", "💪", "💔", "😴", "🎭", "🤷"],
   },
+  // Q4: deepens the "we understand you" — trigger identification
   {
     type: "question",
     id: 4,
@@ -63,20 +52,22 @@ export const QUIZ_FLOW: QuizItem[] = [
     ],
     emojis: ["💼", "🏝️", "😟", "😐", "💢", "⏰", "🍻"],
   },
+  // Q2: now duration confirms the story they've already told — not cold data
   {
     type: "question",
-    id: 5,
-    question: "How much do you typically drink when you sit down to drink?",
+    id: 2,
+    question: "How long has alcohol been a real problem in your life?",
     options: [
-      "1–2 drinks",
-      "3–4 drinks",
-      "Half a bottle of wine or spirits",
-      "A full bottle of wine or more",
-      "A full bottle of spirits",
-      "I genuinely lose count once I start",
+      "Less than a year",
+      "1–3 years",
+      "3–5 years",
+      "5–10 years",
+      "More than 10 years",
+      "Most of my adult life — I can't remember it being different",
     ],
-    emojis: ["🥂", "🍷", "🍾", "🫙", "🥃", "❓"],
+    emojis: ["🌱", "📆", "🗓️", "⏳", "⌛", "💭"],
   },
+  // Q6: validates the struggle — "you've tried, you're not weak, you need a different approach"
   {
     type: "question",
     id: 6,
@@ -91,23 +82,8 @@ export const QUIZ_FLOW: QuizItem[] = [
     emojis: ["🔁", "📈", "🔥", "💭", "⚡"],
   },
 
-  // ─── Open-ended: Commitment declaration (why now?) ───────────────────────
-  {
-    type: "open-ended",
-    id: 25,
-    question: "What finally pushed you to take this quiz today?",
-    placeholder: "Be honest with yourself — what was the moment or thought that brought you here?",
-    multiline: true,
-  },
-
-  // ─── INTERSTITIAL 1 ───────────────────────────────────────────────────────
-  {
-    type: "interstitial",
-    stat: "78%",
-    copy: "of people with your exact triggers have successfully broken free using a structured hypnosis program. Your patterns are more common than you think — and more treatable.",
-  },
-
-  // ─── Phase 2: Pain amplification (Q8–Q12) ────────────────────────────────
+  // ─── Phase 2: Physical & emotional state — pain surfaces naturally ────────
+  // Q8 + Q17 + Q9: physical → mental health → emotional. Grouped cluster.
   {
     type: "question",
     id: 8,
@@ -124,6 +100,20 @@ export const QUIZ_FLOW: QuizItem[] = [
   },
   {
     type: "question",
+    id: 17,
+    question: "How would you describe your mental health right now?",
+    options: [
+      "Severely anxious — nearly all of the time",
+      "Depressed and often hopeless",
+      "Emotionally shut down and numb",
+      "Barely keeping it together on the surface",
+      "Okay — but I know alcohol is making everything worse",
+      "I've forgotten what feeling genuinely okay actually feels like",
+    ],
+    emojis: ["😰", "😔", "😶", "🎭", "💭", "❓"],
+  },
+  {
+    type: "question",
     id: 9,
     question: "How do you feel emotionally the day after drinking?",
     options: [
@@ -136,6 +126,40 @@ export const QUIZ_FLOW: QuizItem[] = [
     ],
     emojis: ["😔", "😰", "🔄", "😡", "😶", "🪨"],
   },
+
+  // ─── Open-ended: Commitment declaration — fires at Q9 of 22, max investment ─
+  {
+    type: "open-ended",
+    id: 25,
+    question: "What finally pushed you to take this quiz today?",
+    placeholder: "Be honest with yourself — what was the moment or thought that brought you here?",
+    multiline: true,
+  },
+
+  // ─── INTERSTITIAL 1 ───────────────────────────────────────────────────────
+  {
+    type: "interstitial",
+    stat: "78%",
+    copy: "of people with your exact triggers have successfully broken free using a structured hypnosis program. Your patterns are more common than you think — and more treatable.",
+  },
+
+  // ─── Phase 3: Honest accounting & reality check ───────────────────────────
+  // Q5 here feels like honest confession, not early interrogation
+  {
+    type: "question",
+    id: 5,
+    question: "How much do you typically drink when you sit down to drink?",
+    options: [
+      "1–2 drinks",
+      "3–4 drinks",
+      "Half a bottle of wine or spirits",
+      "A full bottle of wine or more",
+      "A full bottle of spirits",
+      "I genuinely lose count once I start",
+    ],
+    emojis: ["🥂", "🍷", "🍾", "🫙", "🥃", "❓"],
+  },
+  // Q11: social mirror — someone else's eyes on the problem
   {
     type: "question",
     id: 11,
@@ -150,6 +174,7 @@ export const QUIZ_FLOW: QuizItem[] = [
     ],
     emojis: ["💑", "👨‍👩‍👦", "👫", "🩺", "🤫", "👁️"],
   },
+  // Q12: peak emotional moment — "be honest with yourself"
   {
     type: "question",
     id: 12,
@@ -173,7 +198,7 @@ export const QUIZ_FLOW: QuizItem[] = [
     copy: "of people who complete this assessment go on to significantly reduce or eliminate their drinking within 90 days. You're already further along than most people ever get.",
   },
 
-  // ─── Phase 3: Identity & cost (Q13–Q17) ─────────────────────────────────
+  // ─── Phase 4: Identity & cost — making it deeply personal ────────────────
   {
     type: "question",
     id: 13,
@@ -202,22 +227,8 @@ export const QUIZ_FLOW: QuizItem[] = [
     ],
     emojis: ["⏳", "💰", "❤️", "🧍", "🤝", "🏆"],
   },
-  {
-    type: "question",
-    id: 17,
-    question: "How would you describe your mental health right now?",
-    options: [
-      "Severely anxious — nearly all of the time",
-      "Depressed and often hopeless",
-      "Emotionally shut down and numb",
-      "Barely keeping it together on the surface",
-      "Okay — but I know alcohol is making everything worse",
-      "I've forgotten what feeling genuinely okay actually feels like",
-    ],
-    emojis: ["😰", "😔", "😶", "🎭", "💭", "❓"],
-  },
 
-  // ─── Open-ended: Pain anchoring (personal cost story) ────────────────────
+  // ─── Open-ended: Pain anchoring — loss aversion peaks here ───────────────
   {
     type: "open-ended",
     id: 26,
@@ -233,7 +244,7 @@ export const QUIZ_FLOW: QuizItem[] = [
     copy: "People who honestly acknowledge what alcohol has cost them are 3x more likely to achieve lasting sobriety. What you just did takes real courage.",
   },
 
-  // ─── Phase 4: Future self and hope (Q18–Q20) ────────────────────────────
+  // ─── Phase 5: Vision & hope — emotional turnaround ───────────────────────
   {
     type: "question",
     id: 18,
@@ -276,7 +287,8 @@ export const QUIZ_FLOW: QuizItem[] = [
     ],
     emojis: ["✨", "😟", "📅", "⚠️", "🤷", "🙏"],
   },
-  // ─── Open-ended: Vision crystallization (future self) ────────────────────
+
+  // ─── Open-ended: Vision crystallization — co-creating the outcome ─────────
   {
     type: "open-ended",
     id: 27,
