@@ -273,10 +273,14 @@ export default function QuizScreen({
             Back
           </button>
           <span
-            className="text-sm font-medium"
-            style={{ color: "rgba(255,255,255,0.45)" }}
+            className="text-xs font-semibold px-2.5 py-1 rounded-full"
+            style={{
+              background: "rgba(138,94,255,0.15)",
+              border: "1px solid rgba(138,94,255,0.25)",
+              color: "rgba(196,175,255,0.9)",
+            }}
           >
-            {questionNumber} of {totalQuestions}
+            {questionNumber} / {totalQuestions}
           </span>
         </div>
         {/* Progress bar */}

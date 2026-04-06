@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { vibrate } from "@/lib/quizData";
+import { vibrate, TOTAL_QUESTIONS } from "@/lib/quizData";
 import MendedLogo from "@/components/MendedLogo";
 
 interface Props {
@@ -228,7 +228,7 @@ export default function IntroScreen({ onStart }: Props) {
 
         {/* Risk reversal */}
         <div className="flex items-center justify-center gap-2 mt-3">
-          {["Free", "No credit card", "3 minutes"].map((item, i) => (
+          {[`${TOTAL_QUESTIONS} questions`, "3 minutes", "Free"].map((item, i) => (
             <span key={item} className="flex items-center gap-2">
               {i > 0 && (
                 <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "10px" }}>●</span>

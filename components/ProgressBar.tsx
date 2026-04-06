@@ -17,7 +17,10 @@ export default function ProgressBar({ progress }: Props) {
     >
       <div
         className="progress-fill"
-        style={{ width: `${Math.min(progress * 100, 100)}%` }}
+        style={{
+          width: `${Math.min(progress * 100, 100)}%`,
+          minWidth: progress > 0 ? "6px" : "0px",
+        }}
       />
     </div>
   );
