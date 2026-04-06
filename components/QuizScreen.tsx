@@ -422,24 +422,34 @@ export default function QuizScreen({
             })()}
 
             {/* ── Decorative ambient area ── */}
-            <div className="relative mt-8 pointer-events-none" style={{ height: 160 }}>
-              {/* Floating particles — scattered, varied sizes/speeds/drift */}
+            <div className="relative mt-8 pointer-events-none" style={{ height: 200 }}>
+              {/* Floating particles */}
               {[
-                { x: "4%",  y: "12%", size: 2,   color: "#8A5EFF", delay: 0,    dur: 3.2, driftX: 4  },
-                { x: "83%", y: "5%",  size: 1.5, color: "#34CBBF", delay: 0.7,  dur: 4.0, driftX: -3 },
-                { x: "47%", y: "52%", size: 5,   color: "#8A5EFF", delay: 1.2,  dur: 3.6, driftX: 2  },
-                { x: "18%", y: "78%", size: 2,   color: "#34CBBF", delay: 0.3,  dur: 5.0, driftX: -4 },
-                { x: "91%", y: "48%", size: 3,   color: "#4675FF", delay: 0.9,  dur: 3.8, driftX: -2 },
-                { x: "33%", y: "22%", size: 1.5, color: "#c4afff", delay: 0.5,  dur: 4.5, driftX: 3  },
-                { x: "62%", y: "82%", size: 4,   color: "#34CBBF", delay: 1.6,  dur: 3.3, driftX: -3 },
-                { x: "11%", y: "40%", size: 2,   color: "#4675FF", delay: 1.1,  dur: 4.2, driftX: 5  },
-                { x: "96%", y: "20%", size: 1.5, color: "#c4afff", delay: 0.2,  dur: 3.9, driftX: -2 },
-                { x: "57%", y: "92%", size: 3,   color: "#8A5EFF", delay: 0.8,  dur: 4.7, driftX: 3  },
-                { x: "26%", y: "8%",  size: 1.5, color: "#34CBBF", delay: 1.4,  dur: 5.2, driftX: -4 },
-                { x: "74%", y: "35%", size: 2.5, color: "#8A5EFF", delay: 0.6,  dur: 3.5, driftX: 2  },
-                { x: "42%", y: "68%", size: 2,   color: "#4675FF", delay: 1.8,  dur: 4.1, driftX: -3 },
-                { x: "7%",  y: "60%", size: 3,   color: "#c4afff", delay: 0.4,  dur: 3.7, driftX: 4  },
-                { x: "68%", y: "15%", size: 2,   color: "#34CBBF", delay: 1.0,  dur: 4.8, driftX: -2 },
+                { x: "4%",   y: "8%",  size: 2,   color: "#8A5EFF", delay: 0,    dur: 3.2, driftX: 4  },
+                { x: "83%",  y: "5%",  size: 1.5, color: "#34CBBF", delay: 0.7,  dur: 4.0, driftX: -3 },
+                { x: "47%",  y: "45%", size: 5,   color: "#8A5EFF", delay: 1.2,  dur: 3.6, driftX: 2  },
+                { x: "18%",  y: "72%", size: 2,   color: "#34CBBF", delay: 0.3,  dur: 5.0, driftX: -4 },
+                { x: "91%",  y: "42%", size: 3,   color: "#4675FF", delay: 0.9,  dur: 3.8, driftX: -2 },
+                { x: "33%",  y: "18%", size: 1.5, color: "#c4afff", delay: 0.5,  dur: 4.5, driftX: 3  },
+                { x: "62%",  y: "78%", size: 4,   color: "#34CBBF", delay: 1.6,  dur: 3.3, driftX: -3 },
+                { x: "11%",  y: "38%", size: 2,   color: "#4675FF", delay: 1.1,  dur: 4.2, driftX: 5  },
+                { x: "96%",  y: "18%", size: 1.5, color: "#c4afff", delay: 0.2,  dur: 3.9, driftX: -2 },
+                { x: "57%",  y: "88%", size: 3,   color: "#8A5EFF", delay: 0.8,  dur: 4.7, driftX: 3  },
+                { x: "26%",  y: "6%",  size: 1.5, color: "#34CBBF", delay: 1.4,  dur: 5.2, driftX: -4 },
+                { x: "74%",  y: "30%", size: 2.5, color: "#8A5EFF", delay: 0.6,  dur: 3.5, driftX: 2  },
+                { x: "42%",  y: "62%", size: 2,   color: "#4675FF", delay: 1.8,  dur: 4.1, driftX: -3 },
+                { x: "7%",   y: "55%", size: 3,   color: "#c4afff", delay: 0.4,  dur: 3.7, driftX: 4  },
+                { x: "68%",  y: "12%", size: 2,   color: "#34CBBF", delay: 1.0,  dur: 4.8, driftX: -2 },
+                { x: "52%",  y: "25%", size: 1.5, color: "#8A5EFF", delay: 2.1,  dur: 4.3, driftX: 3  },
+                { x: "88%",  y: "65%", size: 2,   color: "#c4afff", delay: 0.6,  dur: 5.5, driftX: -4 },
+                { x: "22%",  y: "90%", size: 1.5, color: "#4675FF", delay: 1.3,  dur: 3.4, driftX: 2  },
+                { x: "77%",  y: "50%", size: 3,   color: "#8A5EFF", delay: 0.9,  dur: 4.6, driftX: -3 },
+                { x: "38%",  y: "95%", size: 2,   color: "#34CBBF", delay: 1.7,  dur: 3.8, driftX: 4  },
+                { x: "14%",  y: "22%", size: 4,   color: "#4675FF", delay: 0.2,  dur: 5.1, driftX: -2 },
+                { x: "60%",  y: "58%", size: 1.5, color: "#c4afff", delay: 2.3,  dur: 4.0, driftX: 3  },
+                { x: "3%",   y: "82%", size: 2,   color: "#8A5EFF", delay: 1.5,  dur: 3.6, driftX: -4 },
+                { x: "93%",  y: "85%", size: 2.5, color: "#34CBBF", delay: 0.5,  dur: 4.9, driftX: 2  },
+                { x: "45%",  y: "14%", size: 2,   color: "#4675FF", delay: 1.9,  dur: 3.3, driftX: -3 },
               ].map((p, i) => (
                 <motion.div
                   key={i}
