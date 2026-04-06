@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import DesktopParticles from "@/components/DesktopParticles";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -34,9 +35,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body className="bg-quiz-bg text-white antialiased">
+        <DesktopParticles />
         <div
           className="min-h-screen w-full mx-auto relative overflow-x-hidden"
-          style={{ maxWidth: "680px" }}
+          style={{ maxWidth: "680px", zIndex: 2, position: "relative" }}
         >
           {children}
         </div>
