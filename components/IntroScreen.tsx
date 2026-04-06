@@ -181,35 +181,44 @@ export default function IntroScreen({ onStart }: Props) {
                 whileTap={{ scale: 0.97 }}
                 animate={!isSelected ? {
                   boxShadow: [
-                    "0 0 10px rgba(138,94,255,0.15), 0 0 0px rgba(52,203,191,0.0)",
-                    "0 0 30px rgba(138,94,255,0.5), 0 0 16px rgba(52,203,191,0.2)",
-                    "0 0 10px rgba(138,94,255,0.15), 0 0 0px rgba(52,203,191,0.0)",
+                    "0 0 12px rgba(138,94,255,0.2), 0 0 0px rgba(52,203,191,0.0)",
+                    "0 0 40px rgba(138,94,255,0.65), 0 0 20px rgba(52,203,191,0.25)",
+                    "0 0 12px rgba(138,94,255,0.2), 0 0 0px rgba(52,203,191,0.0)",
                   ],
                 } : {
-                  boxShadow: "0 0 30px rgba(52,203,191,0.35), 0 0 16px rgba(138,94,255,0.3)",
+                  boxShadow: "0 0 40px rgba(52,203,191,0.45), 0 0 20px rgba(138,94,255,0.35)",
                 }}
                 transition={!isSelected ? { repeat: Infinity, duration: 3, ease: "easeInOut" } : {}}
-                className="flex flex-col items-center py-7 rounded-2xl"
+                className="flex flex-col items-center py-7 rounded-2xl relative overflow-hidden"
                 style={{
                   background: isSelected
-                    ? "linear-gradient(135deg, #1e1050 0%, #0d2a28 100%)"
-                    : "linear-gradient(135deg, #140c3a 0%, #0a2020 100%)",
+                    ? "linear-gradient(160deg, #221260 0%, #0f3030 100%)"
+                    : "linear-gradient(160deg, #1a0e48 0%, #0c2828 100%)",
                   border: isSelected
-                    ? "1.5px solid rgba(52,203,191,0.9)"
-                    : "1.5px solid rgba(138,94,255,0.65)",
+                    ? "2px solid rgba(52,203,191,0.95)"
+                    : "2px solid rgba(138,94,255,0.7)",
                 }}
               >
+                {/* Top gleam */}
+                <div
+                  className="absolute top-0 left-0 right-0 pointer-events-none"
+                  style={{
+                    height: 1,
+                    background: "linear-gradient(90deg, transparent 5%, rgba(196,175,255,0.45) 50%, transparent 95%)",
+                  }}
+                />
                 <span
                   className="text-4xl mb-2 leading-none"
                   style={{
-                    background: "linear-gradient(135deg, #8A5EFF, #34CBBF)",
+                    background: "linear-gradient(135deg, #a87fff, #34CBBF)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
+                    filter: "drop-shadow(0 0 10px rgba(138,94,255,0.7))",
                   }}
                 >
                   {symbol}
                 </span>
-                <span className="text-base font-semibold" style={{ color: "#ffffff" }}>
+                <span className="text-base font-semibold" style={{ color: "rgba(255,255,255,0.95)" }}>
                   {label}
                 </span>
               </motion.button>
