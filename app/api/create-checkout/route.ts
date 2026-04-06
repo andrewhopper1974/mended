@@ -9,15 +9,15 @@ export async function POST(req: NextRequest) {
     const { email, profile, priceId, plan } = await req.json();
 
     const session = await stripe.checkout.sessions.create({
-      mode: "subscription",
+      mode: "payment",
       customer_email: email || undefined,
       line_items: [
         {
-          price: priceId || process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY!,
+          price: priceId || process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_90DAY!,
           quantity: 1,
         },
       ],
-      success_url: `${req.nextUrl.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `https://app.mended.health/welcome?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.nextUrl.origin}/?paywall=true&profile=${encodeURIComponent(profile || "")}&email=${encodeURIComponent(email || "")}&plan=${encodeURIComponent(plan || "")}`,
       metadata: {
         profile: profile || "",

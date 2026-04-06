@@ -14,33 +14,28 @@ interface Plan {
   id: string;
   name: string;
   price: string;
-  period: string;
+  description: string;
   priceId: string;
   badge?: string;
+  valueNote?: string;
 }
 
 const PLANS: Plan[] = [
   {
-    id: "weekly",
-    name: "Weekly",
-    price: "$7.99",
-    period: "/week",
-    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_WEEKLY || "price_1TIVxUPFMDEDuyb3OgkxDEr2",
+    id: "30day",
+    name: "30-Day Program",
+    price: "$49",
+    description: "The full 30-day program. One-time payment.",
+    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_30DAY || "price_1TJHvGPFMDEDuyb3WI3dKHVF",
   },
   {
-    id: "monthly",
-    name: "Monthly",
-    price: "$19.99",
-    period: "/month",
-    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY || "price_1TIXxMPFMDEDuyb3Xivt0wNC",
-  },
-  {
-    id: "quarterly",
-    name: "3 Months",
-    price: "$29.99",
-    period: "/3 months",
-    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_QUARTERLY || "price_1TIXxiPFMDEDuyb3HOWd5dgu",
+    id: "90day",
+    name: "90-Day Program",
+    price: "$79",
+    description: "30-day foundation plus 60 days of application and integration. One-time payment.",
+    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_90DAY || "price_1TJHvdPFMDEDuyb3FMVrNxEY",
     badge: "Best Value",
+    valueNote: "Save $68 — less than $1/day",
   },
 ];
 
@@ -86,7 +81,7 @@ export default function PaywallScreen({ profile, email }: Props) {
   const [glowing, setGlowing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
-  const [selectedPlan, setSelectedPlan] = useState<string>("monthly");
+  const [selectedPlan, setSelectedPlan] = useState<string>("90day");
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
 
   // Start glow after 8s inactivity
@@ -226,29 +221,39 @@ export default function PaywallScreen({ profile, email }: Props) {
                   {plan.badge}
                 </div>
               )}
-              <div className="flex items-baseline justify-between mb-2">
+              <div className="flex items-start justify-between mb-1.5">
                 <h4
                   className="text-base font-bold"
                   style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
                 >
                   {plan.name}
                 </h4>
-                <div className="flex items-baseline gap-1">
-                  <span
-                    className="text-xl font-bold"
-                    style={{
-                      background: "linear-gradient(90deg, #8A5EFF, #34CBBF)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                    }}
-                  >
-                    {plan.price}
-                  </span>
-                  <span style={{ color: "rgba(255,255,255,0.5)" }}>
-                    {plan.period}
-                  </span>
-                </div>
+                <span
+                  className="text-xl font-bold ml-3 flex-shrink-0"
+                  style={{
+                    background: "linear-gradient(90deg, #8A5EFF, #34CBBF)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  {plan.price}
+                </span>
               </div>
+              <p className="text-xs leading-snug mb-2" style={{ color: "rgba(255,255,255,0.55)" }}>
+                {plan.description}
+              </p>
+              {plan.valueNote && (
+                <div
+                  className="inline-block text-xs font-semibold px-2.5 py-1 rounded-lg mb-2"
+                  style={{
+                    background: "rgba(52,203,191,0.15)",
+                    border: "1px solid rgba(52,203,191,0.35)",
+                    color: "#34CBBF",
+                  }}
+                >
+                  🎯 {plan.valueNote}
+                </div>
+              )}
               {selectedPlan === plan.id && (
                 <div
                   className="text-xs font-semibold"
@@ -307,7 +312,11 @@ export default function PaywallScreen({ profile, email }: Props) {
           transition: "opacity 0.2s",
         }}
       >
-        {loading ? "Redirecting..." : "Start My Program →"}
+        {loading
+          ? "Redirecting..."
+          : selectedPlan === "30day"
+          ? "Start the 30-day program →"
+          : "Start the 90-day program →"}
       </button>
 
       {checkoutError && (

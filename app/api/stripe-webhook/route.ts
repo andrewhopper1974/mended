@@ -49,6 +49,7 @@ export async function POST(req: NextRequest) {
       stripe_session_id: session.id,
       status: "completed",
       profile: session.metadata?.profile || "",
+      plan_type: session.metadata?.plan || "",
     });
 
     if (error) {

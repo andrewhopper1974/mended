@@ -1,6 +1,27 @@
 "use client";
 
+import { Suspense, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
+
+function RedirectHandler() {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const sessionId = searchParams.get("session_id");
+    const destination = sessionId
+      ? `https://app.mended.health/welcome?session_id=${sessionId}`
+      : "https://app.mended.health/welcome";
+
+    const timer = setTimeout(() => {
+      window.location.href = destination;
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [searchParams]);
+
+  return null;
+}
 
 export default function SuccessPage() {
   return (
@@ -11,6 +32,10 @@ export default function SuccessPage() {
       className="flex flex-col min-h-screen items-center justify-center px-6 text-center"
       style={{ background: "#07001c" }}
     >
+      <Suspense fallback={null}>
+        <RedirectHandler />
+      </Suspense>
+
       {/* Animated checkmark */}
       <motion.div
         initial={{ scale: 0, rotate: -180 }}
@@ -47,17 +72,17 @@ export default function SuccessPage() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6, duration: 0.4 }}
-        className="text-base leading-relaxed"
+        className="text-base leading-relaxed mb-4"
         style={{ color: "rgba(255,255,255,0.6)", maxWidth: "320px" }}
       >
-        Check your email — your program is on its way.
+        Redirecting you to your program...
       </motion.p>
 
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.0 }}
-        className="mt-12 flex gap-2 mb-20"
+        className="mt-8 flex gap-2 mb-20"
       >
         {[0, 1, 2].map((i) => (
           <motion.div
@@ -103,10 +128,6 @@ export default function SuccessPage() {
         <span>·</span>
         <a href="/contact" style={{ color: "rgba(255,255,255,0.4)" }} className="hover:opacity-80">
           Contact Us
-        </a>
-        <span>·</span>
-        <a href="/manage" style={{ color: "rgba(255,255,255,0.4)" }} className="hover:opacity-80">
-          Manage Subscription
         </a>
         <span>·</span>
         <a href="/refund" style={{ color: "rgba(255,255,255,0.4)" }} className="hover:opacity-80">
