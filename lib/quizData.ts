@@ -5,40 +5,6 @@ export type QuizItem =
 
 export const QUIZ_FLOW: QuizItem[] = [
 
-  // ─── Personal profile (stats) — shown right after gender selection ─────────
-  {
-    type: "open-ended",
-    id: 28,
-    question: "How old are you?",
-    placeholder: "e.g. 34",
-    multiline: false,
-    inputMode: "numeric",
-  },
-  {
-    type: "open-ended",
-    id: 29,
-    question: "What's your height?",
-    placeholder: "e.g. 5'10\" or 178 cm",
-    multiline: false,
-    inputMode: "text",
-  },
-  {
-    type: "open-ended",
-    id: 30,
-    question: "What's your current weight?",
-    placeholder: "e.g. 185 lbs or 84 kg",
-    multiline: false,
-    inputMode: "decimal",
-  },
-  {
-    type: "open-ended",
-    id: 31,
-    question: "What's your target weight?",
-    placeholder: "e.g. 165 lbs or 75 kg",
-    multiline: false,
-    inputMode: "decimal",
-  },
-
   // ─── Phase 1: Quick identification (Q1–Q6) ───────────────────────────────
   {
     type: "question",
@@ -141,22 +107,7 @@ export const QUIZ_FLOW: QuizItem[] = [
     copy: "of people with your exact triggers have successfully broken free using a structured hypnosis program. Your patterns are more common than you think — and more treatable.",
   },
 
-  // ─── Phase 2: Pain amplification (Q7–Q12) ────────────────────────────────
-  {
-    type: "question",
-    id: 7,
-    question: "How has drinking changed your day-to-day life?",
-    options: [
-      "My sleep is broken — I wake up exhausted every morning",
-      "My weight has crept up and I feel physically worse",
-      "My work performance and focus have dropped",
-      "I'm spending money I don't have",
-      "My mental health is getting significantly worse",
-      "My physical health is declining in ways I can't ignore",
-      "All of the above — it's touching everything",
-    ],
-    emojis: ["😴", "⚖️", "📉", "💸", "🧠", "❤️‍🩹", "⚠️"],
-  },
+  // ─── Phase 2: Pain amplification (Q8–Q12) ────────────────────────────────
   {
     type: "question",
     id: 8,
@@ -184,20 +135,6 @@ export const QUIZ_FLOW: QuizItem[] = [
       "I've stopped feeling much — I'm just going through the motions",
     ],
     emojis: ["😔", "😰", "🔄", "😡", "😶", "🪨"],
-  },
-  {
-    type: "question",
-    id: 10,
-    question: "How often do you end up drinking more than you intended?",
-    options: [
-      "Almost every single time",
-      "More often than not",
-      "Whenever I'm stressed or emotional",
-      "About half the time",
-      "Occasionally — but it scares me when it happens",
-      "I've stopped trying to control how much I drink",
-    ],
-    emojis: ["🔄", "📊", "😰", "🤔", "😟", "🏳️"],
   },
   {
     type: "question",
@@ -236,7 +173,7 @@ export const QUIZ_FLOW: QuizItem[] = [
     copy: "of people who complete this assessment go on to significantly reduce or eliminate their drinking within 90 days. You're already further along than most people ever get.",
   },
 
-  // ─── Phase 3: Identity, cost & progression (Q13–Q17) ─────────────────────
+  // ─── Phase 3: Identity & cost (Q13–Q17) ─────────────────────────────────
   {
     type: "question",
     id: 13,
@@ -264,34 +201,6 @@ export const QUIZ_FLOW: QuizItem[] = [
       "My confidence and sense of self-worth",
     ],
     emojis: ["⏳", "💰", "❤️", "🧍", "🤝", "🏆"],
-  },
-  {
-    type: "question",
-    id: 15,
-    question: "How has drinking affected your closest relationships?",
-    options: [
-      "I've said things sober me is deeply ashamed of",
-      "Intimacy with my partner has disappeared",
-      "I've let my children down in ways I struggle to forgive",
-      "I've lost real friendships that mattered",
-      "People walk on eggshells around me now",
-      "I've pushed nearly everyone away",
-    ],
-    emojis: ["😣", "🥀", "👶", "👋", "😰", "🚶"],
-  },
-  {
-    type: "question",
-    id: 16,
-    question: "Has your drinking gotten worse over time?",
-    options: [
-      "Yes — it's escalated significantly over the years",
-      "Yes — I need more and more to feel the same effect",
-      "It comes in waves — but the lows are getting lower",
-      "It's been at this level for a long time",
-      "I've started drinking earlier in the day than I used to",
-      "I'm scared by how much it's progressed",
-    ],
-    emojis: ["📈", "🔄", "🌊", "⚖️", "⏰", "😟"],
   },
   {
     type: "question",
@@ -324,7 +233,7 @@ export const QUIZ_FLOW: QuizItem[] = [
     copy: "People who honestly acknowledge what alcohol has cost them are 3x more likely to achieve lasting sobriety. What you just did takes real courage.",
   },
 
-  // ─── Phase 4: Future self and hope (Q18–Q21) ─────────────────────────────
+  // ─── Phase 4: Future self and hope (Q18–Q20) ────────────────────────────
   {
     type: "question",
     id: 18,
@@ -367,21 +276,6 @@ export const QUIZ_FLOW: QuizItem[] = [
     ],
     emojis: ["✨", "😟", "📅", "⚠️", "🤷", "🙏"],
   },
-  {
-    type: "question",
-    id: 21,
-    question: "What kind of support do you currently have?",
-    options: [
-      "A supportive partner who knows everything",
-      "Family I can be completely honest with",
-      "Close friends who understand",
-      "A therapist or counsellor",
-      "No one — I'm handling this completely alone",
-      "I prefer to deal with this privately",
-    ],
-    emojis: ["💑", "👨‍👩‍👦", "🤝", "🛋️", "🧍", "🔒"],
-  },
-
   // ─── Open-ended: Vision crystallization (future self) ────────────────────
   {
     type: "open-ended",

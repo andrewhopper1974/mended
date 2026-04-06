@@ -10,16 +10,12 @@ interface Props {
   onSeeProgram: () => void;
 }
 
-function parseWeight(str: string | undefined): number | null {
-  if (!str) return null;
-  const match = str.match(/[\d.]+/);
-  return match ? parseFloat(match[0]) : null;
-}
-
-function getWeightUnit(str: string | undefined): string {
-  if (!str) return "lbs";
-  return str.toLowerCase().includes("kg") ? "kg" : "lbs";
-}
+const RECOVERY_MILESTONES = [
+  { label: "Week 1",  desc: "Sleep quality improves, anxiety starts lifting" },
+  { label: "Month 1", desc: "Cravings reduced by 70%, energy returns" },
+  { label: "Month 3", desc: "Mental clarity fully restored" },
+  { label: "Month 6", desc: "Complete neurological reset" },
+];
 
 const WEEK_PLAN = [
   { week: "Week 1", desc: "Deep subconscious reprogramming — rewiring your relationship with alcohol" },
@@ -65,13 +61,7 @@ const TESTIMONIALS = [
   },
 ];
 
-function ForecastChart({
-  startLabel,
-  endLabel,
-}: {
-  startLabel: string;
-  endLabel: string;
-}) {
+function RecoveryChart() {
   const W = 340;
   const H = 160;
   const padL = 8;
@@ -82,20 +72,22 @@ function ForecastChart({
   const chartH = H - padT - padB;
 
   const x0 = padL;
-  const y0 = padT + 6;
   const x1 = padL + chartW;
-  const y1 = padT + chartH - 6;
+  // curve goes UP: y_start = bottom, y_end = top
+  const yStart = padT + chartH - 6;
+  const yEnd   = padT + 6;
+  const yWillpower = padT + chartH * 0.5; // willpower plateaus halfway
 
-  const mendedPath = `M ${x0} ${y0} C ${x0 + chartW * 0.35} ${y0}, ${x0 + chartW * 0.55} ${y1}, ${x1} ${y1}`;
-  const mendedFill = `${mendedPath} L ${x1} ${H} L ${x0} ${H} Z`;
-  const compY1 = padT + chartH * 0.12;
-  const compPath = `M ${x0} ${y0} C ${x0 + chartW * 0.3} ${y0 - 6}, ${x0 + chartW * 0.6} ${compY1 - 10}, ${x1} ${compY1}`;
+  // Mended: S-curve rising steeply from bottom-left to top-right
+  const mendedPath = `M ${x0} ${yStart} C ${x0 + chartW * 0.3} ${yStart}, ${x0 + chartW * 0.7} ${yEnd}, ${x1} ${yEnd}`;
+  const mendedFill = `${mendedPath} L ${x1} ${padT + chartH} L ${x0} ${padT + chartH} Z`;
 
-  const xLabels = ["Start", "Week 2", "Week 4", "Week 8"];
+  // Willpower: rises a little then plateaus much lower
+  const compPath = `M ${x0} ${yStart} C ${x0 + chartW * 0.35} ${yStart - 10}, ${x0 + chartW * 0.65} ${yWillpower + 10}, ${x1} ${yWillpower}`;
 
-  // Measure start label width to position pill correctly
-  const startPillW = Math.max(startLabel.length * 6 + 16, 52);
-  const endPillW = Math.max(endLabel.length * 6 + 16, 52);
+  const xLabels = ["Today", "Week 4", "Month 3", "Month 6"];
+  const startPillW = 52;
+  const endPillW   = 90;
 
   return (
     <svg width="100%" viewBox={`0 0 ${W} ${H + 24}`} className="overflow-visible">
@@ -104,9 +96,9 @@ function ForecastChart({
           <stop offset="0%" stopColor="#8A5EFF" />
           <stop offset="100%" stopColor="#34CBBF" />
         </linearGradient>
-        <linearGradient id="rFillGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#8A5EFF" stopOpacity="0.22" />
-          <stop offset="100%" stopColor="#34CBBF" stopOpacity="0.02" />
+        <linearGradient id="rFillGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stopColor="#8A5EFF" stopOpacity="0.02" />
+          <stop offset="100%" stopColor="#34CBBF" stopOpacity="0.22" />
         </linearGradient>
         <linearGradient id="rEndPill" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="#8A5EFF" />
@@ -120,37 +112,33 @@ function ForecastChart({
           stroke="rgba(255,255,255,0.06)" strokeWidth="1" strokeDasharray="4 4" />
       ))}
 
-      {/* Fill area */}
+      {/* Fill under Mended curve */}
       <path d={mendedFill} fill="url(#rFillGrad)" />
 
-      {/* Competitor dashed line */}
+      {/* Willpower dashed line */}
       <path d={compPath} fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" strokeDasharray="6 4" />
 
       {/* Mended line */}
       <path d={mendedPath} fill="none" stroke="url(#rLineGrad)" strokeWidth="2.5" strokeLinecap="round" />
 
-      {/* Start dot */}
-      <circle cx={x0} cy={y0} r="4.5" fill="#8A5EFF" />
-      {/* Start pill — dark, above the dot */}
-      <rect x={x0 - 4} y={y0 - 32} width={startPillW} height={20} rx="10" fill="#1e1245" stroke="rgba(138,94,255,0.4)" strokeWidth="1" />
-      <text x={x0 - 4 + startPillW / 2} y={y0 - 18} textAnchor="middle" fill="white" fontSize="11" fontWeight="700">
-        {startLabel}
-      </text>
+      {/* Start dot — bottom left */}
+      <circle cx={x0} cy={yStart} r="4.5" fill="#8A5EFF" />
+      <rect x={x0 - 4} y={yStart - 32} width={startPillW} height={20} rx="10"
+        fill="#1e1245" stroke="rgba(138,94,255,0.4)" strokeWidth="1" />
+      <text x={x0 - 4 + startPillW / 2} y={yStart - 18}
+        textAnchor="middle" fill="white" fontSize="11" fontWeight="700">Today</text>
 
-      {/* End dot */}
-      <circle cx={x1} cy={y1} r="5" fill="#34CBBF" />
-      {/* End pill — gradient, above the dot */}
-      <rect x={x1 - endPillW + 4} y={y1 - 32} width={endPillW} height={20} rx="10" fill="url(#rEndPill)" />
-      <text x={x1 - endPillW + 4 + endPillW / 2} y={y1 - 18} textAnchor="middle" fill="white" fontSize="11" fontWeight="700">
-        {endLabel}
-      </text>
+      {/* End dot — top right */}
+      <circle cx={x1} cy={yEnd} r="5" fill="#34CBBF" />
+      <rect x={x1 - endPillW + 4} y={yEnd - 32} width={endPillW} height={20} rx="10"
+        fill="url(#rEndPill)" />
+      <text x={x1 - endPillW + 4 + endPillW / 2} y={yEnd - 18}
+        textAnchor="middle" fill="white" fontSize="11" fontWeight="700">Alcohol-free ✓</text>
 
       {/* X-axis labels */}
       {xLabels.map((label, i) => (
         <text key={label} x={padL + (chartW / (xLabels.length - 1)) * i} y={H + 18}
-          textAnchor="middle" fill="rgba(255,255,255,0.38)" fontSize="10">
-          {label}
-        </text>
+          textAnchor="middle" fill="rgba(255,255,255,0.38)" fontSize="10">{label}</text>
       ))}
     </svg>
   );
@@ -180,15 +168,6 @@ function CtaButton({ onClick, delay = 0 }: { onClick: () => void; delay?: number
 export default function ResultsScreen({ profile, answers, onSeeProgram }: Props) {
   const data = PROFILES[profile];
   const removals = PROFILE_REMOVALS[profile];
-
-  const currentWeight = parseWeight(answers?.[30]?.[0]);
-  const targetWeight = parseWeight(answers?.[31]?.[0]);
-  const unit = getWeightUnit(answers?.[30]?.[0]);
-  const showWeightChart = currentWeight !== null && targetWeight !== null && currentWeight > targetWeight;
-  const weightDiff = showWeightChart ? Math.round((currentWeight! - targetWeight!) * 10) / 10 : null;
-
-  const startLabel = showWeightChart ? `${currentWeight} ${unit}` : "Today";
-  const endLabel = showWeightChart ? `${targetWeight} ${unit}` : "Alcohol-free";
 
   const handleSeeProgram = () => {
     vibrate([50, 20, 80]);
@@ -223,10 +202,10 @@ export default function ResultsScreen({ profile, answers, onSeeProgram }: Props)
           }}
         >
           <p className="text-center text-sm font-semibold mb-4" style={{ color: "rgba(255,255,255,0.6)" }}>
-            {showWeightChart ? "Your weight & sobriety forecast with Mended" : "Your sobriety forecast with Mended"}
+            Your recovery forecast with Mended
           </p>
 
-          <ForecastChart startLabel={startLabel} endLabel={endLabel} />
+          <RecoveryChart />
 
           <div className="mt-3 space-y-1.5">
             <div className="flex items-center gap-2">
@@ -246,6 +225,25 @@ export default function ResultsScreen({ profile, answers, onSeeProgram }: Props)
                 Doing it alone (willpower only)
               </span>
             </div>
+          </div>
+
+          {/* Recovery milestones */}
+          <div className="mt-4 pt-4 space-y-2.5" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+            {RECOVERY_MILESTONES.map((m, i) => {
+              const t = i / (RECOVERY_MILESTONES.length - 1);
+              const r = Math.round(138 + (52 - 138) * t);
+              const g = Math.round(94 + (203 - 94) * t);
+              const b = Math.round(255 + (191 - 255) * t);
+              const color = `rgb(${r},${g},${b})`;
+              return (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="w-16 flex-shrink-0">
+                    <span className="text-xs font-bold" style={{ color }}>{m.label}</span>
+                  </div>
+                  <span className="text-xs" style={{ color: "rgba(255,255,255,0.55)" }}>{m.desc}</span>
+                </div>
+              );
+            })}
           </div>
         </motion.div>
 
@@ -270,10 +268,7 @@ export default function ResultsScreen({ profile, answers, onSeeProgram }: Props)
                 WebkitTextFillColor: "transparent",
               }}
             >
-              {showWeightChart
-                ? `lose ${weightDiff} ${unit} and be alcohol-free`
-                : "be completely alcohol-free"}{" "}
-              in 8 weeks
+              be completely alcohol-free in 8 weeks
             </span>
           </h1>
           <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
