@@ -92,6 +92,12 @@ export default function PaywallScreen({ profile, email }: Props) {
   };
 
   useEffect(() => {
+    // Scroll to top when paywall mounts so the user lands at the headline
+    // and can see the plans + CTA together (instead of inheriting scroll
+    // position from the results page).
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }
     vibrate([20, 15, 40, 15, 80]);
     resetInactivity();
     const events = ["touchstart", "mousemove", "scroll", "keydown"];

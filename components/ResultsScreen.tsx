@@ -63,11 +63,11 @@ const TESTIMONIALS = [
 
 function RecoveryChart() {
   const W = 340;
-  const H = 170;
-  const padL = 26;
-  const padR = 26;
-  const padT = 42;
-  const padB = 24;
+  const H = 178;
+  const padL = 30;
+  const padR = 30;
+  const padT = 44;
+  const padB = 30;
   const chartW = W - padL - padR;
   const chartH = H - padT - padB;
 
@@ -77,18 +77,28 @@ function RecoveryChart() {
   const yStart = padT + chartH - 6;
   const yEnd   = padT + 6;
   const yWillpower = padT + chartH * 0.5; // willpower plateaus halfway
+  const yBottom = padT + chartH;
 
   // Mended: S-curve rising steeply from bottom-left to top-right
   const mendedPath = `M ${x0} ${yStart} C ${x0 + chartW * 0.3} ${yStart}, ${x0 + chartW * 0.7} ${yEnd}, ${x1} ${yEnd}`;
-  const mendedFill = `${mendedPath} L ${x1} ${padT + chartH} L ${x0} ${padT + chartH} Z`;
+  const mendedFill = `${mendedPath} L ${x1} ${yBottom} L ${x0} ${yBottom} Z`;
 
   // Willpower: rises a little then plateaus much lower
   const compPath = `M ${x0} ${yStart} C ${x0 + chartW * 0.35} ${yStart - 10}, ${x0 + chartW * 0.65} ${yWillpower + 10}, ${x1} ${yWillpower}`;
 
   // 3-month / 12-week timeline labels
   const xLabels = ["Start", "Week 4", "Week 8", "Week 12"];
-  const startPillW = 64;
-  const endPillW   = 110;
+
+  // Pill geometry — both pills share the same dark + gradient-stroke style
+  const startPillW = 62;
+  const endPillW   = 96;
+  const pillH      = 22;
+
+  // Clamp pill x so it never overflows the viewBox
+  const startPillX = Math.max(2, x0 - startPillW / 2);
+  const endPillX   = Math.min(W - endPillW - 2, x1 - endPillW / 2);
+  const startTextX = startPillX + startPillW / 2;
+  const endTextX   = endPillX + endPillW / 2;
 
   return (
     <svg width="100%" viewBox={`0 0 ${W} ${H + 8}`} className="overflow-visible">
@@ -101,13 +111,13 @@ function RecoveryChart() {
           <stop offset="0%" stopColor="#8A5EFF" stopOpacity="0.02" />
           <stop offset="100%" stopColor="#34CBBF" stopOpacity="0.22" />
         </linearGradient>
-        <linearGradient id="rEndPill" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#8A5EFF" />
-          <stop offset="100%" stopColor="#34CBBF" />
-        </linearGradient>
         <linearGradient id="rStartPillStroke" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#8A5EFF" stopOpacity="0.7" />
-          <stop offset="100%" stopColor="#8A5EFF" stopOpacity="0.3" />
+          <stop offset="0%" stopColor="#8A5EFF" stopOpacity="0.85" />
+          <stop offset="100%" stopColor="#8A5EFF" stopOpacity="0.35" />
+        </linearGradient>
+        <linearGradient id="rEndPillStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#34CBBF" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="#34CBBF" stopOpacity="0.85" />
         </linearGradient>
       </defs>
 
@@ -116,6 +126,10 @@ function RecoveryChart() {
         <line key={t} x1={padL} y1={padT + chartH * t} x2={padL + chartW} y2={padT + chartH * t}
           stroke="rgba(255,255,255,0.06)" strokeWidth="1" strokeDasharray="4 4" />
       ))}
+
+      {/* Baseline */}
+      <line x1={padL} y1={yBottom} x2={padL + chartW} y2={yBottom}
+        stroke="rgba(255,255,255,0.10)" strokeWidth="1" />
 
       {/* Fill under Mended curve */}
       <path d={mendedFill} fill="url(#rFillGrad)" />
@@ -128,31 +142,39 @@ function RecoveryChart() {
 
       {/* Start dot — bottom left */}
       <circle cx={x0} cy={yStart} r="4.5" fill="#8A5EFF" />
-      <rect x={x0 - startPillW / 2} y={yStart - 34} width={startPillW} height={22} rx="11"
-        fill="#1e1245" stroke="url(#rStartPillStroke)" strokeWidth="1.2" />
-      <text x={x0} y={yStart - 19}
-        textAnchor="middle" fill="#ffffff" fontSize="11" fontWeight="600"
+      <rect x={startPillX} y={yStart - 34} width={startPillW} height={pillH} rx={pillH / 2}
+        fill="#1e1245" stroke="url(#rStartPillStroke)" strokeWidth="1.3" />
+      <text x={startTextX} y={yStart - 19}
+        textAnchor="middle" fill="#ffffff" fontSize="11.5" fontWeight="600"
         fontFamily="var(--font-playfair), Georgia, serif"
         fontStyle="italic" letterSpacing="0.4">Today</text>
 
       {/* End dot — top right */}
-      <circle cx={x1} cy={yEnd} r="5.5" fill="#34CBBF" />
-      <rect x={x1 - endPillW / 2} y={yEnd - 34} width={endPillW} height={22} rx="11"
-        fill="url(#rEndPill)" />
-      <text x={x1} y={yEnd - 19}
-        textAnchor="middle" fill="#ffffff" fontSize="11.5" fontWeight="700"
+      <circle cx={x1} cy={yEnd} r="5" fill="#34CBBF" />
+      <rect x={endPillX} y={yEnd - 34} width={endPillW} height={pillH} rx={pillH / 2}
+        fill="#0d2620" stroke="url(#rEndPillStroke)" strokeWidth="1.3" />
+      <text x={endTextX} y={yEnd - 19}
+        textAnchor="middle" fill="#ffffff" fontSize="11.5" fontWeight="600"
         fontFamily="var(--font-playfair), Georgia, serif"
         fontStyle="italic" letterSpacing="0.4">Alcohol-free</text>
 
-      {/* X-axis labels — fitted inside grid using start/middle/end anchors */}
+      {/* X-axis tick marks + labels */}
       {xLabels.map((label, i) => {
         const total = xLabels.length - 1;
         const x = padL + (chartW / total) * i;
         const anchor = i === 0 ? "start" : i === total ? "end" : "middle";
+        const tickX = i === 0 ? x + 0.5 : i === total ? x - 0.5 : x;
         return (
-          <text key={label} x={x} y={H + 2}
-            textAnchor={anchor} fill="rgba(255,255,255,0.45)" fontSize="10"
-            fontWeight="500" letterSpacing="0.3">{label}</text>
+          <g key={label}>
+            <line x1={tickX} y1={yBottom + 2} x2={tickX} y2={yBottom + 6}
+              stroke="rgba(255,255,255,0.25)" strokeWidth="1" strokeLinecap="round" />
+            <text x={x} y={yBottom + 18}
+              textAnchor={anchor} fill="rgba(255,255,255,0.6)" fontSize="9"
+              fontWeight="700" letterSpacing="1.2"
+              style={{ textTransform: "uppercase" }}>
+              {label}
+            </text>
+          </g>
         );
       })}
     </svg>
