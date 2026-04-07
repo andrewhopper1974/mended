@@ -746,7 +746,7 @@ export default function PaywallScreen({ profile, email }: Props) {
                 className="text-xl font-bold mb-3 leading-tight text-white"
                 style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
               >
-                Take $20 off if you start today
+                Take $10 off if you start today
               </h3>
               <p className="text-sm mb-5 leading-relaxed" style={{ color: "rgba(255,255,255,0.65)" }}>
                 We don&rsquo;t want price to be the reason you don&rsquo;t start.
@@ -776,7 +776,7 @@ export default function PaywallScreen({ profile, email }: Props) {
                         WebkitTextFillColor: "transparent",
                       }}
                     >
-                      $59
+                      $69
                     </span>
                   </div>
                 </div>
@@ -788,7 +788,7 @@ export default function PaywallScreen({ profile, email }: Props) {
                     letterSpacing: "0.08em",
                   }}
                 >
-                  Save $20
+                  Save $10
                 </div>
               </div>
 
@@ -802,7 +802,7 @@ export default function PaywallScreen({ profile, email }: Props) {
                 className="btn-cta w-full py-3.5 text-base font-semibold mb-2"
                 style={{ borderRadius: "14px" }}
               >
-                Claim my $20 off →
+                Claim my $10 off →
               </button>
               <button
                 onClick={() => setShowExitIntent(false)}
