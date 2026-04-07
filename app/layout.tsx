@@ -38,7 +38,7 @@ export default function RootLayout({
         <DesktopParticles />
         <div
           className="min-h-screen w-full mx-auto relative overflow-x-hidden"
-          style={{ maxWidth: "680px", zIndex: 2, position: "relative" }}
+          style={{ maxWidth: "880px", zIndex: 2, position: "relative" }}
         >
           {children}
         </div>
