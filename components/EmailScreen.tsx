@@ -188,7 +188,7 @@ export default function EmailScreen({ onSubmit }: Props) {
       {/* Trust badges */}
       <div className="mt-10 grid grid-cols-3 gap-3">
         {[
-          { icon: "↩️", label: "30-day guarantee" },
+          { icon: "✨", label: "Fully personalised" },
           { icon: "🔒", label: "Private & secure" },
           { icon: "⭐", label: "94K+ users" },
         ].map((b) => (
