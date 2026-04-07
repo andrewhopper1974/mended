@@ -136,6 +136,7 @@ export default function PaywallScreen({ profile, email }: Props) {
   const [checkoutError, setCheckoutError] = useState("");
   const [selectedPlan, setSelectedPlan] = useState<string>("90day");
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const checkoutLockRef = useRef(false);
   const [showExitIntent, setShowExitIntent] = useState(false);
   const [exitShown, setExitShown] = useState(false);
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
@@ -196,8 +197,9 @@ export default function PaywallScreen({ profile, email }: Props) {
       if (document.visibilityState === "hidden") trigger();
     };
 
-    // Time-on-paywall trigger — fires 5s after the paywall mounts no matter what
-    const dwellTimer: NodeJS.Timeout = setTimeout(trigger, 5000);
+    // Time-on-paywall trigger — fires 10s after the paywall mounts, giving
+    // users enough time to read the pricing before the discount popup lands.
+    const dwellTimer: NodeJS.Timeout = setTimeout(trigger, 10000);
 
     // Idle fallback — 25s of zero interaction is also a strong abandon signal
     let idleTimer: NodeJS.Timeout = setTimeout(trigger, 25000);
@@ -229,6 +231,13 @@ export default function PaywallScreen({ profile, email }: Props) {
   }, [exitShown]);
 
   const handleCheckout = async (planOverride?: string, promo?: string) => {
+    // Synchronous lock — prevents a double-click from firing two Stripe
+    // checkout sessions. React state updates are async (a fast double-click
+    // can slip in before `disabled={loading}` re-renders); a ref updates
+    // immediately so the second call returns instantly.
+    if (checkoutLockRef.current) return;
+    checkoutLockRef.current = true;
+
     vibrate([60, 20, 60]);
     setLoading(true);
     setCheckoutError("");
@@ -244,14 +253,18 @@ export default function PaywallScreen({ profile, email }: Props) {
       });
       const data = await res.json();
       if (data.url) {
+        // Redirecting away — leave the lock engaged so the user can't
+        // re-trigger checkout mid-navigation.
         window.location.href = data.url;
       } else {
         setCheckoutError(data.error || "Something went wrong. Please try again.");
         setLoading(false);
+        checkoutLockRef.current = false;
       }
     } catch (err: any) {
       setCheckoutError(err?.message || "Network error. Please try again.");
       setLoading(false);
+      checkoutLockRef.current = false;
     }
   };
 

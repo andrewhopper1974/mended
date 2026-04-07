@@ -43,13 +43,28 @@ export async function POST(req: NextRequest) {
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
 
+    // Normalize program length from metadata. Prefer the explicit
+    // program_length integer string; fall back to parsing the legacy
+    // "plan" string ("30day" / "90day") for older sessions.
+    const rawProgramLength = session.metadata?.program_length;
+    const rawPlan = session.metadata?.plan || "";
+    let programLength: number | null = null;
+    if (rawProgramLength && /^\d+$/.test(rawProgramLength)) {
+      programLength = parseInt(rawProgramLength, 10);
+    } else if (rawPlan.includes("90")) {
+      programLength = 90;
+    } else if (rawPlan.includes("30")) {
+      programLength = 30;
+    }
+
     const { error } = await supabase.from("purchases").insert({
       email: session.customer_email || session.metadata?.email || "",
       stripe_customer_id: session.customer as string,
       stripe_session_id: session.id,
       status: "completed",
       profile: session.metadata?.profile || "",
-      plan_type: session.metadata?.plan || "",
+      plan_type: rawPlan,
+      program_length: programLength,
     });
 
     if (error) {

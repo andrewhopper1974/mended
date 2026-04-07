@@ -8,6 +8,11 @@ export async function POST(req: NextRequest) {
   try {
     const { email, profile, priceId, plan, promo } = await req.json();
 
+    // Normalize plan id ("30day" / "90day") into an explicit integer program
+    // length so every downstream system (webhook, verify-purchase, profile
+    // write, dashboard) can rely on a single, unambiguous value.
+    const programLength = plan === "90day" ? 90 : plan === "30day" ? 30 : 0;
+
     // Map promo flags to Stripe promotion code IDs (managed in Stripe dashboard,
     // injected via env so we can change discount amounts without redeploying).
     const promoIds: Record<string, string | undefined> = {
@@ -33,6 +38,7 @@ export async function POST(req: NextRequest) {
         profile: profile || "",
         email: email || "",
         plan: plan || "",
+        program_length: programLength ? String(programLength) : "",
         promo: promo || "",
       },
     });
