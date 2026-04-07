@@ -196,6 +196,9 @@ export default function PaywallScreen({ profile, email }: Props) {
       if (document.visibilityState === "hidden") trigger();
     };
 
+    // Time-on-paywall trigger — fires 5s after the paywall mounts no matter what
+    const dwellTimer: NodeJS.Timeout = setTimeout(trigger, 5000);
+
     // Idle fallback — 25s of zero interaction is also a strong abandon signal
     let idleTimer: NodeJS.Timeout = setTimeout(trigger, 25000);
     const resetIdle = () => {
@@ -214,6 +217,7 @@ export default function PaywallScreen({ profile, email }: Props) {
     try { window.history.pushState({ paywall: true }, ""); } catch {}
 
     return () => {
+      clearTimeout(dwellTimer);
       clearTimeout(idleTimer);
       idleEvents.forEach((e) => window.removeEventListener(e, resetIdle));
       document.removeEventListener("mouseleave", onMouseLeave);
