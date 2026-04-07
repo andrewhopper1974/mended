@@ -81,9 +81,21 @@ export default function IntroScreen({ onStart }: Props) {
       className="flex flex-col min-h-screen px-5 pt-8 pb-10"
       style={{ background: "#07001c" }}
     >
-      {/* Logo */}
-      <div className="flex justify-center mb-5">
+      {/* Top bar — logo centered, sign-in on the right for returning users */}
+      <div className="relative flex items-center justify-center mb-5">
         <MendedLogo size="lg" />
+        <a
+          href="https://app.mended.health/login"
+          className="absolute right-0 text-xs font-semibold px-3 py-1.5 rounded-full transition hover:opacity-90"
+          style={{
+            color: "rgba(255,255,255,0.85)",
+            background: "rgba(255,255,255,0.06)",
+            border: "1px solid rgba(138,94,255,0.35)",
+            letterSpacing: "0.02em",
+          }}
+        >
+          Sign in
+        </a>
       </div>
 
       {/* Divider */}
