@@ -123,6 +123,19 @@ body {
   animation: paywall-glow 2s ease-in-out infinite;
 }
 
+/* Intro CTA pulse — CSS-only so it doesn't interfere with framer exit */
+@keyframes intro-pulse {
+  0%, 100% {
+    box-shadow: 0 0 18px rgba(138,94,255,0.25), 0 0 0px rgba(52,203,191,0);
+  }
+  50% {
+    box-shadow: 0 0 48px rgba(138,94,255,0.7), 0 0 24px rgba(52,203,191,0.3);
+  }
+}
+.intro-pulse {
+  animation: intro-pulse 3s ease-in-out infinite;
+}
+
 /* Loading bar animation */
 @keyframes loading-fill {
   from { width: 0%; }

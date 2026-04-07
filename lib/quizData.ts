@@ -1,140 +1,128 @@
+export type ProfileTag = "stress" | "habit" | "social";
+
+export type QuizOption = {
+  text: string;
+  emoji?: string;
+  tags?: ProfileTag[];
+};
+
 export type QuizItem =
-  | { type: "question"; id: number; question: string; options: string[]; emojis?: (string | null)[] }
-  | { type: "open-ended"; id: number; question: string; placeholder: string; multiline?: boolean; inputMode?: "text" | "numeric" | "decimal" }
-  | { type: "interstitial"; stat: string; copy: string };
+  | {
+      type: "question";
+      id: number;
+      question: string;
+      options: QuizOption[];
+    }
+  | {
+      type: "open-ended";
+      id: number;
+      question: string;
+      placeholder: string;
+      multiline?: boolean;
+      inputMode?: "text" | "numeric" | "decimal";
+    }
+  | { type: "interstitial"; stat: string; copy: string }
+  | { type: "email" };
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Conversion-optimized quiz order:
+//   1. Identity mirror ("this is me") — Q1
+//   2. Empathy ("they understand me") — Q3
+//   3. Pattern recognition — Q4
+//   4. Physical pain anchor — Q8
+//   5. Peak emotional shame — Q9
+//   6. Early vulnerability commitment (open-ended) — Q25
+//   → interstitial 1 (78%) pattern interrupt
+//   7. Honest accounting begins — Q5
+//   8. Social mirror — Q11
+//   9. Red-flag recognition peak — Q12
+//   → interstitial 2 (91%)
+//   10. Loss anchor — Q14  (peak pain right before the turn)
+//   → EMAIL GATE (captured at peak pain, right before positive turn)
+//   → interstitial 3 (3x courage validation)
+//   11. Positive turn — Q18
+//   12. Meaning / why — Q19
+//   → interstitial 4 (94k social proof)
+//   13. Commitment level — Q23
+//   14. Vision peak — Q24
+//   → interstitial 5 (89%) → paywall
+// ─────────────────────────────────────────────────────────────────────────────
 export const QUIZ_FLOW: QuizItem[] = [
-
-  // ─── Phase 1: Hook & Identity — "this gets me" (Q1, Q3, Q4, Q2, Q6) ──────
-  // Q1 first: identity mirror. Immediate "oh, this is about me" response.
+  // ─── Identity mirror ──────────────────────────────────────────────────────
   {
     type: "question",
     id: 1,
     question: "What best describes your relationship with alcohol right now?",
     options: [
-      "I'd like to drink less, even though it isn't out of control",
-      "I drink most days and often more than I planned",
-      "I binge on weekends and struggle to stop once I start",
-      "I drink to calm anxiety or take the edge off emotion",
-      "It's become a daily routine I can't seem to break",
-      "I drink socially but rarely stop at one or two",
-      "I feel like I need it just to feel normal",
+      { text: "I'd like to drink less, even though it isn't out of control", emoji: "🌱", tags: ["habit"] },
+      { text: "I drink most days and often more than I planned", emoji: "📅", tags: ["habit"] },
+      { text: "I binge on weekends and struggle to stop once I start", emoji: "🎉", tags: ["social", "habit"] },
+      { text: "I drink to calm anxiety or take the edge off emotion", emoji: "😰", tags: ["stress"] },
+      { text: "It's become a daily routine I can't seem to break", emoji: "🔄", tags: ["habit"] },
+      { text: "I drink socially but rarely stop at one or two", emoji: "👥", tags: ["social"] },
+      { text: "I feel like I need it just to feel normal", emoji: "😶", tags: ["stress", "habit"] },
     ],
-    emojis: ["🌱", "📅", "🎉", "😰", "🔄", "👥", "😶"],
   },
-  // Q3 second: most empathetic question — earns trust immediately
+  // ─── Empathy builder ──────────────────────────────────────────────────────
   {
     type: "question",
     id: 3,
     question: "What does alcohol actually give you in the moment?",
     options: [
-      "A way to switch off after a long day",
-      "It silences the anxiety in my head",
-      "It makes me feel confident and at ease",
-      "It numbs pain I'd rather not face",
-      "It helps me fall asleep",
-      "It makes social situations easier",
-      "Honestly — I don't even enjoy it anymore. It's just what I do.",
+      { text: "A way to switch off after a long day", emoji: "🌙", tags: ["stress", "habit"] },
+      { text: "It silences the anxiety in my head", emoji: "🧘", tags: ["stress"] },
+      { text: "It makes me feel confident and at ease", emoji: "💪", tags: ["social"] },
+      { text: "It numbs pain I'd rather not face", emoji: "💔", tags: ["stress"] },
+      { text: "It helps me fall asleep", emoji: "😴", tags: ["habit"] },
+      { text: "It makes social situations easier", emoji: "🎭", tags: ["social"] },
+      { text: "Honestly — I don't even enjoy it anymore. It's just what I do.", emoji: "🤷", tags: ["habit"] },
     ],
-    emojis: ["🌙", "🧘", "💪", "💔", "😴", "🎭", "🤷"],
   },
-  // Q4: deepens the "we understand you" — trigger identification
+  // ─── Pattern recognition — drives profile + email chip ───────────────────
   {
     type: "question",
     id: 4,
     question: "What most often triggers your urge to drink?",
     options: [
-      "Work stress or overwhelm",
-      "Loneliness or emptiness",
-      "Anxiety or a sense of dread",
-      "Boredom — nothing else feels good",
-      "Conflict in relationships",
-      "A specific time of day — it's just automatic",
-      "Social situations or pressure from others",
+      { text: "Work stress or overwhelm", emoji: "💼", tags: ["stress"] },
+      { text: "Loneliness or emptiness", emoji: "🏝️", tags: ["stress"] },
+      { text: "Anxiety or a sense of dread", emoji: "😟", tags: ["stress"] },
+      { text: "Boredom — nothing else feels good", emoji: "😐", tags: ["habit"] },
+      { text: "Conflict in relationships", emoji: "💢", tags: ["stress"] },
+      { text: "A specific time of day — it's just automatic", emoji: "⏰", tags: ["habit"] },
+      { text: "Social situations or pressure from others", emoji: "🍻", tags: ["social"] },
     ],
-    emojis: ["💼", "🏝️", "😟", "😐", "💢", "⏰", "🍻"],
   },
-  // Q2: now duration confirms the story they've already told — not cold data
-  {
-    type: "question",
-    id: 2,
-    question: "How long have you wanted to change your relationship with alcohol?",
-    options: [
-      "Just recently — I want to get ahead of it",
-      "Less than a year",
-      "1–3 years",
-      "3–5 years",
-      "5–10 years",
-      "More than 10 years",
-      "Most of my adult life — I can't remember it being different",
-    ],
-    emojis: ["💡", "🌱", "📆", "🗓️", "⏳", "⌛", "💭"],
-  },
-  // Q6: validates the struggle — "you've tried, you're not weak, you need a different approach"
-  {
-    type: "question",
-    id: 6,
-    question: "Have you ever tried to quit or seriously cut back?",
-    options: [
-      "I've cut back successfully but want to go fully alcohol-free",
-      "I've thought about it but never committed",
-      "Yes — many times. I always end up back here.",
-      "Yes — I managed for a while before relapsing",
-      "I'm actively trying right now",
-      "I didn't think I needed to — until recently",
-    ],
-    emojis: ["✂️", "💭", "🔁", "📈", "🔥", "⚡"],
-  },
-
-  // ─── Phase 2: Physical & emotional state — pain surfaces naturally ────────
-  // Q8 + Q17 + Q9: physical → mental health → emotional. Grouped cluster.
+  // ─── Physical pain anchor ─────────────────────────────────────────────────
   {
     type: "question",
     id: 8,
     question: "How does your body feel the morning after drinking?",
     options: [
-      "Slightly off — I know I'd feel better without it",
-      "Mild headache and a bit foggy",
-      "Drained and unmotivated",
-      "Heart racing or anxious",
-      "Shaking, nauseous, or unable to function",
-      "Deeply depressed and full of shame",
-      "I need a drink just to feel okay again",
+      { text: "Slightly off — I know I'd feel better without it", emoji: "🌫️" },
+      { text: "Mild headache and a bit foggy", emoji: "🤕" },
+      { text: "Drained and unmotivated", emoji: "😵" },
+      { text: "Heart racing or anxious", emoji: "💓", tags: ["stress"] },
+      { text: "Shaking, nauseous, or unable to function", emoji: "🤢" },
+      { text: "Deeply depressed and full of shame", emoji: "😔", tags: ["stress"] },
+      { text: "I need a drink just to feel okay again", emoji: "🍷", tags: ["habit"] },
     ],
-    emojis: ["🌫️", "🤕", "😵", "💓", "🤢", "😔", "🍷"],
   },
-  {
-    type: "question",
-    id: 17,
-    question: "How would you describe your mental health right now?",
-    options: [
-      "Generally okay — but alcohol is keeping me from my best",
-      "A bit foggy or low-energy more than I'd like",
-      "Anxious more often than I'd like to admit",
-      "Severely anxious — nearly all of the time",
-      "Depressed and often hopeless",
-      "Emotionally shut down and numb",
-      "Barely keeping it together on the surface",
-      "I've forgotten what feeling genuinely okay actually feels like",
-    ],
-    emojis: ["🌤️", "🌫️", "😟", "😰", "😔", "😶", "🎭", "❓"],
-  },
+  // ─── Peak emotional shame ─────────────────────────────────────────────────
   {
     type: "question",
     id: 9,
     question: "How do you feel emotionally the day after drinking?",
     options: [
-      "Paralysed with shame and self-disgust",
-      "Crushing anxiety — the hangxiety is unbearable",
-      "I replay everything I said or did on a loop",
-      "Angry at myself for doing it again",
-      "Numb — I just want to get through the day",
-      "I've stopped feeling much — I'm just going through the motions",
+      { text: "Paralysed with shame and self-disgust", emoji: "😔", tags: ["stress"] },
+      { text: "Crushing anxiety — the hangxiety is unbearable", emoji: "😰", tags: ["stress"] },
+      { text: "I replay everything I said or did on a loop", emoji: "🔄", tags: ["social", "stress"] },
+      { text: "Angry at myself for doing it again", emoji: "😡", tags: ["stress"] },
+      { text: "Numb — I just want to get through the day", emoji: "😶", tags: ["habit"] },
+      { text: "I've stopped feeling much — I'm just going through the motions", emoji: "🪨", tags: ["habit"] },
     ],
-    emojis: ["😔", "😰", "🔄", "😡", "😶", "🪨"],
   },
-
-  // ─── Open-ended: Commitment declaration — fires at Q9 of 22, max investment ─
+  // ─── Early vulnerability commitment ───────────────────────────────────────
   {
     type: "open-ended",
     id: 25,
@@ -142,223 +130,143 @@ export const QUIZ_FLOW: QuizItem[] = [
     placeholder: "Be honest with yourself — what was the moment or thought that brought you here?",
     multiline: true,
   },
-
-  // ─── INTERSTITIAL 1 ───────────────────────────────────────────────────────
   {
     type: "interstitial",
     stat: "78%",
     copy: "of people with your exact triggers have successfully broken free using a structured CBT and mindfulness program. Your patterns are more common than you think — and more treatable.",
   },
-
-  // ─── Phase 3: Honest accounting & reality check ───────────────────────────
-  // Q5 here feels like honest confession, not early interrogation
+  // ─── Honest accounting ────────────────────────────────────────────────────
   {
     type: "question",
     id: 5,
     question: "How much do you typically drink when you sit down to drink?",
     options: [
-      "1–2 drinks — but more often than I'd like",
-      "3–4 drinks",
-      "Half a bottle of wine or spirits",
-      "A full bottle of wine or more",
-      "A full bottle of spirits",
-      "I genuinely lose count once I start",
+      { text: "1–2 drinks — but more often than I'd like", emoji: "🥂" },
+      { text: "3–4 drinks", emoji: "🍷" },
+      { text: "Half a bottle of wine or spirits", emoji: "🍾" },
+      { text: "A full bottle of wine or more", emoji: "🫙", tags: ["habit"] },
+      { text: "A full bottle of spirits", emoji: "🥃", tags: ["habit"] },
+      { text: "I genuinely lose count once I start", emoji: "❓", tags: ["habit"] },
     ],
-    emojis: ["🥂", "🍷", "🍾", "🫙", "🥃", "❓"],
   },
-  // Q11: social mirror — someone else's eyes on the problem
+  // ─── Social mirror ────────────────────────────────────────────────────────
   {
     type: "question",
     id: 11,
     question: "Has anyone in your life expressed concern about your drinking?",
     options: [
-      "Not really — I'm doing this for myself",
-      "A gentle comment here and there",
-      "Yes — my partner has confronted me about it",
-      "Yes — family members have raised it",
-      "Yes — close friends have pulled back",
-      "A doctor has warned me",
-      "No one knows — I keep it completely hidden",
+      { text: "Not really — I'm doing this for myself", emoji: "🙋" },
+      { text: "A gentle comment here and there", emoji: "💬" },
+      { text: "Yes — my partner has confronted me about it", emoji: "💑" },
+      { text: "Yes — family members have raised it", emoji: "👨‍👩‍👦" },
+      { text: "Yes — close friends have pulled back", emoji: "👫", tags: ["social"] },
+      { text: "A doctor has warned me", emoji: "🩺" },
+      { text: "No one knows — I keep it completely hidden", emoji: "🤫", tags: ["stress"] },
     ],
-    emojis: ["🙋", "💬", "💑", "👨‍👩‍👦", "👫", "🩺", "🤫"],
   },
-  // Q12: peak emotional moment — "be honest with yourself"
+  // ─── Red-flag recognition peak ────────────────────────────────────────────
   {
     type: "question",
     id: 12,
     question: "Which of these have you experienced? Select any that apply.",
     options: [
-      "None of these — I just want to drink less",
-      "Promising yourself you'd stop — and breaking that promise",
-      "Drinking more than you intended on a normal night",
-      "Hiding or downplaying how much you drink",
-      "Drinking before noon",
-      "Waking up with no memory of the night before",
-      "Missing something important because of drinking",
-      "Driving when you knew you shouldn't have",
+      { text: "None of these — I just want to drink less", emoji: "✨" },
+      { text: "Promising yourself you'd stop — and breaking that promise", emoji: "💔", tags: ["habit"] },
+      { text: "Drinking more than you intended on a normal night", emoji: "🥂", tags: ["habit"] },
+      { text: "Hiding or downplaying how much you drink", emoji: "🙈", tags: ["stress"] },
+      { text: "Drinking before noon", emoji: "☀️", tags: ["habit"] },
+      { text: "Waking up with no memory of the night before", emoji: "🌑" },
+      { text: "Missing something important because of drinking", emoji: "📅" },
+      { text: "Driving when you knew you shouldn't have", emoji: "🚗" },
     ],
-    emojis: ["✨", "💔", "🥂", "🙈", "☀️", "🌑", "📅", "🚗"],
   },
-
-  // ─── INTERSTITIAL 2 ───────────────────────────────────────────────────────
   {
     type: "interstitial",
     stat: "91%",
     copy: "of people who complete this assessment go on to significantly reduce or eliminate their drinking within 90 days. You're already further along than most people ever get.",
   },
-
-  // ─── Phase 4: Identity & cost — making it deeply personal ────────────────
-  {
-    type: "question",
-    id: 13,
-    question: "How does drinking make you feel about yourself?",
-    options: [
-      "Mostly fine — I just don't love that I can't moderate",
-      "Frustrated — I'm better than this",
-      "Weak — like I have no self-control",
-      "Ashamed — I hate what I've become",
-      "Like a fraud — I hide this from everyone around me",
-      "Scared — I don't know where this ends",
-      "I barely recognise myself anymore",
-    ],
-    emojis: ["🙂", "😤", "😞", "😔", "🎭", "😨", "🪞"],
-  },
+  // ─── Loss anchor — peak pain right before the turn ───────────────────────
   {
     type: "question",
     id: 14,
     question: "What has alcohol already cost you?",
     options: [
-      "Time, money, and a bit of self-respect",
-      "Sleep quality, energy, and how I feel in my body",
-      "My confidence and sense of self-worth",
-      "Years of my life I can never get back",
-      "Tens of thousands of dollars — maybe more",
-      "The person I used to be — the real me",
-      "Trust from the people I love most",
+      { text: "Time, money, and a bit of self-respect", emoji: "⌛" },
+      { text: "Sleep quality, energy, and how I feel in my body", emoji: "🛌" },
+      { text: "My confidence and sense of self-worth", emoji: "🏆", tags: ["social"] },
+      { text: "Years of my life I can never get back", emoji: "⏳", tags: ["habit"] },
+      { text: "Tens of thousands of dollars — maybe more", emoji: "💰", tags: ["habit"] },
+      { text: "The person I used to be — the real me", emoji: "🧍", tags: ["stress"] },
+      { text: "Trust from the people I love most", emoji: "🤝", tags: ["social"] },
     ],
-    emojis: ["⌛", "🛌", "🏆", "⏳", "💰", "🧍", "🤝"],
   },
-
-  // ─── Open-ended: Pain anchoring — loss aversion peaks here ───────────────
-  {
-    type: "open-ended",
-    id: 26,
-    question: "Describe one moment when drinking cost you something that really mattered.",
-    placeholder: "It could be a relationship, an opportunity, a memory, or a feeling about yourself...",
-    multiline: true,
-  },
-
-  // ─── INTERSTITIAL 3 ───────────────────────────────────────────────────────
+  // ─── EMAIL CAPTURE — peak pain, right before positive turn ───────────────
+  { type: "email" },
   {
     type: "interstitial",
     stat: "3x",
     copy: "People who honestly acknowledge what alcohol has cost them are 3x more likely to achieve lasting sobriety. What you just did takes real courage.",
   },
-
-  // ─── Phase 5: Vision & hope — emotional turnaround ───────────────────────
+  // ─── Positive turn ────────────────────────────────────────────────────────
   {
     type: "question",
     id: 18,
     question: "When you imagine your life completely free from alcohol, what comes up?",
     options: [
-      "Hope — I know exactly who I could be",
-      "Fear — I genuinely don't know who I am without it",
-      "Excitement — I've had glimpses and I want it badly",
-      "Grief — for all the time I've already lost",
-      "Relief — just imagining it makes me feel lighter",
-      "Doubt — I've failed so many times I'm scared to try again",
+      { text: "Hope — I know exactly who I could be", emoji: "🌟" },
+      { text: "Fear — I genuinely don't know who I am without it", emoji: "😨", tags: ["stress"] },
+      { text: "Excitement — I've had glimpses and I want it badly", emoji: "⚡" },
+      { text: "Grief — for all the time I've already lost", emoji: "🥲", tags: ["stress"] },
+      { text: "Relief — just imagining it makes me feel lighter", emoji: "😮‍💨", tags: ["stress"] },
+      { text: "Doubt — I've failed so many times I'm scared to try again", emoji: "😟", tags: ["stress"] },
     ],
-    emojis: ["🌟", "😨", "⚡", "🥲", "😮‍💨", "😟"],
   },
+  // ─── Meaning / why ────────────────────────────────────────────────────────
   {
     type: "question",
     id: 19,
     question: "What matters most to you about getting free?",
     options: [
-      "Waking up every morning feeling genuinely alive",
-      "Being the parent my children actually deserve",
-      "Rebuilding real intimacy with my partner",
-      "Getting my health and body back",
-      "Feeling proud when I look at myself",
-      "Finally having peace inside my own head",
+      { text: "Waking up every morning feeling genuinely alive", emoji: "☀️" },
+      { text: "Being the parent my children actually deserve", emoji: "👨‍👧" },
+      { text: "Rebuilding real intimacy with my partner", emoji: "💝", tags: ["social"] },
+      { text: "Getting my health and body back", emoji: "💪" },
+      { text: "Feeling proud when I look at myself", emoji: "🏅" },
+      { text: "Finally having peace inside my own head", emoji: "🕊️", tags: ["stress"] },
     ],
-    emojis: ["☀️", "👨‍👧", "💝", "💪", "🏅", "🕊️"],
   },
-  {
-    type: "question",
-    id: 20,
-    question: "Have you ever had a period of sobriety, even briefly?",
-    options: [
-      "Yes — I can take long breaks but I keep coming back",
-      "Yes — and I felt incredible, truly alive",
-      "Yes — but anxiety and restlessness drove me back",
-      "I've had brief stretches, never more than a few weeks",
-      "I've tried but never made it past a few days",
-      "No — I've never seriously tried until now",
-      "I'm attempting it right now and want it to stick",
-    ],
-    emojis: ["🔁", "✨", "😟", "📅", "⚠️", "🤷", "🙏"],
-  },
-
-  // ─── Open-ended: Vision crystallization — co-creating the outcome ─────────
-  {
-    type: "open-ended",
-    id: 27,
-    question: "Picture your life one year from now, completely free from alcohol. Describe what you see.",
-    placeholder: "Your relationships, your health, how you feel when you wake up, who you've become...",
-    multiline: true,
-  },
-
-  // ─── INTERSTITIAL 4 ───────────────────────────────────────────────────────
   {
     type: "interstitial",
     stat: "94,000+",
     copy: "people with answers just like yours have broken free using this program. CBT and mindfulness work on the urge itself — teaching you to recognise it, sit with it, and let it pass instead of fighting it.",
   },
-
-  // ─── Phase 5: Commitment and emotional peak (Q22–Q24) ────────────────────
-  {
-    type: "question",
-    id: 22,
-    question: "What approach to quitting feels most true to you?",
-    options: [
-      "Something private I can do entirely on my own terms",
-      "Addressing the root cause — not just managing symptoms",
-      "Rewiring how my brain thinks about alcohol entirely",
-      "A structured daily plan with clear stages",
-      "Something that works even when willpower fails",
-    ],
-    emojis: ["🔒", "🌱", "🧠", "📋", "🛡️"],
-  },
+  // ─── Commitment closer ────────────────────────────────────────────────────
   {
     type: "question",
     id: 23,
     question: "How committed are you to making a real change — right now?",
     options: [
-      "Curious and open — I'm exploring this seriously",
-      "Mostly committed, with part of me still holding back",
-      "Deeply committed — but terrified I'll fail again",
-      "100%. I am done. This ends today.",
-      "Something finally shifted inside me and I feel ready",
+      { text: "Curious and open — I'm exploring this seriously", emoji: "🔍" },
+      { text: "Mostly committed, with part of me still holding back", emoji: "🤔" },
+      { text: "Deeply committed — but terrified I'll fail again", emoji: "💪" },
+      { text: "100%. I am done. This ends today.", emoji: "🔥" },
+      { text: "Something finally shifted inside me and I feel ready", emoji: "✨" },
     ],
-    emojis: ["🔍", "🤔", "💪", "🔥", "✨"],
   },
+  // ─── Vision peak ──────────────────────────────────────────────────────────
   {
     type: "question",
     id: 24,
     question: "If you woke up tomorrow completely free from alcohol — truly free — what would that mean?",
     options: [
-      "Everything. I want my whole life back.",
-      "Being the person my family deserves to have",
-      "Proving to myself — finally — that I'm stronger than this",
-      "A fresh start. A completely new chapter.",
-      "Peace. Just finally having peace.",
-      "Living long enough to become who I was always meant to be",
+      { text: "Everything. I want my whole life back.", emoji: "🌍" },
+      { text: "Being the person my family deserves to have", emoji: "👨‍👩‍👧‍👦", tags: ["social"] },
+      { text: "Proving to myself — finally — that I'm stronger than this", emoji: "🏆" },
+      { text: "A fresh start. A completely new chapter.", emoji: "🌅" },
+      { text: "Peace. Just finally having peace.", emoji: "🕊️", tags: ["stress"] },
+      { text: "Living long enough to become who I was always meant to be", emoji: "🚀" },
     ],
-    emojis: ["🌍", "👨‍👩‍👧‍👦", "🏆", "🌅", "🕊️", "🚀"],
   },
-
-  // ─── INTERSTITIAL 5: Final push into paywall ─────────────────────────────
   {
     type: "interstitial",
     stat: "89%",
@@ -379,6 +287,7 @@ export interface ProfileData {
   description: string;
   insights: string[];
   stat: string;
+  triggerLabel: string;
 }
 
 export const PROFILES: Record<Profile, ProfileData> = {
@@ -395,6 +304,7 @@ export const PROFILES: Record<Profile, ProfileData> = {
       "CBT trigger work and urge surfing teach you to break the loop driving your cravings",
     ],
     stat: "83% of Stress Escapists report cravings dropping within the first 7 days of the program.",
+    triggerLabel: "Emotional overwhelm",
   },
   "habitual-drinker": {
     id: "habitual-drinker",
@@ -409,6 +319,7 @@ export const PROFILES: Record<Profile, ProfileData> = {
       "CBT and mindfulness build new automatic responses to replace the old triggers",
     ],
     stat: "79% of Habitual Drinkers break the daily pattern within 2 weeks using this protocol.",
+    triggerLabel: "Automatic routine",
   },
   "social-chameleon": {
     id: "social-chameleon",
@@ -423,35 +334,36 @@ export const PROFILES: Record<Profile, ProfileData> = {
       "CBT and mindful self-awareness rebuild natural confidence and social ease from the inside out",
     ],
     stat: "76% of Social Chameleons report feeling socially confident without alcohol after completing the program.",
+    triggerLabel: "Social pressure",
   },
 };
 
+/**
+ * Tag-based profile assignment — sums the tags attached to each chosen
+ * option. Resilient to copy edits and translations since it does not
+ * parse free text.
+ */
 export function assignProfile(answers: Record<number, string[]>): Profile {
-  const stressKeywords = [
-    "stress", "anxiety", "emotional", "cope", "numb", "calm", "pain", "panic", "escape", "dread", "overwhelm", "shame", "ashamed",
-  ];
-  const habitKeywords = [
-    "habit", "routine", "every day", "boredom", "bored", "morning", "automatic", "daily", "time of day", "lose count",
-  ];
-  const socialKeywords = [
-    "social", "confident", "people", "pressure", "belonging", "situations", "ease", "survivable", "parties",
-  ];
+  const scores: Record<ProfileTag, number> = { stress: 0, habit: 0, social: 0 };
 
-  let stressScore = 0;
-  let habitScore = 0;
-  let socialScore = 0;
+  const optionTagMap: Record<number, Record<string, ProfileTag[]>> = {};
+  for (const item of QUIZ_FLOW) {
+    if (item.type !== "question") continue;
+    const map: Record<string, ProfileTag[]> = {};
+    for (const opt of item.options) map[opt.text] = opt.tags || [];
+    optionTagMap[item.id] = map;
+  }
 
-  Object.values(answers).forEach((selectedOptions) => {
-    selectedOptions.forEach((opt) => {
-      const lower = opt.toLowerCase();
-      if (stressKeywords.some((k) => lower.includes(k))) stressScore++;
-      if (habitKeywords.some((k) => lower.includes(k))) habitScore++;
-      if (socialKeywords.some((k) => lower.includes(k))) socialScore++;
-    });
-  });
+  for (const [qid, selectedOptions] of Object.entries(answers)) {
+    const qMap = optionTagMap[Number(qid)];
+    if (!qMap) continue;
+    for (const optText of selectedOptions) {
+      for (const tag of qMap[optText] || []) scores[tag]++;
+    }
+  }
 
-  if (stressScore >= habitScore && stressScore >= socialScore) return "stress-escapist";
-  if (habitScore >= socialScore) return "habitual-drinker";
+  if (scores.stress >= scores.habit && scores.stress >= scores.social) return "stress-escapist";
+  if (scores.habit >= scores.social) return "habitual-drinker";
   return "social-chameleon";
 }
 
@@ -461,4 +373,57 @@ export function vibrate(pattern: number | number[]) {
       navigator.vibrate(pattern);
     }
   } catch (_) {}
+}
+
+/**
+ * Detects gibberish / keyboard mash in open-ended answers so we don't echo
+ * garbage back to users on the email preview chip.
+ */
+export function isLikelyGibberish(text: string): boolean {
+  const t = text.trim().toLowerCase();
+  if (t.length < 10) return true;
+  if (!/[aeiou]/.test(t)) return true;
+  if (/(qwer|wert|erty|asdf|sdfg|dfgh|zxcv|xcvb|jkl|hjkl|uiop)/.test(t)) return true;
+  if (!/\s/.test(t) && t.length < 15) return true;
+  const letters = t.replace(/[^a-z]/g, "");
+  if (letters.length === 0) return true;
+  if (new Set(letters).size < 4) return true;
+  return false;
+}
+
+/**
+ * Pull a short, safe excerpt of Q25 ("what pushed you") for the email
+ * preview chip. Returns null if gibberish.
+ */
+export function getPushExcerpt(answers: Record<number, string[]>): string | null {
+  const raw = answers[25]?.[0];
+  if (!raw) return null;
+  if (isLikelyGibberish(raw)) return null;
+  const cleaned = raw.trim().replace(/\s+/g, " ");
+  if (cleaned.length <= 64) return cleaned;
+  return cleaned.slice(0, 61).trimEnd() + "…";
+}
+
+/**
+ * Short trigger label pulled from Q4 (first selected) for the email chip.
+ * Falls back to the profile's default trigger label.
+ */
+export function getTriggerLabel(
+  answers: Record<number, string[]>,
+  profile: Profile
+): string {
+  const q4 = answers[4]?.[0];
+  if (q4) {
+    const short: Record<string, string> = {
+      "Work stress or overwhelm": "Work stress",
+      "Loneliness or emptiness": "Loneliness",
+      "Anxiety or a sense of dread": "Anxiety",
+      "Boredom — nothing else feels good": "Boredom",
+      "Conflict in relationships": "Relationship conflict",
+      "A specific time of day — it's just automatic": "Automatic routine",
+      "Social situations or pressure from others": "Social pressure",
+    };
+    if (short[q4]) return short[q4];
+  }
+  return PROFILES[profile].triggerLabel;
 }

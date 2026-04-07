@@ -13,11 +13,8 @@ function RedirectHandler() {
       ? `https://app.mended.health/welcome?session_id=${sessionId}`
       : "https://app.mended.health/welcome";
 
-    const timer = setTimeout(() => {
-      window.location.href = destination;
-    }, 2000);
-
-    return () => clearTimeout(timer);
+    // Redirect immediately — no artificial delay
+    window.location.href = destination;
   }, [searchParams]);
 
   return null;

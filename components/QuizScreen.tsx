@@ -6,12 +6,15 @@ import ProgressBar from "@/components/ProgressBar";
 import { vibrate } from "@/lib/quizData";
 import MendedLogo from "@/components/MendedLogo";
 
+interface QuizOption {
+  text: string;
+  emoji?: string;
+}
 interface QuizItem {
   type: "question" | "open-ended";
   id: number;
   question: string;
-  options?: string[];
-  emojis?: (string | null)[];
+  options?: QuizOption[];
   placeholder?: string;
   multiline?: boolean;
   inputMode?: "text" | "numeric" | "decimal";
@@ -470,18 +473,18 @@ export default function QuizScreen({
         ) : (
           /* ── Multiple choice options ── */
           <div className="space-y-3">
-            {item.options?.map((opt, i) => {
-              const isSelected = selected.includes(opt);
+            {item.options?.map((opt) => {
+              const isSelected = selected.includes(opt.text);
               return (
                 <button
-                  key={opt}
-                  onClick={() => toggleOption(opt)}
+                  key={opt.text}
+                  onClick={() => toggleOption(opt.text)}
                   className={`answer-card w-full flex items-center gap-3 px-4 py-4 text-left ${
                     isSelected ? "selected" : ""
                   }`}
                 >
-                  {/* Emoji icon — only show if emoji is defined for this question */}
-                  {item.emojis && item.emojis[i] && (
+                  {/* Emoji icon */}
+                  {opt.emoji && (
                     <div
                       className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
                       style={{
@@ -490,7 +493,7 @@ export default function QuizScreen({
                           : "rgba(255,255,255,0.06)",
                       }}
                     >
-                      {item.emojis[i]}
+                      {opt.emoji}
                     </div>
                   )}
 
@@ -503,7 +506,7 @@ export default function QuizScreen({
                         : "rgba(255,255,255,0.82)",
                     }}
                   >
-                    {opt}
+                    {opt.text}
                   </span>
 
                   {/* Checkbox */}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { PROFILES, type Profile, vibrate } from "@/lib/quizData";
 import MendedLogo from "@/components/MendedLogo";
 
@@ -14,6 +14,8 @@ interface Plan {
   id: string;
   name: string;
   price: string;
+  anchorPrice: string;
+  perDay: string;
   description: string;
   priceId: string;
   badge?: string;
@@ -23,68 +25,121 @@ interface Plan {
 const PLANS: Plan[] = [
   {
     id: "30day",
-    name: "30-Day Program",
+    name: "4-Week Foundation",
     price: "$49",
-    description: "The full 30-day program. One-time payment.",
+    anchorPrice: "$99",
+    perDay: "$1.75 / day",
+    description: "The 4-week foundation program. One-time payment.",
     priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_30DAY || "price_1TJHvGPFMDEDuyb3WI3dKHVF",
   },
   {
     id: "90day",
-    name: "90-Day Program",
+    name: "12-Week Complete Program",
     price: "$79",
-    description: "30-day foundation plus 60 days of application and integration. One-time payment.",
+    anchorPrice: "$129",
+    perDay: "Less than $1 / day",
+    description: "The full 12-week program: 4-week foundation plus 8 weeks of real-world application and integration. One-time payment.",
     priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_90DAY || "price_1TJHvdPFMDEDuyb3FMVrNxEY",
     badge: "Best Value",
-    valueNote: "Save $68 — less than $1/day",
+    valueNote: "Save $50 — the full path",
   },
 ];
 
+// ─── Testimonials ────────────────────────────────────────────────────────────
+// TODO (placeholder): replace `photo: null` with real headshot URLs in /public/testimonials/
 const TESTIMONIALS = [
   {
-    name: "Rachel K.",
+    name: "Rachel K., 36",
+    tag: "12 weeks sober",
     text: "I'd been white-knuckling it for years. The CBT trigger work showed me I'd been fighting the wrong thing the whole time. Twelve weeks in and 5pm doesn't own me anymore.",
+    photo: null as string | null, // TODO: /testimonials/rachel.jpg
     stars: 5,
   },
   {
-    name: "Daniel P.",
+    name: "Daniel P., 42",
+    tag: "3 months sober",
     text: "Urge surfing sounded fluffy until I actually tried it. Sitting with a craving for ninety seconds and watching it pass — that changed everything for me.",
+    photo: null as string | null, // TODO: /testimonials/daniel.jpg
     stars: 5,
   },
 ];
 
-function useCountdown(initialSeconds: number, key: string) {
-  const [timeLeft, setTimeLeft] = useState(initialSeconds);
-  const resetRef = useRef(key);
+// ─── FAQ ─────────────────────────────────────────────────────────────────────
+const FAQ: { q: string; a: string }[] = [
+  {
+    q: "What if I fail again? I've tried before.",
+    a: "Most people who come to Mended have tried to quit multiple times — that's the norm, not the exception. The difference here is that the program isn't based on willpower. CBT and urge-surfing retrain the automatic response at the level of the nervous system, so you're not fighting the urge, you're letting it pass. If it doesn't work for you in 30 days, you get every cent back.",
+  },
+  {
+    q: "Is this right for my level of drinking?",
+    a: "The program is designed for people who drink too much and want to stop or significantly reduce — from daily evening wine to weekend binging to anything in between. It's not a medical detox program. If you have severe physical withdrawal (shaking, seizures, hallucinations), please speak with a doctor first.",
+  },
+  {
+    q: "Will I have withdrawal symptoms?",
+    a: "Most people experience mild symptoms in the first few days — restlessness, irritability, disturbed sleep. These usually pass within a week. The daily audio practices are specifically designed to help your nervous system settle during this window. If you drink heavily every day, we recommend checking in with a doctor before starting.",
+  },
+  {
+    q: "How is this different from AA or rehab?",
+    a: "AA is a peer-support model built around community and the 12 steps. Rehab is inpatient clinical care. Mended is a structured, self-paced program built on two evidence-based techniques — Mindfulness-Based Relapse Prevention (urge surfing) and Stoic cognitive practice (the pause). It's private, you do it from home, and it's designed to build lasting skills rather than lifelong meeting attendance.",
+  },
+  {
+    q: "What do I actually get?",
+    a: "Daily lessons, guided audio practices (5–10 min each), a trigger map personalized to your answers, and a written maintenance plan you'll build over the course of the program. Everything is delivered through your private member area — no app download required.",
+  },
+];
+
+// ─── Persistent countdown: 15-minute timer that doesn't reset on refresh ────
+const COUNTDOWN_MS = 15 * 60 * 1000;
+const COUNTDOWN_KEY = "paywall_countdown_start";
+
+function useCountdown(email: string) {
+  const [now, setNow] = useState(() => Date.now());
+  const [start, setStart] = useState<number | null>(null);
 
   useEffect(() => {
-    // Reset if key changes (user navigated back and returned)
-    if (resetRef.current !== key) {
-      resetRef.current = key;
-      setTimeLeft(initialSeconds);
+    if (typeof window === "undefined") return;
+    const key = `${COUNTDOWN_KEY}:${email || "anon"}`;
+    const stored = localStorage.getItem(key);
+    let startTs: number;
+    if (stored) {
+      startTs = parseInt(stored, 10);
+      // If stored timer expired long ago, restart it
+      if (Date.now() - startTs > COUNTDOWN_MS) {
+        startTs = Date.now();
+        localStorage.setItem(key, String(startTs));
+      }
+    } else {
+      startTs = Date.now();
+      localStorage.setItem(key, String(startTs));
     }
-  }, [key, initialSeconds]);
+    setStart(startTs);
+  }, [email]);
 
   useEffect(() => {
-    if (timeLeft <= 0) return;
-    const t = setInterval(() => setTimeLeft((s) => Math.max(0, s - 1)), 1000);
+    if (start == null) return;
+    const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
-  }, [timeLeft]);
+  }, [start]);
 
-  const mins = String(Math.floor(timeLeft / 60)).padStart(2, "0");
-  const secs = String(timeLeft % 60).padStart(2, "0");
-  return { mins, secs };
+  const elapsed = start == null ? 0 : now - start;
+  const remaining = Math.max(0, COUNTDOWN_MS - elapsed);
+  const mins = String(Math.floor(remaining / 60000)).padStart(2, "0");
+  const secs = String(Math.floor((remaining % 60000) / 1000)).padStart(2, "0");
+  return { mins, secs, remaining };
 }
 
 export default function PaywallScreen({ profile, email }: Props) {
   const profileData = PROFILES[profile];
-  const { mins, secs } = useCountdown(14 * 60 + 59, `${profile}-${email}`);
+  const { mins, secs } = useCountdown(email);
   const [glowing, setGlowing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
   const [selectedPlan, setSelectedPlan] = useState<string>("90day");
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [showExitIntent, setShowExitIntent] = useState(false);
+  const [exitShown, setExitShown] = useState(false);
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
 
-  // Start glow after 8s inactivity
   const resetInactivity = () => {
     if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
     setGlowing(false);
@@ -92,9 +147,6 @@ export default function PaywallScreen({ profile, email }: Props) {
   };
 
   useEffect(() => {
-    // Scroll to top when paywall mounts so the user lands at the headline
-    // and can see the plans + CTA together (instead of inheriting scroll
-    // position from the results page).
     if (typeof window !== "undefined") {
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     }
@@ -107,21 +159,59 @@ export default function PaywallScreen({ profile, email }: Props) {
       events.forEach((e) => window.removeEventListener(e, handler));
       if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleCheckout = async () => {
+  // ─── Exit-intent on desktop (mouse leaves viewport top) ───────────────────
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handler = (e: MouseEvent) => {
+      if (exitShown) return;
+      if (e.clientY <= 0) {
+        setShowExitIntent(true);
+        setExitShown(true);
+      }
+    };
+    document.addEventListener("mouseout", handler);
+    return () => document.removeEventListener("mouseout", handler);
+  }, [exitShown]);
+
+  // ─── Exit-intent on mobile (hard back / scroll-up-past-top) ───────────────
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    let startY = 0;
+    const onTouchStart = (e: TouchEvent) => {
+      startY = e.touches[0]?.clientY ?? 0;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      if (exitShown) return;
+      const y = e.touches[0]?.clientY ?? 0;
+      if (window.scrollY <= 0 && y - startY > 120) {
+        setShowExitIntent(true);
+        setExitShown(true);
+      }
+    };
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    return () => {
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+    };
+  }, [exitShown]);
+
+  const handleCheckout = async (planOverride?: string) => {
     vibrate([60, 20, 60]);
     setLoading(true);
     setCheckoutError("");
     try {
-      const selectedPlanObj = PLANS.find((p) => p.id === selectedPlan);
+      const planId = planOverride || selectedPlan;
+      const selectedPlanObj = PLANS.find((p) => p.id === planId);
       const priceId = selectedPlanObj?.priceId || "";
 
       const res = await fetch("/api/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, profile, priceId, plan: selectedPlan }),
+        body: JSON.stringify({ email, profile, priceId, plan: planId }),
       });
       const data = await res.json();
       if (data.url) {
@@ -161,7 +251,7 @@ export default function PaywallScreen({ profile, email }: Props) {
         <div className="flex items-center gap-2">
           <span className="text-base">⏱</span>
           <span className="text-sm font-medium" style={{ color: "#ff9090" }}>
-            Offer expires in
+            Your price is held for
           </span>
         </div>
         <span
@@ -238,17 +328,28 @@ export default function PaywallScreen({ profile, email }: Props) {
                 >
                   {plan.name}
                 </h4>
-                <span
-                  className="text-xl font-bold ml-3 flex-shrink-0"
-                  style={{
-                    background: "linear-gradient(90deg, #8A5EFF, #34CBBF)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                  }}
-                >
-                  {plan.price}
-                </span>
+                <div className="flex items-baseline gap-2 ml-3 flex-shrink-0">
+                  <span
+                    className="text-sm line-through"
+                    style={{ color: "rgba(255,255,255,0.35)" }}
+                  >
+                    {plan.anchorPrice}
+                  </span>
+                  <span
+                    className="text-xl font-bold"
+                    style={{
+                      background: "linear-gradient(90deg, #8A5EFF, #34CBBF)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                    }}
+                  >
+                    {plan.price}
+                  </span>
+                </div>
               </div>
+              <p className="text-[11px] font-semibold mb-1.5" style={{ color: "rgba(52,203,191,0.8)" }}>
+                {plan.perDay}
+              </p>
               <p className="text-xs leading-snug mb-2" style={{ color: "rgba(255,255,255,0.55)" }}>
                 {plan.description}
               </p>
@@ -295,7 +396,7 @@ export default function PaywallScreen({ profile, email }: Props) {
           {[
             "Guided CBT and mindfulness sessions that defuse cravings as they arise",
             "Your personalized trigger map and urge-surfing toolkit",
-            "12-week step-by-step plan built around your specific answers",
+            "Step-by-step plan built around your specific answers",
           ].map((b, i) => (
             <div key={i} className="flex items-start gap-2.5">
               <span className="text-xs flex-shrink-0" style={{ color: "#34CBBF" }}>
@@ -311,7 +412,7 @@ export default function PaywallScreen({ profile, email }: Props) {
 
       {/* CTA */}
       <button
-        onClick={handleCheckout}
+        onClick={() => handleCheckout()}
         disabled={loading}
         className={`btn-cta w-full py-4 text-base font-semibold mb-3 ${
           glowing ? "paywall-glow" : ""
@@ -325,8 +426,8 @@ export default function PaywallScreen({ profile, email }: Props) {
         {loading
           ? "Redirecting..."
           : selectedPlan === "30day"
-          ? "Start the 30-day program →"
-          : "Start the 90-day program →"}
+          ? "Start the 4-week program →"
+          : "Start the 12-week program →"}
       </button>
 
       {checkoutError && (
@@ -336,11 +437,93 @@ export default function PaywallScreen({ profile, email }: Props) {
       )}
 
       <p
-        className="text-center text-xs mb-8"
+        className="text-center text-xs mb-4"
         style={{ color: "rgba(255,255,255,0.35)" }}
       >
         🔒 Secure checkout · 30-day money-back guarantee
       </p>
+
+      {/* ─── Payment method logos ─────────────────────────────────────────── */}
+      {/* TODO: Replace these text logos with real SVG assets in /public/payments/ */}
+      <div className="flex items-center justify-center gap-2 mb-8 flex-wrap">
+        {["VISA", "MasterCard", "AMEX", "Apple Pay", "Google Pay", "Link"].map((p) => (
+          <div
+            key={p}
+            className="text-[10px] font-bold px-2.5 py-1.5 rounded-md"
+            style={{
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "rgba(255,255,255,0.55)",
+              letterSpacing: "0.04em",
+            }}
+          >
+            {p}
+          </div>
+        ))}
+      </div>
+
+      {/* ─── Big money-back guarantee badge ───────────────────────────────── */}
+      <div
+        className="rounded-2xl p-5 mb-8 flex items-start gap-4"
+        style={{
+          background: "linear-gradient(135deg, rgba(52,203,191,0.12), rgba(138,94,255,0.08))",
+          border: "1.5px solid rgba(52,203,191,0.35)",
+        }}
+      >
+        <div
+          className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 text-2xl"
+          style={{
+            background: "linear-gradient(135deg, #34CBBF, #8A5EFF)",
+            boxShadow: "0 0 16px rgba(52,203,191,0.4)",
+          }}
+        >
+          ↩️
+        </div>
+        <div>
+          <p className="text-sm font-bold text-white mb-1">
+            30-day money-back guarantee
+          </p>
+          <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.65)" }}>
+            Try the program for 30 days. If it isn&rsquo;t working for you,
+            click one button in your account and we&rsquo;ll refund every cent —
+            no questions, no hoops.
+          </p>
+        </div>
+      </div>
+
+      {/* ─── Founder / expert credibility ─────────────────────────────────── */}
+      {/* TODO: Replace with real founder photo in /public/founder.jpg and real credential */}
+      <div
+        className="rounded-2xl p-5 mb-8 flex items-center gap-4"
+        style={{
+          background: "rgba(255,255,255,0.04)",
+          border: "1px solid rgba(255,255,255,0.08)",
+        }}
+      >
+        <div
+          className="w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 text-2xl font-bold"
+          style={{
+            background: "linear-gradient(135deg, #8A5EFF, #34CBBF)",
+            color: "#07001c",
+          }}
+        >
+          {/* TODO: <img src="/founder.jpg" alt="..." className="w-full h-full rounded-full object-cover" /> */}
+          👤
+        </div>
+        <div>
+          <p className="text-xs uppercase tracking-wider mb-0.5" style={{ color: "rgba(196,175,255,0.6)" }}>
+            Designed with
+          </p>
+          <p className="text-sm font-bold text-white leading-tight">
+            {/* TODO: Replace with real clinician's name and credential */}
+            [Clinician Name], [Credential e.g. PsyD, LCSW]
+          </p>
+          <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>
+            {/* TODO: Replace with real bio line */}
+            Specialist in Mindfulness-Based Relapse Prevention
+          </p>
+        </div>
+      </div>
 
       {/* Testimonials */}
       <h3
@@ -350,7 +533,7 @@ export default function PaywallScreen({ profile, email }: Props) {
         WHAT PEOPLE ARE SAYING
       </h3>
 
-      <div className="space-y-3">
+      <div className="space-y-3 mb-8">
         {TESTIMONIALS.map((t, i) => (
           <motion.div
             key={i}
@@ -363,15 +546,39 @@ export default function PaywallScreen({ profile, email }: Props) {
               border: "1px solid rgba(255,255,255,0.07)",
             }}
           >
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-yellow-400 text-sm">
-                {"★".repeat(t.stars)}
-              </span>
-              <span
-                className="text-sm font-semibold"
-                style={{ color: "rgba(255,255,255,0.7)" }}
+            <div className="flex items-center gap-3 mb-2">
+              {/* TODO: Replace this initial-circle with real <img src={t.photo} ... /> */}
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold"
+                style={{
+                  background: t.photo
+                    ? `url(${t.photo}) center/cover`
+                    : "linear-gradient(135deg, #8A5EFF, #34CBBF)",
+                  color: "#07001c",
+                }}
               >
-                {t.name}
+                {!t.photo && t.name[0]}
+              </div>
+              <div className="flex-1">
+                <span
+                  className="text-sm font-semibold block"
+                  style={{ color: "rgba(255,255,255,0.85)" }}
+                >
+                  {t.name}
+                </span>
+                <span className="text-yellow-400 text-xs">
+                  {"★".repeat(t.stars)}
+                </span>
+              </div>
+              <span
+                className="text-[10px] font-semibold px-2 py-1 rounded-full"
+                style={{
+                  background: "rgba(52,203,191,0.12)",
+                  color: "#34CBBF",
+                  border: "1px solid rgba(52,203,191,0.25)",
+                }}
+              >
+                {t.tag}
               </span>
             </div>
             <p
@@ -384,38 +591,92 @@ export default function PaywallScreen({ profile, email }: Props) {
         ))}
       </div>
 
-      {/* Trust row */}
-      <div className="flex items-center justify-center gap-5 mt-8 mb-8">
-        {[
-          { icon: "🔒", label: "SSL Secure" },
-          { icon: "↩️", label: "30-day refund" },
-          { icon: "⭐", label: "94K+ users" },
-        ].map((t) => (
-          <div
-            key={t.label}
-            className="flex flex-col items-center gap-1"
-          >
-            <span className="text-lg">{t.icon}</span>
-            <span
-              className="text-xs"
-              style={{ color: "rgba(255,255,255,0.35)" }}
+      {/* ─── FAQ ──────────────────────────────────────────────────────────── */}
+      <h3
+        className="text-sm font-semibold mb-4"
+        style={{ color: "rgba(255,255,255,0.45)" }}
+      >
+        FREQUENTLY ASKED
+      </h3>
+      <div className="space-y-2 mb-8">
+        {FAQ.map((item, i) => {
+          const open = expandedFaq === i;
+          return (
+            <div
+              key={i}
+              className="rounded-xl overflow-hidden"
+              style={{
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.08)",
+              }}
             >
-              {t.label}
-            </span>
-          </div>
-        ))}
+              <button
+                onClick={() => {
+                  vibrate(15);
+                  setExpandedFaq(open ? null : i);
+                }}
+                className="w-full flex items-center justify-between gap-3 px-4 py-3 text-left"
+              >
+                <span className="text-sm font-medium text-white leading-snug">
+                  {item.q}
+                </span>
+                <span
+                  className="text-lg flex-shrink-0 transition-transform"
+                  style={{
+                    color: "#34CBBF",
+                    transform: open ? "rotate(45deg)" : "rotate(0deg)",
+                  }}
+                >
+                  +
+                </span>
+              </button>
+              <AnimatePresence initial={false}>
+                {open && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    <p
+                      className="px-4 pb-4 text-sm leading-relaxed"
+                      style={{ color: "rgba(255,255,255,0.7)" }}
+                    >
+                      {item.a}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
       </div>
+
+      {/* Final CTA */}
+      <button
+        onClick={() => handleCheckout()}
+        disabled={loading}
+        className="btn-cta w-full py-4 text-base font-semibold mb-3"
+        style={{ borderRadius: "14px", opacity: loading ? 0.75 : 1 }}
+      >
+        {loading
+          ? "Redirecting..."
+          : selectedPlan === "30day"
+          ? "Start the 4-week program →"
+          : "Start the 12-week program →"}
+      </button>
 
       {/* Footer */}
       <div
-        className="border-t flex justify-center gap-4 flex-wrap text-center pt-6 text-xs"
+        className="border-t flex justify-center gap-4 flex-wrap text-center pt-6 mt-4 text-xs"
         style={{
           borderColor: "rgba(255,255,255,0.1)",
           color: "rgba(255,255,255,0.4)",
         }}
       >
         <a href="/terms" style={{ color: "rgba(255,255,255,0.4)" }} className="hover:opacity-80">
-          Terms & Conditions
+          Terms &amp; Conditions
         </a>
         <span>·</span>
         <a href="/privacy" style={{ color: "rgba(255,255,255,0.4)" }} className="hover:opacity-80">
@@ -434,6 +695,126 @@ export default function PaywallScreen({ profile, email }: Props) {
           Refund Policy
         </a>
       </div>
+
+      {/* ─── Exit-intent modal ────────────────────────────────────────────── */}
+      <AnimatePresence>
+        {showExitIntent && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-end md:items-center justify-center px-4"
+            style={{ background: "rgba(0,0,0,0.72)", backdropFilter: "blur(6px)" }}
+            onClick={() => setShowExitIntent(false)}
+          >
+            <motion.div
+              initial={{ y: 40, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 40, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 260, damping: 26 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md rounded-2xl p-6 relative"
+              style={{
+                background: "linear-gradient(155deg, #1a1042 0%, #0a0520 100%)",
+                border: "1.5px solid rgba(138,94,255,0.4)",
+                boxShadow: "0 20px 60px rgba(138,94,255,0.25)",
+              }}
+            >
+              <button
+                onClick={() => setShowExitIntent(false)}
+                className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-lg"
+                style={{
+                  background: "rgba(255,255,255,0.06)",
+                  color: "rgba(255,255,255,0.6)",
+                }}
+              >
+                ×
+              </button>
+
+              <p
+                className="text-xs font-bold uppercase tracking-wider mb-2"
+                style={{
+                  background: "linear-gradient(90deg, #8A5EFF, #34CBBF)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                Wait — one thing
+              </p>
+              <h3
+                className="text-xl font-bold mb-3 leading-tight text-white"
+                style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
+              >
+                Take $20 off if you start today
+              </h3>
+              <p className="text-sm mb-5 leading-relaxed" style={{ color: "rgba(255,255,255,0.65)" }}>
+                We don&rsquo;t want price to be the reason you don&rsquo;t start.
+                Use this one-time offer on the 12-week complete program.
+              </p>
+
+              <div
+                className="rounded-xl px-4 py-3 mb-5 flex items-center justify-between"
+                style={{
+                  background: "rgba(52,203,191,0.1)",
+                  border: "1px solid rgba(52,203,191,0.3)",
+                }}
+              >
+                <div>
+                  <p className="text-xs" style={{ color: "rgba(255,255,255,0.55)" }}>
+                    12-Week Complete Program
+                  </p>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-sm line-through" style={{ color: "rgba(255,255,255,0.35)" }}>
+                      $79
+                    </span>
+                    <span
+                      className="text-2xl font-bold"
+                      style={{
+                        background: "linear-gradient(90deg, #8A5EFF, #34CBBF)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                      }}
+                    >
+                      $59
+                    </span>
+                  </div>
+                </div>
+                <div
+                  className="text-[10px] font-bold uppercase px-2 py-1 rounded-full"
+                  style={{
+                    background: "rgba(52,203,191,0.2)",
+                    color: "#34CBBF",
+                    letterSpacing: "0.08em",
+                  }}
+                >
+                  Save $20
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  // TODO: wire promo code through Stripe session (allow_promotion_codes + auto-apply)
+                  setShowExitIntent(false);
+                  setSelectedPlan("90day");
+                  handleCheckout("90day");
+                }}
+                className="btn-cta w-full py-3.5 text-base font-semibold mb-2"
+                style={{ borderRadius: "14px" }}
+              >
+                Claim my $20 off →
+              </button>
+              <button
+                onClick={() => setShowExitIntent(false)}
+                className="w-full text-center text-xs py-2"
+                style={{ color: "rgba(255,255,255,0.4)" }}
+              >
+                No thanks, I&rsquo;ll pass
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

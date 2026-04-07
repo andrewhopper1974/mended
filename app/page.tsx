@@ -15,7 +15,6 @@ import type { Profile } from "@/lib/quizData";
 export type AppScreen =
   | "intro"
   | "quiz"
-  | "analyzing"
   | "email"
   | "loading"
   | "results"
@@ -36,19 +35,37 @@ export default function Home() {
       if (params.get("paywall") === "true") {
         const returnProfile = params.get("profile") as Profile;
         const returnEmail = params.get("email") || "";
-        const returnPlan = params.get("plan") || "";
 
         if (returnProfile && returnEmail) {
           setProfile(returnProfile);
           setEmail(returnEmail);
           setScreen("paywall");
-
-          // Clean URL
           window.history.replaceState({}, document.title, "/");
         }
       }
     }
   }, []);
+
+  // Advance helper — walks quizIndex forward, switching screen when hitting
+  // an email checkpoint or the end of the flow.
+  const advanceFrom = useCallback(
+    (fromIndex: number) => {
+      const next = fromIndex + 1;
+      if (next >= QUIZ_FLOW.length) {
+        // End of quiz → build program → results
+        setScreen("loading");
+        return;
+      }
+      const nextItem = QUIZ_FLOW[next];
+      setQuizIndex(next);
+      if (nextItem.type === "email") {
+        setScreen("email");
+      } else {
+        setScreen("quiz");
+      }
+    },
+    []
+  );
 
   const startQuiz = useCallback(() => {
     setScreen("quiz");
@@ -57,34 +74,26 @@ export default function Home() {
 
   const handleQuizAdvance = useCallback(
     (questionId: number, selected: string[]) => {
-      const newAnswers = { ...answers, [questionId]: selected };
-      setAnswers(newAnswers);
+      setAnswers((prev) => ({ ...prev, [questionId]: selected }));
       setDirection(1);
-
-      if (quizIndex < QUIZ_FLOW.length - 1) {
-        setQuizIndex(quizIndex + 1);
-      } else {
-        // Done with all questions - show analyzing screen
-        setScreen("analyzing");
-      }
+      advanceFrom(quizIndex);
     },
-    [answers, quizIndex]
+    [quizIndex, advanceFrom]
   );
 
   const handleInterstitialDone = useCallback(() => {
     setDirection(1);
-    if (quizIndex < QUIZ_FLOW.length - 1) {
-      setQuizIndex(quizIndex + 1);
-    } else {
-      // Done with all questions - show analyzing screen
-      setScreen("analyzing");
-    }
-  }, [quizIndex]);
+    advanceFrom(quizIndex);
+  }, [quizIndex, advanceFrom]);
 
   const handleBack = useCallback(() => {
     setDirection(-1);
     if (quizIndex > 0) {
-      setQuizIndex(quizIndex - 1);
+      const prevIdx = quizIndex - 1;
+      const prevItem = QUIZ_FLOW[prevIdx];
+      setQuizIndex(prevIdx);
+      if (prevItem.type === "email") setScreen("email");
+      else setScreen("quiz");
     } else {
       setScreen("intro");
     }
@@ -107,24 +116,25 @@ export default function Home() {
         }),
       }).catch(() => {});
 
-      setScreen("loading");
+      // Continue the quiz — there are still questions after the email gate
+      setDirection(1);
+      advanceFrom(quizIndex);
     },
-    [answers]
+    [answers, quizIndex, advanceFrom]
   );
 
-  const handleAnalyzingDone = useCallback(() => {
-    setScreen("email");
-  }, []);
-
   const handleLoadingDone = useCallback(() => {
+    // Re-assign profile at the end in case more answers were given after email
+    const finalProfile = assignProfile(answers);
+    setProfile(finalProfile);
     setScreen("results");
-  }, []);
+  }, [answers]);
 
   const handleSeeProgram = useCallback(() => {
     setScreen("paywall");
   }, []);
 
-  // Calculate progress: question number / total questions, show slightly ahead
+  // Progress calculation — only count real questions (not interstitials/email)
   const questionItems = QUIZ_FLOW.filter(
     (item) => item.type === "question" || item.type === "open-ended"
   );
@@ -132,21 +142,21 @@ export default function Home() {
   let questionNumber = 0;
   if (currentItem?.type === "question" || currentItem?.type === "open-ended") {
     questionNumber = questionItems.findIndex((q) => q === currentItem) + 1;
-  } else if (currentItem?.type === "interstitial") {
-    // Find how many questions came before this interstitial
+  } else {
+    // For interstitial / email, show count of questions completed so far
     let count = 0;
     for (let i = 0; i <= quizIndex; i++) {
-      if (QUIZ_FLOW[i].type === "question" || QUIZ_FLOW[i].type === "open-ended") count++;
+      const it = QUIZ_FLOW[i];
+      if (it && (it.type === "question" || it.type === "open-ended")) count++;
     }
     questionNumber = count;
   }
 
   const realProgress = questionNumber / questionItems.length;
-  // Show 5-10% ahead for momentum
   const displayProgress = Math.min(realProgress + 0.07, 1);
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence>
       {screen === "intro" && (
         <IntroScreen key="intro" onStart={startQuiz} />
       )}
@@ -179,12 +189,15 @@ export default function Home() {
         </>
       )}
 
-      {screen === "analyzing" && (
-        <LoadingScreen key="analyzing" onDone={handleAnalyzingDone} />
-      )}
-
       {screen === "email" && (
-        <EmailScreen key="email" onSubmit={handleEmailSubmit} />
+        <EmailScreen
+          key="email"
+          onSubmit={handleEmailSubmit}
+          onBack={handleBack}
+          answers={answers}
+          profile={assignProfile(answers)}
+          progress={displayProgress}
+        />
       )}
 
       {screen === "loading" && (

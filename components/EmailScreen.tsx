@@ -2,18 +2,34 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { vibrate } from "@/lib/quizData";
+import ProgressBar from "@/components/ProgressBar";
+import MendedLogo from "@/components/MendedLogo";
+import {
+  vibrate,
+  getPushExcerpt,
+  getTriggerLabel,
+  PROFILES,
+  type Profile,
+} from "@/lib/quizData";
 
 interface Props {
   onSubmit: (email: string) => void;
+  onBack?: () => void;
+  answers: Record<number, string[]>;
+  profile: Profile;
+  progress: number;
 }
 
-export default function EmailScreen({ onSubmit }: Props) {
+export default function EmailScreen({
+  onSubmit,
+  onBack,
+  answers,
+  profile,
+  progress,
+}: Props) {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [wantsReport, setWantsReport] = useState(true);
-  const [agreedPrivacy, setAgreedPrivacy] = useState(false);
 
   const isValidEmail = (e: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
@@ -21,11 +37,6 @@ export default function EmailScreen({ onSubmit }: Props) {
   const handleSubmit = async () => {
     if (!isValidEmail(email)) {
       setError("Please enter a valid email address.");
-      vibrate([80, 20, 80]);
-      return;
-    }
-    if (!agreedPrivacy) {
-      setError("Please agree to the Privacy Policy to continue.");
       vibrate([80, 20, 80]);
       return;
     }
@@ -42,11 +53,24 @@ export default function EmailScreen({ onSubmit }: Props) {
       }).catch(() => {});
     } catch (_) {}
 
-    // Small delay for UX feel
-    await new Promise((r) => setTimeout(r, 400));
+    await new Promise((r) => setTimeout(r, 300));
     setLoading(false);
     onSubmit(email.trim());
   };
+
+  // Build personalization chips — only show what we can trust
+  const triggerLabel = getTriggerLabel(answers, profile);
+  const pushExcerpt = getPushExcerpt(answers); // null on gibberish
+  const profileName = PROFILES[profile].name;
+
+  const chips: { label: string; value: string; color: string }[] = [];
+  if (triggerLabel) {
+    chips.push({ label: "Your trigger", value: triggerLabel, color: "#8A5EFF" });
+  }
+  chips.push({ label: "Your profile", value: profileName, color: "#34CBBF" });
+  if (pushExcerpt) {
+    chips.push({ label: "Your why", value: `"${pushExcerpt}"`, color: "#c4afff" });
+  }
 
   return (
     <motion.div
@@ -54,161 +78,187 @@ export default function EmailScreen({ onSubmit }: Props) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="flex flex-col min-h-screen px-5 pt-16 pb-10"
+      className="flex flex-col min-h-screen"
       style={{ background: "#07001c" }}
     >
-      {/* Icon */}
-      <div className="flex justify-center mb-8">
-        <div
-          className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
-          style={{
-            background: "linear-gradient(135deg, #8A5EFF22 0%, #34CBBF22 100%)",
-            border: "1px solid rgba(138,94,255,0.3)",
-          }}
-        >
-          📋
+      {/* Sticky progress */}
+      <div className="sticky top-0 z-50" style={{ background: "#07001c" }}>
+        <div className="flex justify-center pt-3 pb-1">
+          <MendedLogo size="sm" />
         </div>
-      </div>
-
-      <h1
-        className="text-2xl font-bold text-center mb-3 leading-tight"
-        style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
-      >
-        Your Personalized
-        <br />
-        Quit-Alcohol Plan Is Ready
-      </h1>
-
-      <p
-        className="text-center text-sm mb-8 leading-relaxed"
-        style={{ color: "rgba(255,255,255,0.6)" }}
-      >
-        Built around your specific answers — not a generic guide. Enter your
-        email to unlock instant access to your member area after checkout.
-      </p>
-
-      {/* Email input */}
-      <div className="mb-4">
-        <input
-          type="email"
-          inputMode="email"
-          autoComplete="email"
-          placeholder="Your email address"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            if (error) setError("");
-          }}
-          onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-          className="w-full px-4 py-4 rounded-2xl text-base outline-none"
-          style={{
-            background: "#1a1535",
-            border: `1.5px solid ${error ? "#ff4d4d" : "#2d2850"}`,
-            color: "#ffffff",
-            fontSize: "16px", // Prevent iOS zoom
-          }}
-        />
-        {error && (
-          <p className="text-sm mt-2" style={{ color: "#ff6b6b" }}>
-            {error}
-          </p>
-        )}
-      </div>
-
-      <button
-        onClick={handleSubmit}
-        disabled={loading}
-        className="btn-cta w-full py-4 text-base font-semibold mb-4"
-        style={{ borderRadius: "14px", opacity: loading ? 0.7 : 1 }}
-      >
-        {loading ? "Unlocking..." : (
-          <span className="flex items-center justify-center gap-2">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-              <path d="M7 11V7a5 5 0 0 1 9.9-1" />
-            </svg>
-            Unlock My Program
-          </span>
-        )}
-      </button>
-
-      <p
-        className="text-center text-xs mb-4"
-        style={{ color: "rgba(255,255,255,0.35)" }}
-      >
-        🔒 No spam. Unsubscribe anytime. Your data is private.
-      </p>
-
-      {/* Checkboxes */}
-      <div className="space-y-3 mb-5">
-        {/* Body data report opt-in */}
-        <label className="flex items-start gap-3 cursor-pointer" onClick={() => { vibrate(20); setWantsReport(v => !v); }}>
-          <div
-            className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5 transition-all"
-            style={{
-              background: wantsReport ? "linear-gradient(135deg, #8A5EFF, #34CBBF)" : "rgba(255,255,255,0.06)",
-              border: wantsReport ? "none" : "1.5px solid rgba(255,255,255,0.2)",
-            }}
-          >
-            {wantsReport && (
-              <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
-                <path d="M1 4.5L4 7.5L10 1.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            )}
-          </div>
-          <span className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
-            I'd like to receive my personalised body data & health report by email
-          </span>
-        </label>
-
-        {/* Privacy policy */}
-        <label className="flex items-start gap-3 cursor-pointer" onClick={() => { vibrate(20); setAgreedPrivacy(v => !v); if (error) setError(""); }}>
-          <div
-            className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5 transition-all"
-            style={{
-              background: agreedPrivacy ? "linear-gradient(135deg, #8A5EFF, #34CBBF)" : "rgba(255,255,255,0.06)",
-              border: agreedPrivacy ? "none" : `1.5px solid ${error && !agreedPrivacy ? "#ff4d4d" : "rgba(255,255,255,0.2)"}`,
-            }}
-          >
-            {agreedPrivacy && (
-              <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
-                <path d="M1 4.5L4 7.5L10 1.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            )}
-          </div>
-          <span className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
-            I agree to the{" "}
-            <a href="/privacy" onClick={e => e.stopPropagation()} style={{ color: "#34CBBF", textDecoration: "underline" }}>
-              Privacy Policy
-            </a>
-          </span>
-        </label>
-      </div>
-
-      {/* Trust badges */}
-      <div className="mt-10 grid grid-cols-3 gap-3">
-        {[
-          { icon: "✨", label: "Fully personalised" },
-          { icon: "🔒", label: "Private & secure" },
-          { icon: "⭐", label: "94K+ users" },
-        ].map((b) => (
-          <div
-            key={b.label}
-            className="flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl"
-            style={{
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.07)",
-            }}
-          >
-            <span className="text-xl">{b.icon}</span>
-            <span
-              className="text-xs text-center"
-              style={{ color: "rgba(255,255,255,0.5)" }}
+        <div className="flex items-center justify-between px-4 py-3">
+          {onBack ? (
+            <button
+              onClick={onBack}
+              className="flex items-center gap-1.5 text-sm font-medium"
+              style={{ color: "rgba(255,255,255,0.6)" }}
             >
-              {b.label}
-            </span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Back
+            </button>
+          ) : (
+            <span />
+          )}
+          <span
+            className="text-xs font-semibold px-2.5 py-1 rounded-full"
+            style={{
+              background: "rgba(138,94,255,0.15)",
+              border: "1px solid rgba(138,94,255,0.25)",
+              color: "rgba(196,175,255,0.9)",
+            }}
+          >
+            Saving your progress
+          </span>
+        </div>
+        <ProgressBar progress={progress} />
+      </div>
+
+      <div className="flex-1 px-5 pt-8 pb-10">
+        {/* Icon */}
+        <div className="flex justify-center mb-6">
+          <div
+            className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
+            style={{
+              background: "linear-gradient(135deg, #8A5EFF22 0%, #34CBBF22 100%)",
+              border: "1px solid rgba(138,94,255,0.3)",
+            }}
+          >
+            🔒
           </div>
-        ))}
+        </div>
+
+        <h1
+          className="text-2xl font-bold text-center mb-2 leading-tight"
+          style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
+        >
+          Lock in your results
+        </h1>
+
+        <p
+          className="text-center text-sm mb-6 leading-relaxed"
+          style={{ color: "rgba(255,255,255,0.6)" }}
+        >
+          You&rsquo;re more than halfway through. Save your progress so you
+          can come back to your personalized plan — even if you close this
+          tab.
+        </p>
+
+        {/* Personalization chips — proof we're actually using their answers */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15, duration: 0.4 }}
+          className="mb-6 space-y-2"
+        >
+          {chips.map((chip) => (
+            <div
+              key={chip.label}
+              className="flex items-center gap-3 rounded-xl px-3 py-2.5"
+              style={{
+                background: "rgba(255,255,255,0.04)",
+                border: `1px solid ${chip.color}33`,
+              }}
+            >
+              <span
+                className="text-[10px] font-bold uppercase tracking-wider flex-shrink-0"
+                style={{ color: chip.color, letterSpacing: "0.08em" }}
+              >
+                {chip.label}
+              </span>
+              <span
+                className="text-sm font-medium leading-snug truncate"
+                style={{ color: "rgba(255,255,255,0.88)" }}
+              >
+                {chip.value}
+              </span>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Email input */}
+        <div className="mb-4">
+          <input
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            placeholder="Your email address"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (error) setError("");
+            }}
+            onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+            className="w-full px-4 py-4 rounded-2xl text-base outline-none"
+            style={{
+              background: "#1a1535",
+              border: `1.5px solid ${error ? "#ff4d4d" : "#2d2850"}`,
+              color: "#ffffff",
+              fontSize: "16px",
+            }}
+          />
+          {error && (
+            <p className="text-sm mt-2" style={{ color: "#ff6b6b" }}>
+              {error}
+            </p>
+          )}
+        </div>
+
+        <button
+          onClick={handleSubmit}
+          disabled={loading}
+          className="btn-cta w-full py-4 text-base font-semibold mb-3"
+          style={{ borderRadius: "14px", opacity: loading ? 0.7 : 1 }}
+        >
+          {loading ? "Saving..." : (
+            <span className="flex items-center justify-center gap-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+              </svg>
+              Save my progress
+            </span>
+          )}
+        </button>
+
+        {/* Consent fine print — no checkbox required */}
+        <p
+          className="text-center text-xs mb-4 leading-relaxed"
+          style={{ color: "rgba(255,255,255,0.35)" }}
+        >
+          🔒 No spam. By continuing you agree to our{" "}
+          <a href="/privacy" style={{ color: "rgba(255,255,255,0.55)", textDecoration: "underline" }}>
+            Privacy Policy
+          </a>
+          . Unsubscribe anytime.
+        </p>
+
+        {/* Trust badges */}
+        <div className="mt-8 grid grid-cols-3 gap-3">
+          {[
+            { icon: "✨", label: "Fully personalised" },
+            { icon: "🔒", label: "Private & secure" },
+            { icon: "⭐", label: "94K+ users" },
+          ].map((b) => (
+            <div
+              key={b.label}
+              className="flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl"
+              style={{
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.07)",
+              }}
+            >
+              <span className="text-xl">{b.icon}</span>
+              <span
+                className="text-xs text-center"
+                style={{ color: "rgba(255,255,255,0.5)" }}
+              >
+                {b.label}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     </motion.div>
   );
