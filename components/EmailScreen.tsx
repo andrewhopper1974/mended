@@ -83,8 +83,8 @@ export default function EmailScreen({ onSubmit }: Props) {
         className="text-center text-sm mb-8 leading-relaxed"
         style={{ color: "rgba(255,255,255,0.6)" }}
       >
-        Based on your specific answers — not a generic guide. We&apos;ll send
-        it directly to you.
+        Built around your specific answers — not a generic guide. Enter your
+        email to unlock instant access to your member area after checkout.
       </p>
 
       {/* Email input */}
@@ -188,7 +188,7 @@ export default function EmailScreen({ onSubmit }: Props) {
       {/* Trust badges */}
       <div className="mt-10 grid grid-cols-3 gap-3">
         {[
-          { icon: "🔬", label: "Science-backed" },
+          { icon: "↩️", label: "30-day guarantee" },
           { icon: "🔒", label: "Private & secure" },
           { icon: "⭐", label: "94K+ users" },
         ].map((b) => (
