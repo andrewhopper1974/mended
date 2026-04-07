@@ -90,9 +90,9 @@ function RecoveryChart() {
   const xLabels = ["Start", "Week 4", "Week 8", "Week 12"];
 
   // Pill geometry — both pills share the same dark + gradient-stroke style
-  const startPillW = 62;
-  const endPillW   = 96;
-  const pillH      = 22;
+  const startPillW = 54;
+  const endPillW   = 84;
+  const pillH      = 19;
 
   // Clamp pill x so it never overflows the viewBox
   const startPillX = Math.max(2, x0 - startPillW / 2);
@@ -116,9 +116,18 @@ function RecoveryChart() {
           <stop offset="100%" stopColor="#8A5EFF" stopOpacity="0.35" />
         </linearGradient>
         <linearGradient id="rEndPillStroke" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#34CBBF" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="#34CBBF" stopOpacity="0.85" />
+          <stop offset="0%" stopColor="#8A5EFF" stopOpacity="0.85" />
+          <stop offset="100%" stopColor="#8A5EFF" stopOpacity="0.35" />
         </linearGradient>
+        {/* Soft aura halo for the alcohol-free pill */}
+        <radialGradient id="rEndPillAura" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#c4afff" stopOpacity="0.55" />
+          <stop offset="55%" stopColor="#8A5EFF" stopOpacity="0.18" />
+          <stop offset="100%" stopColor="#8A5EFF" stopOpacity="0" />
+        </radialGradient>
+        <filter id="rEndPillGlow" x="-60%" y="-200%" width="220%" height="500%">
+          <feGaussianBlur stdDeviation="3.5" />
+        </filter>
       </defs>
 
       {/* Grid lines */}
@@ -141,20 +150,29 @@ function RecoveryChart() {
       <path d={mendedPath} fill="none" stroke="url(#rLineGrad)" strokeWidth="2.5" strokeLinecap="round" />
 
       {/* Start dot — bottom left */}
-      <circle cx={x0} cy={yStart} r="4.5" fill="#8A5EFF" />
-      <rect x={startPillX} y={yStart - 34} width={startPillW} height={pillH} rx={pillH / 2}
+      <circle cx={x0} cy={yStart} r="4" fill="#8A5EFF" />
+      <rect x={startPillX} y={yStart - 31} width={startPillW} height={pillH} rx={pillH / 2}
         fill="#1e1245" stroke="url(#rStartPillStroke)" strokeWidth="1.3" />
-      <text x={startTextX} y={yStart - 19}
-        textAnchor="middle" fill="#ffffff" fontSize="11.5" fontWeight="600"
+      <text x={startTextX} y={yStart - 18}
+        textAnchor="middle" fill="#ffffff" fontSize="10" fontWeight="600"
         fontFamily="var(--font-playfair), Georgia, serif"
         fontStyle="italic" letterSpacing="0.4">Today</text>
 
       {/* End dot — top right */}
-      <circle cx={x1} cy={yEnd} r="5" fill="#34CBBF" />
-      <rect x={endPillX} y={yEnd - 34} width={endPillW} height={pillH} rx={pillH / 2}
-        fill="#0d2620" stroke="url(#rEndPillStroke)" strokeWidth="1.3" />
-      <text x={endTextX} y={yEnd - 19}
-        textAnchor="middle" fill="#ffffff" fontSize="11.5" fontWeight="600"
+      <circle cx={x1} cy={yEnd} r="4.5" fill="#8A5EFF" />
+      {/* Soft aura behind the alcohol-free pill */}
+      <ellipse
+        cx={endPillX + endPillW / 2}
+        cy={yEnd - 31 + pillH / 2}
+        rx={endPillW / 2 + 14}
+        ry={pillH / 2 + 10}
+        fill="url(#rEndPillAura)"
+        filter="url(#rEndPillGlow)"
+      />
+      <rect x={endPillX} y={yEnd - 31} width={endPillW} height={pillH} rx={pillH / 2}
+        fill="#1e1245" stroke="url(#rEndPillStroke)" strokeWidth="1.3" />
+      <text x={endTextX} y={yEnd - 18}
+        textAnchor="middle" fill="#ffffff" fontSize="10" fontWeight="600"
         fontFamily="var(--font-playfair), Georgia, serif"
         fontStyle="italic" letterSpacing="0.4">Alcohol-free</text>
 
