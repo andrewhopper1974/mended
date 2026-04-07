@@ -162,40 +162,65 @@ export default function PaywallScreen({ profile, email }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ─── Exit-intent on desktop (mouse leaves viewport top) ───────────────────
+  // ─── Exit-intent: cursor leaves viewport top ─────────────────────────────
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const handler = (e: MouseEvent) => {
-      if (exitShown) return;
-      if (e.clientY <= 0) {
-        setShowExitIntent(true);
-        setExitShown(true);
-      }
-    };
-    document.addEventListener("mouseout", handler);
-    return () => document.removeEventListener("mouseout", handler);
-  }, [exitShown]);
+    if (exitShown) return;
 
-  // ─── Exit-intent on mobile (pull-down past scroll-zero) ──────────────────
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+    const trigger = () => {
+      if (exitShown) return;
+      setShowExitIntent(true);
+      setExitShown(true);
+    };
+
+    // Desktop: mouseleave on document only fires when the cursor leaves the
+    // viewport entirely (not when moving between child elements).
+    const onMouseLeave = (e: MouseEvent) => {
+      // Top of the viewport — they're heading for the address bar / tabs
+      if (e.clientY <= 5) trigger();
+    };
+
+    // Mobile: pull-down past scroll-zero (rubber-band) OR back-button
     let startY = 0;
     const onTouchStart = (e: TouchEvent) => {
       startY = e.touches[0]?.clientY ?? 0;
     };
     const onTouchMove = (e: TouchEvent) => {
-      if (exitShown) return;
       const y = e.touches[0]?.clientY ?? 0;
-      if (window.scrollY <= 0 && y - startY > 120) {
-        setShowExitIntent(true);
-        setExitShown(true);
-      }
+      if (window.scrollY <= 0 && y - startY > 100) trigger();
     };
+    const onPopState = () => trigger();
+
+    // Tab-switch / window-blur — common abandon signal
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") trigger();
+    };
+
+    // Idle fallback — 25s of zero interaction is also a strong abandon signal
+    let idleTimer: NodeJS.Timeout = setTimeout(trigger, 25000);
+    const resetIdle = () => {
+      clearTimeout(idleTimer);
+      if (!exitShown) idleTimer = setTimeout(trigger, 25000);
+    };
+    const idleEvents = ["mousemove", "scroll", "keydown", "touchstart", "click"];
+    idleEvents.forEach((e) => window.addEventListener(e, resetIdle, { passive: true }));
+
+    document.addEventListener("mouseleave", onMouseLeave);
     window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("popstate", onPopState);
+    document.addEventListener("visibilitychange", onVisibility);
+    // Push a history state so back-button triggers our popstate handler first
+    try { window.history.pushState({ paywall: true }, ""); } catch {}
+
     return () => {
+      clearTimeout(idleTimer);
+      idleEvents.forEach((e) => window.removeEventListener(e, resetIdle));
+      document.removeEventListener("mouseleave", onMouseLeave);
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("popstate", onPopState);
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, [exitShown]);
 
