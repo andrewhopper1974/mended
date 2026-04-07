@@ -52,8 +52,8 @@ export default function Home() {
     (fromIndex: number) => {
       const next = fromIndex + 1;
       if (next >= QUIZ_FLOW.length) {
-        // End of quiz → build program → results
-        setScreen("loading");
+        // End of quiz → email capture → build program → results
+        setScreen("email");
         return;
       }
       const nextItem = QUIZ_FLOW[next];
@@ -116,11 +116,11 @@ export default function Home() {
         }),
       }).catch(() => {});
 
-      // Continue the quiz — there are still questions after the email gate
+      // Email sits at the end of the quiz → build program → results
       setDirection(1);
-      advanceFrom(quizIndex);
+      setScreen("loading");
     },
-    [answers, quizIndex, advanceFrom]
+    [answers]
   );
 
   const handleLoadingDone = useCallback(() => {

@@ -200,8 +200,6 @@ export const QUIZ_FLOW: QuizItem[] = [
       { text: "Trust from the people I love most", emoji: "🤝", tags: ["social"] },
     ],
   },
-  // ─── EMAIL CAPTURE — peak pain, right before positive turn ───────────────
-  { type: "email" },
   {
     type: "interstitial",
     stat: "3x",
