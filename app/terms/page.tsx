@@ -46,9 +46,10 @@ export default function TermsPage() {
             Service Description
           </h2>
           <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: "1.6" }}>
-            The Mended Hypnosis Program is a digital subscription service providing guided
-            hypnosis sessions, personalized assessment tools, and step-by-step recovery protocols designed
-            to help users reduce or eliminate alcohol consumption through subconscious reprogramming.
+            The Mended Program is a digital subscription service providing guided sessions
+            grounded in Cognitive Behavioral Therapy (CBT), Mindfulness-Based Relapse Prevention
+            (MBRP), and Stoic practice, along with personalized assessment tools and step-by-step
+            recovery protocols designed to help users reduce or eliminate alcohol consumption.
           </p>
         </section>
 

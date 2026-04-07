@@ -6,21 +6,21 @@ const TESTIMONIALS = [
   {
     name: "Sarah M., 34",
     tag: "6 months sober",
-    text: "I'd tried AA and sheer willpower. Nothing worked until this. By session 3 I stopped wanting a drink at 5pm. Now I'm 6 months sober and feeling alive again.",
+    text: "I'd white-knuckled it for years. Learning to actually notice my triggers and surf the urges instead of fighting them changed everything. Six months in and 5pm doesn't own me anymore.",
     avatar: "S",
     color: "#8A5EFF",
   },
   {
     name: "James T., 41",
-    tag: "Alcohol-free",
-    text: "I was drinking every night. Did the first session completely skeptical. Woke up the next morning and just didn't want it. Changed my life completely.",
+    tag: "4 months sober",
+    text: "Drinking every night. The CBT exercises around challenging the automatic thoughts felt almost too simple — but within a couple of weeks the evening pull just lost its grip on me.",
     avatar: "J",
     color: "#34CBBF",
   },
   {
     name: "Michelle L., 28",
     tag: "3 months free",
-    text: "Started with anxiety and alcohol dependence. After the second hypnosis session, I felt a shift. Three months later, completely transformed.",
+    text: "Started with anxiety and alcohol dependence. The mindfulness work and the Stoic 'pause' practice gave me a space I never knew I had. Three months in, completely transformed.",
     avatar: "M",
     color: "#4675FF",
   },
@@ -34,7 +34,7 @@ const TESTIMONIALS = [
 ];
 
 const TRUST_BADGES = [
-  { icon: "🔬", label: "Science-backed", sub: "Clinically validated hypnosis" },
+  { icon: "🔬", label: "Science-backed", sub: "CBT & MBRP techniques" },
   { icon: "🔒", label: "SSL Secure", sub: "256-bit encryption" },
   { icon: "↩️", label: "30-day guarantee", sub: "Full refund, no questions" },
   { icon: "⭐", label: "4.9/5 rating", sub: "From 2,847 reviews" },

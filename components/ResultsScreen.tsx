@@ -18,10 +18,10 @@ const RECOVERY_MILESTONES = [
 ];
 
 const WEEK_PLAN = [
-  { week: "Week 1", desc: "Deep subconscious reprogramming — rewiring your relationship with alcohol" },
-  { week: "Week 2", desc: "Neutralising cravings at the root before they surface" },
-  { week: "Week 3", desc: "Installing new evening, social, and stress-relief rituals" },
-  { week: "Week 4", desc: "Dissolving the emotional dependency that willpower can't touch" },
+  { week: "Week 1", desc: "CBT foundations — mapping your triggers and the thoughts that drive them" },
+  { week: "Week 2", desc: "Mindfulness and urge surfing — learning to ride cravings without acting" },
+  { week: "Week 3", desc: "Building new evening, social, and stress-relief rituals" },
+  { week: "Week 4", desc: "Stoic practice — the pause between trigger and response" },
   { week: "Week 5+", desc: "Reinforcing lasting freedom — making sobriety your natural state" },
 ];
 

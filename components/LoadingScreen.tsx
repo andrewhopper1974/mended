@@ -6,8 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 const STEPS = [
   { icon: "🔍", label: "Analyzing your drinking patterns" },
   { icon: "🧩", label: "Mapping your personal triggers" },
-  { icon: "🧠", label: "Identifying subconscious drivers" },
-  { icon: "✨", label: "Building your hypnosis protocol" },
+  { icon: "🧠", label: "Identifying your thought patterns" },
+  { icon: "✨", label: "Building your CBT and mindfulness protocol" },
 ];
 
 interface Props {

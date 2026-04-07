@@ -140,7 +140,7 @@ export const QUIZ_FLOW: QuizItem[] = [
   {
     type: "interstitial",
     stat: "78%",
-    copy: "of people with your exact triggers have successfully broken free using a structured hypnosis program. Your patterns are more common than you think — and more treatable.",
+    copy: "of people with your exact triggers have successfully broken free using a structured CBT and mindfulness program. Your patterns are more common than you think — and more treatable.",
   },
 
   // ─── Phase 3: Honest accounting & reality check ───────────────────────────
@@ -301,7 +301,7 @@ export const QUIZ_FLOW: QuizItem[] = [
   {
     type: "interstitial",
     stat: "94,000+",
-    copy: "people with answers just like yours have broken free using this program. Hypnosis works differently than willpower — it removes the urge at its root, not just the surface.",
+    copy: "people with answers just like yours have broken free using this program. CBT and mindfulness work on the urge itself — teaching you to recognise it, sit with it, and let it pass instead of fighting it.",
   },
 
   // ─── Phase 5: Commitment and emotional peak (Q22–Q24) ────────────────────
@@ -375,12 +375,12 @@ export const PROFILES: Record<Profile, ProfileData> = {
     name: "The Stress Escapist",
     headline: "You drink to escape — not to enjoy.",
     description:
-      "Your brain has learned to use alcohol as an emergency exit from anxiety, emotional pain, and overwhelm. This isn't weakness — it's a deeply ingrained survival mechanism that hypnosis is specifically designed to reprogram.",
+      "Your brain has learned to use alcohol as an emergency exit from anxiety, emotional pain, and overwhelm. This isn't weakness — it's a deeply ingrained survival mechanism that CBT and mindfulness are specifically designed to retrain.",
     insights: [
       "Your triggers are almost always emotional or stress-related",
       "You likely feel relief the moment you decide to drink — before the first sip",
       "Willpower fails because the urge bypasses rational thought entirely",
-      "Hypnosis directly rewires the subconscious loop driving your cravings",
+      "CBT trigger work and urge surfing teach you to break the loop driving your cravings",
     ],
     stat: "83% of Stress Escapists report cravings dropping within the first 7 days of the program.",
   },
@@ -389,12 +389,12 @@ export const PROFILES: Record<Profile, ProfileData> = {
     name: "The Habitual Drinker",
     headline: "It's not a craving — it's a routine.",
     description:
-      "Alcohol has become woven into the fabric of your daily life. Certain times, places, and rituals automatically trigger the urge. Your brain doesn't distinguish between habit and need. The program breaks the loop at the subconscious level.",
+      "Alcohol has become woven into the fabric of your daily life. Certain times, places, and rituals automatically trigger the urge. Your brain doesn't distinguish between habit and need. The program uses CBT and mindfulness to break the loop at the level of the trigger itself.",
     insights: [
       "Your drinking is tied to specific times or activities, not just emotions",
       "You may not even realise how automatic the behaviour has become",
       "Traditional quitting methods fail because they don't address the habit loop",
-      "Hypnosis installs new automatic responses to replace the old triggers",
+      "CBT and mindfulness build new automatic responses to replace the old triggers",
     ],
     stat: "79% of Habitual Drinkers break the daily pattern within 2 weeks using this protocol.",
   },
@@ -408,7 +408,7 @@ export const PROFILES: Record<Profile, ProfileData> = {
       "You likely feel anxious or out of place in social settings without drinking",
       "Peer pressure and environmental cues are your biggest triggers",
       "You may not feel addicted — but the social reliance is just as real",
-      "Hypnosis rebuilds natural confidence and social ease from the inside out",
+      "CBT and mindful self-awareness rebuild natural confidence and social ease from the inside out",
     ],
     stat: "76% of Social Chameleons report feeling socially confident without alcohol after completing the program.",
   },

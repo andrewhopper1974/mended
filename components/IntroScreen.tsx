@@ -17,19 +17,19 @@ const fadeUp = (delay = 0) => ({
 });
 
 const SARAH = {
-  text: "I'd tried AA and sheer willpower. Nothing worked until this. By session 3 I stopped wanting a drink at 5pm. Now I'm 6 months sober and feeling alive again.",
+  text: "I'd white-knuckled it for years. Learning to actually notice my triggers and surf the urges instead of fighting them changed everything. Six months in and 5pm doesn't own me anymore.",
   name: "Sarah M., 34",
   tag: "6 months sober",
 };
 
 const OTHER_TESTIMONIALS = [
   {
-    text: "I was drinking every night. Did the first session completely skeptical. Woke up the next morning and just didn't want it. Changed my life.",
+    text: "Drinking every night. The CBT exercises around challenging the automatic thoughts felt almost too simple — but within a couple of weeks the evening pull just lost its grip on me.",
     name: "James T., 41",
-    tag: "Alcohol-free",
+    tag: "4 months sober",
   },
   {
-    text: "Started with anxiety and alcohol dependence. After the second hypnosis session, I felt a shift. Three months later, completely transformed. Worth every penny.",
+    text: "Started with anxiety and alcohol dependence. The mindfulness work and the Stoic 'pause' practice gave me a space I never knew I had. Three months in, completely transformed.",
     name: "Michelle L., 28",
     tag: "3 months free",
   },
@@ -123,7 +123,7 @@ export default function IntroScreen({ onStart }: Props) {
           {" "}quit alcohol for good.
         </h1>
         <p className="text-sm" style={{ color: "rgba(255,255,255,0.45)", letterSpacing: "0.01em" }}>
-          No willpower. No AA. No medication.
+          Skills-based. Self-paced. Private.
         </p>
       </motion.div>
 
@@ -164,7 +164,7 @@ export default function IntroScreen({ onStart }: Props) {
           Start by selecting your gender:
         </p>
         <p className="text-xs text-center mb-4" style={{ color: "rgba(255,255,255,0.4)" }}>
-          So we can personalise your hypnosis sessions
+          So we can tailor your CBT and mindfulness program
         </p>
 
         <div className="grid grid-cols-2 gap-3">

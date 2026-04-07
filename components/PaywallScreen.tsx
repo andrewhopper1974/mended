@@ -173,7 +173,7 @@ export default function PaywallScreen({ profile, email }: Props) {
       >
         {profileData.name}
         <br />
-        Hypnosis Program Is Ready
+        Recovery Program Is Ready
       </h1>
 
       <p
@@ -283,8 +283,8 @@ export default function PaywallScreen({ profile, email }: Props) {
         </p>
         <div className="space-y-2.5">
           {[
-            "Guided hypnosis sessions that eliminate cravings at the subconscious level",
-            "Your personalized trigger map and subconscious reprogramming protocol",
+            "Guided CBT and mindfulness sessions that defuse cravings as they arise",
+            "Your personalized trigger map and urge-surfing toolkit",
             "30-day step-by-step plan built around your specific answers",
           ].map((b, i) => (
             <div key={i} className="flex items-start gap-2.5">

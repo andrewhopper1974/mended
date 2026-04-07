@@ -60,8 +60,8 @@ export default function RefundPage() {
             How the Guarantee Works
           </h2>
           <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: "1.6" }}>
-            You have 30 days from your purchase date to try the full Mended Hypnosis Program.
-            Complete at least the first hypnosis session and work through the program materials. If you
+            You have 30 days from your purchase date to try the full Mended Program.
+            Complete at least the first session and work through the program materials. If you
             don't feel it's working for you, simply request a refund within 30 days of purchase.
           </p>
         </section>
@@ -100,7 +100,7 @@ export default function RefundPage() {
             What This Guarantee Covers
           </h2>
           <ul className="space-y-2" style={{ color: "rgba(255,255,255,0.7)", lineHeight: "1.6" }}>
-            <li>✓ All hypnosis session audio files</li>
+            <li>✓ All guided CBT, mindfulness, and Stoic session audio files</li>
             <li>✓ Your personalized trigger map and protocol</li>
             <li>✓ 30-day step-by-step recovery plan</li>
             <li>✓ Email support and resources</li>
@@ -126,7 +126,7 @@ export default function RefundPage() {
           </h2>
           <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: "1.6" }}>
             This guarantee reflects our confidence in the program's effectiveness and our commitment to
-            your satisfaction. We believe hypnosis-based recovery works, and we're willing to back that
+            your satisfaction. We believe evidence-based recovery works, and we're willing to back that
             belief with your money. No questions asked if you decide it's not right for you.
           </p>
         </section>

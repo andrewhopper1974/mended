@@ -9,21 +9,21 @@ const REVIEWS = [
     age: 34,
     tag: "6 months sober",
     stars: 5,
-    text: "I'd tried AA, therapy, and sheer willpower. Nothing worked until this. By session 3 I stopped wanting a drink at 5pm. Now I'm 6 months sober and feeling alive again. I genuinely didn't believe hypnosis would work — I was wrong.",
+    text: "I'd tried plenty of things alongside white-knuckling it. The CBT trigger work and learning to actually surf the urges instead of fighting them is what finally clicked. Six months in and 5pm doesn't own me anymore.",
   },
   {
     name: "James T.",
     age: 41,
-    tag: "Alcohol-free",
+    tag: "4 months sober",
     stars: 5,
-    text: "I was drinking every night for 8 years. Did the first session completely skeptical. Woke up the next morning and just didn't want it. That was 4 months ago. Changed my life.",
+    text: "Drinking every night for 8 years. The CBT exercises around catching and challenging the automatic 'I deserve this' thoughts felt almost too simple — but within weeks the evening pull just lost its grip. Four months on and I'm still amazed.",
   },
   {
     name: "Michelle L.",
     age: 28,
     tag: "3 months free",
     stars: 5,
-    text: "Started with crippling anxiety and alcohol dependence. After the second hypnosis session, I felt a genuine shift in how my brain responded to stress. Three months later, completely transformed. Worth every penny.",
+    text: "Started with crippling anxiety and alcohol dependence. The mindfulness practices and the Stoic 'pause' work gave me a space between feeling and reacting that I never knew I had. Three months later, completely transformed.",
   },
   {
     name: "Daniel R.",
@@ -44,7 +44,7 @@ const REVIEWS = [
     age: 44,
     tag: "Sober 7 months",
     stars: 5,
-    text: "I was deeply skeptical. But after two sessions the craving just... lifted. It wasn't willpower, it was like the switch got turned off. 7 months later and I've never looked back.",
+    text: "I was deeply skeptical. But the urge surfing technique — just watching the craving rise and fall without acting — actually worked. It's not willpower, it's a skill. 7 months later and I've never looked back.",
   },
   {
     name: "Priya S.",
@@ -58,7 +58,7 @@ const REVIEWS = [
     age: 49,
     tag: "Best decision I made",
     stars: 5,
-    text: "Tried everything — rehab, AA, medication. This is the only thing that actually rewired how I think. My doctor is amazed. I've been sober for over a year now.",
+    text: "I'd tried a lot of things over the years. What worked for me here was the combination — the CBT structure, the mindfulness practice, and honestly the Stoic readings gave it a depth I didn't expect. Over a year sober now.",
   },
 ];
 

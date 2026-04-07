@@ -100,7 +100,7 @@ function getEmojiForAnswer(answer: string): string {
   if (lower.includes("judgment")) return "👀";
 
   // Methods/solutions
-  if (lower.includes("hypnosis")) return "🧠";
+  if (lower.includes("mindfulness")) return "🧠";
   if (lower.includes("therapy")) return "👨‍⚕️";
   if (lower.includes("support group")) return "👥";
   if (lower.includes("medication")) return "💊";
@@ -114,9 +114,9 @@ function getEmojiForAnswer(answer: string): string {
 // Q9 inline hint
 const Q9_HINT =
   "This is exactly what our program is designed to give you.";
-// Q21 hypnosis hint
-const Q21_HYPNOSIS_OPTION = "Subconscious reprogramming through hypnosis";
-const Q21_HINT = "Hypnosis is the core of your program — perfect.";
+// Q21 hint
+const Q21_HYPNOSIS_OPTION = "Mindfulness and urge surfing techniques";
+const Q21_HINT = "Mindfulness-based relapse prevention is at the core of your program — perfect.";
 
 // Context cards shown below open-ended inputs
 const OPEN_ENDED_CONTEXT: Record<number, { icon: string; color: string; title: string; body: string }> = {
@@ -148,7 +148,7 @@ const OPEN_ENDED_CONTEXT: Record<number, { icon: string; color: string; title: s
     icon: "🔒",
     color: "#8A5EFF",
     title: "This is just for you",
-    body: "Your honesty here directly shapes your hypnosis sessions. The more real you are with yourself, the more powerful your program becomes.",
+    body: "Your honesty here directly shapes your CBT and mindfulness sessions. The more real you are with yourself, the more powerful your program becomes.",
   },
   26: {
     icon: "💜",
@@ -312,7 +312,7 @@ export default function QuizScreen({
           </motion.div>
         )}
 
-        {/* Hint after Q21 hypnosis selected */}
+        {/* Hint after Q21 mindfulness selected */}
         {showHint && item.id === 21 && (
           <motion.div
             initial={{ opacity: 0, y: -8 }}

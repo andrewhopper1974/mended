@@ -58,7 +58,7 @@ export default function PrivacyPage() {
             How We Use Your Data
           </h2>
           <ul className="space-y-2" style={{ color: "rgba(255,255,255,0.7)", lineHeight: "1.6" }}>
-            <li>• To provide and customize your personalized hypnosis program</li>
+            <li>• To provide and customize your personalized recovery program</li>
             <li>• To send email updates, program materials, and support resources</li>
             <li>• To improve our service through usage analytics</li>
             <li>• To process payments and manage your subscription</li>
