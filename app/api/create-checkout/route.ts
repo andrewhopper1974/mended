@@ -6,7 +6,14 @@ export async function POST(req: NextRequest) {
     apiVersion: "2024-06-20",
   });
   try {
-    const { email, profile, priceId, plan } = await req.json();
+    const { email, profile, priceId, plan, promo } = await req.json();
+
+    // Map promo flags to Stripe promotion code IDs (managed in Stripe dashboard,
+    // injected via env so we can change discount amounts without redeploying).
+    const promoIds: Record<string, string | undefined> = {
+      exit_intent: process.env.STRIPE_PROMO_ID_EXIT_INTENT,
+    };
+    const promoId = promo ? promoIds[promo] : undefined;
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
@@ -17,12 +24,16 @@ export async function POST(req: NextRequest) {
           quantity: 1,
         },
       ],
+      ...(promoId && {
+        discounts: [{ promotion_code: promoId }],
+      }),
       success_url: `https://app.mended.health/welcome?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.nextUrl.origin}/?paywall=true&profile=${encodeURIComponent(profile || "")}&email=${encodeURIComponent(email || "")}&plan=${encodeURIComponent(plan || "")}`,
       metadata: {
         profile: profile || "",
         email: email || "",
         plan: plan || "",
+        promo: promo || "",
       },
     });
 

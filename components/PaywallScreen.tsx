@@ -136,6 +136,8 @@ export default function PaywallScreen({ profile, email }: Props) {
   const [checkoutError, setCheckoutError] = useState("");
   const [selectedPlan, setSelectedPlan] = useState<string>("90day");
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [showExitIntent, setShowExitIntent] = useState(false);
+  const [exitShown, setExitShown] = useState(false);
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
 
   const resetInactivity = () => {
@@ -160,7 +162,44 @@ export default function PaywallScreen({ profile, email }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleCheckout = async (planOverride?: string) => {
+  // ─── Exit-intent on desktop (mouse leaves viewport top) ───────────────────
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handler = (e: MouseEvent) => {
+      if (exitShown) return;
+      if (e.clientY <= 0) {
+        setShowExitIntent(true);
+        setExitShown(true);
+      }
+    };
+    document.addEventListener("mouseout", handler);
+    return () => document.removeEventListener("mouseout", handler);
+  }, [exitShown]);
+
+  // ─── Exit-intent on mobile (pull-down past scroll-zero) ──────────────────
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    let startY = 0;
+    const onTouchStart = (e: TouchEvent) => {
+      startY = e.touches[0]?.clientY ?? 0;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      if (exitShown) return;
+      const y = e.touches[0]?.clientY ?? 0;
+      if (window.scrollY <= 0 && y - startY > 120) {
+        setShowExitIntent(true);
+        setExitShown(true);
+      }
+    };
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    return () => {
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+    };
+  }, [exitShown]);
+
+  const handleCheckout = async (planOverride?: string, promo?: string) => {
     vibrate([60, 20, 60]);
     setLoading(true);
     setCheckoutError("");
@@ -172,7 +211,7 @@ export default function PaywallScreen({ profile, email }: Props) {
       const res = await fetch("/api/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, profile, priceId, plan: planId }),
+        body: JSON.stringify({ email, profile, priceId, plan: planId, promo }),
       });
       const data = await res.json();
       if (data.url) {
@@ -657,6 +696,126 @@ export default function PaywallScreen({ profile, email }: Props) {
         </a>
       </div>
 
+      {/* ─── Exit-intent modal — triggers Stripe promo via env-managed code ── */}
+      <AnimatePresence>
+        {showExitIntent && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-end md:items-center justify-center px-4"
+            style={{ background: "rgba(0,0,0,0.72)", backdropFilter: "blur(6px)" }}
+            onClick={() => setShowExitIntent(false)}
+          >
+            <motion.div
+              initial={{ y: 40, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 40, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 260, damping: 26 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md rounded-2xl p-6 relative"
+              style={{
+                background: "linear-gradient(155deg, #1a1042 0%, #0a0520 100%)",
+                border: "1.5px solid rgba(138,94,255,0.4)",
+                boxShadow: "0 20px 60px rgba(138,94,255,0.25)",
+              }}
+            >
+              <button
+                onClick={() => setShowExitIntent(false)}
+                className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-lg"
+                style={{
+                  background: "rgba(255,255,255,0.06)",
+                  color: "rgba(255,255,255,0.6)",
+                }}
+              >
+                ×
+              </button>
+
+              <p
+                className="text-xs font-bold uppercase tracking-wider mb-2"
+                style={{
+                  background: "linear-gradient(90deg, #8A5EFF, #34CBBF)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                Wait — one thing
+              </p>
+              <h3
+                className="text-xl font-bold mb-3 leading-tight text-white"
+                style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
+              >
+                Take $10 off if you start today
+              </h3>
+              <p className="text-sm mb-5 leading-relaxed" style={{ color: "rgba(255,255,255,0.65)" }}>
+                We don&rsquo;t want price to be the reason you don&rsquo;t start.
+                Use this one-time offer on the 12-week complete program.
+              </p>
+
+              <div
+                className="rounded-xl px-4 py-3 mb-5 flex items-center justify-between"
+                style={{
+                  background: "rgba(52,203,191,0.1)",
+                  border: "1px solid rgba(52,203,191,0.3)",
+                }}
+              >
+                <div>
+                  <p className="text-xs" style={{ color: "rgba(255,255,255,0.55)" }}>
+                    12-Week Complete Program
+                  </p>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-sm line-through" style={{ color: "rgba(255,255,255,0.35)" }}>
+                      $79
+                    </span>
+                    <span
+                      className="text-2xl font-bold"
+                      style={{
+                        background: "linear-gradient(90deg, #8A5EFF, #34CBBF)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                      }}
+                    >
+                      $69
+                    </span>
+                  </div>
+                </div>
+                <div
+                  className="text-[10px] font-bold uppercase px-2 py-1 rounded-full"
+                  style={{
+                    background: "rgba(52,203,191,0.2)",
+                    color: "#34CBBF",
+                    letterSpacing: "0.08em",
+                  }}
+                >
+                  Save $10
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  setShowExitIntent(false);
+                  setSelectedPlan("90day");
+                  // Stripe auto-applies the $10-off promotion code
+                  // (configured via STRIPE_PROMO_ID_EXIT_INTENT env var)
+                  handleCheckout("90day", "exit_intent");
+                }}
+                className="btn-cta w-full py-3.5 text-base font-semibold mb-2"
+                style={{ borderRadius: "14px" }}
+              >
+                Claim my $10 off →
+              </button>
+              <button
+                onClick={() => setShowExitIntent(false)}
+                className="w-full text-center text-xs py-2"
+                style={{ color: "rgba(255,255,255,0.4)" }}
+              >
+                No thanks, I&rsquo;ll pass
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
