@@ -516,40 +516,29 @@ export default function PaywallScreen({ profile, email }: Props) {
         </div>
       </div>
 
-      {/* ─── Founder / expert credibility ─────────────────────────────────── */}
-      {/* TODO: Replace with real founder photo in /public/founder.jpg and real credential */}
+      {/* ─── Evidence-based credibility ──────────────────────────────────── */}
       <div
-        className="rounded-2xl p-5 mb-8 flex items-center gap-4"
+        className="rounded-2xl p-5 mb-8"
         style={{
           background: "rgba(255,255,255,0.04)",
           border: "1px solid rgba(255,255,255,0.08)",
         }}
       >
-        <div
-          className="w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 text-2xl font-bold"
-          style={{
-            background: "linear-gradient(135deg, #8A5EFF, #34CBBF)",
-            color: "#07001c",
-          }}
+        <p
+          className="text-xs uppercase tracking-wider mb-3 font-semibold"
+          style={{ color: "rgba(196,175,255,0.65)", letterSpacing: "0.08em" }}
         >
-          {/* TODO: <img src="/founder.jpg" alt="..." className="w-full h-full rounded-full object-cover" /> */}
-          👤
-        </div>
-        <div>
-          <p className="text-xs uppercase tracking-wider mb-0.5" style={{ color: "rgba(196,175,255,0.6)" }}>
-            Designed with
-          </p>
-          <p className="text-sm font-bold text-white leading-tight">
-            {/* TODO: Replace with real clinician's name and credential */}
-            [Clinician Name], [Credential e.g. PsyD, LCSW]
-          </p>
-          <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>
-            {/* TODO: Replace with real bio line */}
-            Specialist in Mindfulness-Based Relapse Prevention
-          </p>
-        </div>
+          Built on evidence-based methods
+        </p>
+        <p className="text-sm leading-relaxed mb-3" style={{ color: "rgba(255,255,255,0.78)" }}>
+          Mended is grounded in <strong>Mindfulness-Based Relapse Prevention</strong>{" "}
+          (Bowen, Chawla &amp; Marlatt) and Stoic cognitive practice. Both are
+          peer-reviewed, evidence-supported approaches to substance use.
+        </p>
+        <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
+          A self-paced education program — not medical treatment.
+        </p>
       </div>
-
       {/* Testimonials */}
       <h3
         className="text-sm font-semibold mb-4"
@@ -692,9 +681,19 @@ export default function PaywallScreen({ profile, email }: Props) {
           : "Start the 12-week program →"}
       </button>
 
+      {/* Medical disclaimer */}
+      <p
+        className="text-center text-[11px] leading-relaxed mt-6 mb-4 px-2"
+        style={{ color: "rgba(255,255,255,0.4)" }}
+      >
+        Mended is a self-paced educational program, not a substitute for medical
+        or psychological treatment. If you experience severe withdrawal symptoms,
+        contact a doctor immediately.
+      </p>
+
       {/* Footer */}
       <div
-        className="border-t flex justify-center gap-4 flex-wrap text-center pt-6 mt-4 text-xs"
+        className="border-t flex justify-center gap-4 flex-wrap text-center pt-6 mt-2 text-xs"
         style={{
           borderColor: "rgba(255,255,255,0.1)",
           color: "rgba(255,255,255,0.4)",
