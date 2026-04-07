@@ -11,18 +11,18 @@ interface Props {
 }
 
 const RECOVERY_MILESTONES = [
-  { label: "Week 1",  desc: "Sleep quality improves, anxiety starts lifting" },
-  { label: "Month 1", desc: "Cravings reduced by 70%, energy returns" },
-  { label: "Month 3", desc: "Mental clarity fully restored" },
-  { label: "Month 6", desc: "Complete neurological reset" },
+  { label: "Week 1",  desc: "Sleep deepens and morning anxiety starts to lift" },
+  { label: "Week 4",  desc: "Cravings noticeably weaker, energy steadily returning" },
+  { label: "Week 8",  desc: "Mental clarity sharpens and emotional regulation improves" },
+  { label: "Week 12", desc: "Sobriety begins to feel like your natural state" },
 ];
 
 const WEEK_PLAN = [
-  { week: "Week 1", desc: "CBT foundations — mapping your triggers and the thoughts that drive them" },
-  { week: "Week 2", desc: "Mindfulness and urge surfing — learning to ride cravings without acting" },
-  { week: "Week 3", desc: "Building new evening, social, and stress-relief rituals" },
-  { week: "Week 4", desc: "Stoic practice — the pause between trigger and response" },
-  { week: "Week 5+", desc: "Reinforcing lasting freedom — making sobriety your natural state" },
+  { week: "Weeks 1–2",  desc: "CBT foundations — mapping your triggers and the thoughts that drive them" },
+  { week: "Weeks 3–5",  desc: "Mindfulness and urge surfing — learning to ride cravings without acting on them" },
+  { week: "Weeks 6–8",  desc: "Building new evening, social, and stress-relief rituals that don't involve alcohol" },
+  { week: "Weeks 9–10", desc: "Stoic practice — the pause between trigger and response" },
+  { week: "Weeks 11–12", desc: "Reinforcement and integration — making your new identity feel permanent" },
 ];
 
 const PROFILE_REMOVALS: Record<Profile, { trigger: string; belief: string; habit: string }> = {
@@ -45,29 +45,29 @@ const PROFILE_REMOVALS: Record<Profile, { trigger: string; belief: string; habit
 
 const TESTIMONIALS = [
   {
-    text: "\"I'd tried AA and sheer willpower. Nothing worked until this. By session 3 I stopped wanting a drink at 5pm. Now I'm 6 months sober and feeling alive again.\"",
-    name: "Sarah M., 34",
-    tag: "6 months sober",
+    text: "\"I'd been white-knuckling it for years. The CBT trigger work showed me I'd been fighting the wrong thing the whole time. Twelve weeks in and 5pm doesn't own me anymore.\"",
+    name: "Rachel K., 36",
+    tag: "12 weeks sober",
   },
   {
-    text: "\"I was drinking every night. Did the first session completely skeptical. Woke up the next morning and just didn't want it. Changed my life.\"",
-    name: "James T., 41",
-    tag: "Alcohol-free",
+    text: "\"Urge surfing sounded fluffy until I actually tried it. Sitting with a craving for ninety seconds and watching it pass — that changed everything for me.\"",
+    name: "Daniel P., 42",
+    tag: "3 months sober",
   },
   {
-    text: "\"Three months in and I've lost 18 lbs too — turns out alcohol was behind so much. Completely transformed.\"",
-    name: "Michelle L., 28",
-    tag: "3 months free",
+    text: "\"The Stoic 'pause' practice gave me a space between feeling the urge and acting on it that I genuinely didn't know I had. Ten weeks in and I feel like myself again.\"",
+    name: "Aisha N., 31",
+    tag: "10 weeks sober",
   },
 ];
 
 function RecoveryChart() {
   const W = 340;
-  const H = 160;
-  const padL = 8;
-  const padR = 8;
-  const padT = 38;
-  const padB = 16;
+  const H = 170;
+  const padL = 26;
+  const padR = 26;
+  const padT = 42;
+  const padB = 24;
   const chartW = W - padL - padR;
   const chartH = H - padT - padB;
 
@@ -85,12 +85,13 @@ function RecoveryChart() {
   // Willpower: rises a little then plateaus much lower
   const compPath = `M ${x0} ${yStart} C ${x0 + chartW * 0.35} ${yStart - 10}, ${x0 + chartW * 0.65} ${yWillpower + 10}, ${x1} ${yWillpower}`;
 
-  const xLabels = ["Today", "Week 4", "Month 3", "Month 6"];
-  const startPillW = 52;
-  const endPillW   = 90;
+  // 3-month / 12-week timeline labels
+  const xLabels = ["Start", "Week 4", "Week 8", "Week 12"];
+  const startPillW = 64;
+  const endPillW   = 110;
 
   return (
-    <svg width="100%" viewBox={`0 0 ${W} ${H + 24}`} className="overflow-visible">
+    <svg width="100%" viewBox={`0 0 ${W} ${H + 8}`} className="overflow-visible">
       <defs>
         <linearGradient id="rLineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="#8A5EFF" />
@@ -103,6 +104,10 @@ function RecoveryChart() {
         <linearGradient id="rEndPill" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="#8A5EFF" />
           <stop offset="100%" stopColor="#34CBBF" />
+        </linearGradient>
+        <linearGradient id="rStartPillStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#8A5EFF" stopOpacity="0.7" />
+          <stop offset="100%" stopColor="#8A5EFF" stopOpacity="0.3" />
         </linearGradient>
       </defs>
 
@@ -123,23 +128,33 @@ function RecoveryChart() {
 
       {/* Start dot — bottom left */}
       <circle cx={x0} cy={yStart} r="4.5" fill="#8A5EFF" />
-      <rect x={x0 - 4} y={yStart - 32} width={startPillW} height={20} rx="10"
-        fill="#1e1245" stroke="rgba(138,94,255,0.4)" strokeWidth="1" />
-      <text x={x0 - 4 + startPillW / 2} y={yStart - 18}
-        textAnchor="middle" fill="white" fontSize="11" fontWeight="700">Today</text>
+      <rect x={x0 - startPillW / 2} y={yStart - 34} width={startPillW} height={22} rx="11"
+        fill="#1e1245" stroke="url(#rStartPillStroke)" strokeWidth="1.2" />
+      <text x={x0} y={yStart - 19}
+        textAnchor="middle" fill="#ffffff" fontSize="11" fontWeight="600"
+        fontFamily="var(--font-playfair), Georgia, serif"
+        fontStyle="italic" letterSpacing="0.4">Today</text>
 
       {/* End dot — top right */}
-      <circle cx={x1} cy={yEnd} r="5" fill="#34CBBF" />
-      <rect x={x1 - endPillW + 4} y={yEnd - 32} width={endPillW} height={20} rx="10"
+      <circle cx={x1} cy={yEnd} r="5.5" fill="#34CBBF" />
+      <rect x={x1 - endPillW / 2} y={yEnd - 34} width={endPillW} height={22} rx="11"
         fill="url(#rEndPill)" />
-      <text x={x1 - endPillW + 4 + endPillW / 2} y={yEnd - 18}
-        textAnchor="middle" fill="white" fontSize="11" fontWeight="700">Alcohol-free ✓</text>
+      <text x={x1} y={yEnd - 19}
+        textAnchor="middle" fill="#ffffff" fontSize="11.5" fontWeight="700"
+        fontFamily="var(--font-playfair), Georgia, serif"
+        fontStyle="italic" letterSpacing="0.4">Alcohol-free</text>
 
-      {/* X-axis labels */}
-      {xLabels.map((label, i) => (
-        <text key={label} x={padL + (chartW / (xLabels.length - 1)) * i} y={H + 18}
-          textAnchor="middle" fill="rgba(255,255,255,0.38)" fontSize="10">{label}</text>
-      ))}
+      {/* X-axis labels — fitted inside grid using start/middle/end anchors */}
+      {xLabels.map((label, i) => {
+        const total = xLabels.length - 1;
+        const x = padL + (chartW / total) * i;
+        const anchor = i === 0 ? "start" : i === total ? "end" : "middle";
+        return (
+          <text key={label} x={x} y={H + 2}
+            textAnchor={anchor} fill="rgba(255,255,255,0.45)" fontSize="10"
+            fontWeight="500" letterSpacing="0.3">{label}</text>
+        );
+      })}
     </svg>
   );
 }
@@ -201,8 +216,11 @@ export default function ResultsScreen({ profile, answers, onSeeProgram }: Props)
             border: "1px solid rgba(138,94,255,0.2)",
           }}
         >
-          <p className="text-center text-sm font-semibold mb-4" style={{ color: "rgba(255,255,255,0.6)" }}>
-            Your recovery forecast with Mended
+          <p className="text-center text-sm font-semibold mb-1" style={{ color: "rgba(255,255,255,0.7)" }}>
+            Your projected 12-week recovery
+          </p>
+          <p className="text-center text-xs mb-4" style={{ color: "rgba(255,255,255,0.4)" }}>
+            Based on outcomes from members with patterns like yours
           </p>
 
           <RecoveryChart />
@@ -214,7 +232,7 @@ export default function ResultsScreen({ profile, answers, onSeeProgram }: Props)
                 background: "linear-gradient(90deg, #8A5EFF 0%, #34CBBF 100%)",
               }} />
               <span className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.7)" }}>
-                Your progress using Mended
+                Projected progress with Mended
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -260,7 +278,7 @@ export default function ResultsScreen({ profile, answers, onSeeProgram }: Props)
             className="text-3xl font-bold leading-tight mb-2"
             style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
           >
-            Based on your answers, you can{" "}
+            Based on your answers, you can rebuild your relationship with alcohol in{" "}
             <span
               style={{
                 background: "linear-gradient(90deg, #34CBBF 0%, #8A5EFF 100%)",
@@ -268,11 +286,11 @@ export default function ResultsScreen({ profile, answers, onSeeProgram }: Props)
                 WebkitTextFillColor: "transparent",
               }}
             >
-              be completely alcohol-free in 8 weeks
+              12 weeks
             </span>
           </h1>
           <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
-            Based on what we've seen from 94,000+ users with drinking patterns and triggers like yours.
+            Based on outcomes from 94,000+ members with patterns and triggers similar to yours.
           </p>
         </motion.div>
 
@@ -287,18 +305,18 @@ export default function ResultsScreen({ profile, answers, onSeeProgram }: Props)
             border: "1px solid rgba(255,255,255,0.08)",
           }}
         >
-          <p className="text-base font-bold mb-4 text-center">Your recovery plan with hypnotherapy</p>
+          <p className="text-base font-bold mb-4 text-center">Your 12-week recovery plan</p>
 
           <div className="flex gap-3 mb-5">
             {[
               { label: "Goal", value: "Alcohol-free", color: "#34CBBF", bg: "rgba(52,203,191,0.12)" },
-              { label: "Success rate", value: "94%", color: "#34CBBF", bg: "rgba(138,94,255,0.12)" },
+              { label: "Length", value: "12 weeks", color: "#8A5EFF", bg: "rgba(138,94,255,0.12)" },
             ].map((s, i) => (
               <div key={i} className="flex-1 flex items-center gap-3 rounded-xl px-3 py-3" style={{ background: "rgba(255,255,255,0.05)" }}>
                 <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: s.bg }}>
                   {i === 0
                     ? <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 11.5L3.5 15L5 9.5L1 6H6L8 1Z" fill="#34CBBF" /></svg>
-                    : <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#8A5EFF" strokeWidth="1.5" /><path d="M5 8.5L7 10.5L11 6" stroke="#8A5EFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    : <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#8A5EFF" strokeWidth="1.5" /><path d="M8 4V8L10.5 9.5" stroke="#8A5EFF" strokeWidth="1.5" strokeLinecap="round" /></svg>
                   }
                 </div>
                 <div>

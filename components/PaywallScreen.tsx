@@ -41,13 +41,13 @@ const PLANS: Plan[] = [
 
 const TESTIMONIALS = [
   {
-    name: "Sarah M.",
-    text: "I'd tried AA, medication, and sheer willpower. Nothing worked until this. By session 3 I stopped wanting a drink at 5pm. It's been 4 months.",
+    name: "Rachel K.",
+    text: "I'd been white-knuckling it for years. The CBT trigger work showed me I'd been fighting the wrong thing the whole time. Twelve weeks in and 5pm doesn't own me anymore.",
     stars: 5,
   },
   {
-    name: "James T.",
-    text: "I was drinking a bottle of wine every night. I did the first session completely skeptical. Woke up the next morning and just didn't want it. Still don't.",
+    name: "Daniel P.",
+    text: "Urge surfing sounded fluffy until I actually tried it. Sitting with a craving for ninety seconds and watching it pass — that changed everything for me.",
     stars: 5,
   },
 ];
@@ -207,18 +207,22 @@ export default function PaywallScreen({ profile, email }: Props) {
                   selectedPlan === plan.id
                     ? "2px solid #34CBBF"
                     : "1px solid rgba(138,94,255,0.3)",
+                marginTop: plan.badge ? 14 : 0,
               }}
             >
               {plan.badge && (
                 <div
-                  className="absolute top-2 right-2 text-xs font-semibold px-2.5 py-1 rounded-lg"
+                  className="absolute text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full whitespace-nowrap"
                   style={{
-                    background: "rgba(52,203,191,0.2)",
-                    border: "1px solid rgba(52,203,191,0.4)",
-                    color: "#34CBBF",
+                    top: -11,
+                    left: 16,
+                    background: "linear-gradient(90deg, #8A5EFF 0%, #34CBBF 100%)",
+                    color: "#0a051e",
+                    boxShadow: "0 4px 14px rgba(52,203,191,0.35)",
+                    letterSpacing: "0.06em",
                   }}
                 >
-                  {plan.badge}
+                  ★ {plan.badge}
                 </div>
               )}
               <div className="flex items-start justify-between mb-1.5">
@@ -285,7 +289,7 @@ export default function PaywallScreen({ profile, email }: Props) {
           {[
             "Guided CBT and mindfulness sessions that defuse cravings as they arise",
             "Your personalized trigger map and urge-surfing toolkit",
-            "30-day step-by-step plan built around your specific answers",
+            "12-week step-by-step plan built around your specific answers",
           ].map((b, i) => (
             <div key={i} className="flex items-start gap-2.5">
               <span className="text-xs flex-shrink-0" style={{ color: "#34CBBF" }}>
