@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import ProgressBar from "@/components/ProgressBar";
 import { vibrate } from "@/lib/quizData";
@@ -19,8 +19,14 @@ interface Props {
 }
 
 export default function InterstitialScreen({ item, progress, onDone, onBack }: Props) {
+  const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     vibrate([15, 10, 30, 10, 60]);
+    const mq = window.matchMedia("(max-width: 1023px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
   }, []);
 
   return (
@@ -32,28 +38,32 @@ export default function InterstitialScreen({ item, progress, onDone, onBack }: P
       className="flex flex-col min-h-screen relative overflow-hidden"
       style={{ background: "#07001c" }}
     >
-      {/* ── Background atmosphere ── */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: "radial-gradient(ellipse 80% 50% at 50% 30%, rgba(138,94,255,0.2) 0%, transparent 70%)",
-        }}
-      />
-      <div
-        className="absolute pointer-events-none"
-        style={{
-          bottom: 0,
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: 400,
-          height: 300,
-          background: "radial-gradient(ellipse, rgba(52,203,191,0.1) 0%, transparent 70%)",
-          filter: "blur(30px)",
-        }}
-      />
+      {/* ── Background atmosphere — desktop only (blur filters are very expensive on mobile) ── */}
+      {!isMobile && (
+        <>
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: "radial-gradient(ellipse 80% 50% at 50% 30%, rgba(138,94,255,0.2) 0%, transparent 70%)",
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              bottom: 0,
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: 400,
+              height: 300,
+              background: "radial-gradient(ellipse, rgba(52,203,191,0.1) 0%, transparent 70%)",
+              filter: "blur(30px)",
+            }}
+          />
+        </>
+      )}
 
-      {/* Floating particles */}
-      {[
+      {/* Floating particles — desktop only to avoid mobile jank */}
+      {!isMobile && [
         { x: "15%", y: "20%", size: 3, delay: 0 },
         { x: "80%", y: "15%", size: 2, delay: 0.6 },
         { x: "70%", y: "55%", size: 4, delay: 1.1 },
@@ -100,7 +110,7 @@ export default function InterstitialScreen({ item, progress, onDone, onBack }: P
         <div className="text-center mb-10">
           {/* Decorative rings behind the stat */}
           <div className="relative flex justify-center items-center mb-6" style={{ height: 140 }}>
-            {[130, 100, 72].map((size, i) => (
+            {!isMobile && [130, 100, 72].map((size, i) => (
               <motion.div
                 key={i}
                 className="absolute rounded-full"
@@ -113,6 +123,16 @@ export default function InterstitialScreen({ item, progress, onDone, onBack }: P
                 transition={{ repeat: Infinity, duration: 2.5 + i * 0.5, delay: i * 0.4, ease: "easeInOut" }}
               />
             ))}
+            {isMobile && (
+              <div
+                className="absolute rounded-full"
+                style={{
+                  width: 110,
+                  height: 110,
+                  border: "1px solid rgba(138,94,255,0.22)",
+                }}
+              />
+            )}
 
             {/* Stat number floating in center */}
             <motion.div
@@ -127,7 +147,7 @@ export default function InterstitialScreen({ item, progress, onDone, onBack }: P
                 WebkitTextFillColor: "transparent",
                 lineHeight: 1,
                 fontFamily: "var(--font-playfair), Georgia, serif",
-                filter: "drop-shadow(0 0 30px rgba(138,94,255,0.5))",
+                filter: isMobile ? undefined : "drop-shadow(0 0 30px rgba(138,94,255,0.5))",
               }}
             >
               {item.stat}

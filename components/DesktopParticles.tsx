@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const COLORS = ["#8A5EFF", "#34CBBF", "#4675FF", "#c4afff", "#ffffff"];
 
@@ -52,10 +52,20 @@ function generateParticles(count: number, seed: number, region: "side" | "full")
 }
 
 export default function DesktopParticles() {
+  // Detect mobile to drastically reduce particle count & skip expensive shadows
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1023px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   // Desktop: dense side columns (galaxy)
   const desktopParticles = useMemo(() => generateParticles(160, 1337, "side"), []);
-  // Mobile/all sizes: scattered behind content (lower density to avoid clutter)
-  const mobileParticles = useMemo(() => generateParticles(70, 4242, "full"), []);
+  // Mobile: much sparser + simpler animation to avoid lag
+  const mobileParticles = useMemo(() => generateParticles(18, 4242, "full"), []);
 
   return (
     <>
@@ -64,7 +74,7 @@ export default function DesktopParticles() {
         className="fixed inset-0 pointer-events-none overflow-hidden lg:hidden"
         style={{ zIndex: 0 }}
       >
-        {mobileParticles.map((p, i) => (
+        {isMobile && mobileParticles.map((p, i) => (
           <motion.div
             key={`m-${i}`}
             className="absolute rounded-full"
@@ -74,11 +84,9 @@ export default function DesktopParticles() {
               width: p.size,
               height: p.size,
               background: p.color,
-              boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+              willChange: "opacity",
             }}
             animate={{
-              y: [-6, 6, -6],
-              x: [0, p.driftX, 0],
               opacity: [p.baseOpacity, p.peakOpacity, p.baseOpacity],
             }}
             transition={{

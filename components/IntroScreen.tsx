@@ -107,10 +107,9 @@ export default function IntroScreen({ onStart }: Props) {
         </span>
         <a
           href="https://app.mended.health/login"
-          className="text-xs font-semibold px-3 py-1 rounded-full transition hover:opacity-90"
+          className="signin-pill text-xs font-semibold px-3 py-1 rounded-full transition hover:opacity-90"
           style={{
             color: "#ffffff",
-            background: "linear-gradient(90deg, #8A5EFF 0%, #34CBBF 100%)",
             letterSpacing: "0.02em",
           }}
         >

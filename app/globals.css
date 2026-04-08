@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Sign-in pill: transparent w/ white border on mobile, gradient on desktop */
+.signin-pill {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+}
+@media (min-width: 640px) {
+  .signin-pill {
+    background: linear-gradient(90deg, #8A5EFF 0%, #34CBBF 100%);
+    border: none;
+  }
+}
+
 :root {
   --quiz-bg: #07001c;
   --quiz-card: #1a1535;

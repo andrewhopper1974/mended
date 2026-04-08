@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 const STEPS = [
   { icon: "🔍", label: "Analyzing your drinking patterns" },
@@ -18,6 +18,15 @@ export default function LoadingScreen({ onDone }: Props) {
   const [stepIndex, setStepIndex] = useState(0);
   const [barWidth, setBarWidth] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1023px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   useEffect(() => {
     const totalDuration = 10000;
@@ -55,94 +64,115 @@ export default function LoadingScreen({ onDone }: Props) {
       className="flex flex-col min-h-screen px-6 pt-16 pb-10 relative overflow-hidden"
       style={{ background: "#07001c" }}
     >
-      {/* Background radial blooms */}
-      <div
-        className="absolute pointer-events-none"
-        style={{
-          top: "5%",
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: 480,
-          height: 480,
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(138,94,255,0.18) 0%, transparent 70%)",
-          filter: "blur(40px)",
-        }}
-      />
-      <div
-        className="absolute pointer-events-none"
-        style={{
-          bottom: "10%",
-          right: "-20%",
-          width: 320,
-          height: 320,
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(52,203,191,0.12) 0%, transparent 70%)",
-          filter: "blur(40px)",
-        }}
-      />
+      {/* Background radial blooms — desktop only (40px blur filters tank mobile FPS) */}
+      {!isMobile && (
+        <>
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              top: "5%",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: 480,
+              height: 480,
+              borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(138,94,255,0.18) 0%, transparent 70%)",
+              filter: "blur(40px)",
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              bottom: "10%",
+              right: "-20%",
+              width: 320,
+              height: 320,
+              borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(52,203,191,0.12) 0%, transparent 70%)",
+              filter: "blur(40px)",
+            }}
+          />
+        </>
+      )}
 
       {/* Animated orbital rings */}
       <div className="flex justify-center mb-10 relative" style={{ height: 180 }}>
-        {/* Outer ring */}
-        <motion.div
-          className="absolute rounded-full"
-          style={{
-            width: 170,
-            height: 170,
-            border: "1px solid rgba(138,94,255,0.2)",
-            top: 5,
-            left: "50%",
-            marginLeft: -85,
-          }}
-          animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 12, ease: "linear" }}
-        >
-          {/* Orbiting dot on outer ring */}
+        {/* Outer ring — desktop only */}
+        {!isMobile && (
+          <motion.div
+            className="absolute rounded-full"
+            style={{
+              width: 170,
+              height: 170,
+              border: "1px solid rgba(138,94,255,0.2)",
+              top: 5,
+              left: "50%",
+              marginLeft: -85,
+            }}
+            animate={{ rotate: 360 }}
+            transition={{ repeat: Infinity, duration: 12, ease: "linear" }}
+          >
+            {/* Orbiting dot on outer ring */}
+            <div
+              className="absolute rounded-full"
+              style={{
+                width: 7,
+                height: 7,
+                background: "linear-gradient(90deg, #8A5EFF, #34CBBF)",
+                top: -3.5,
+                left: "50%",
+                marginLeft: -3.5,
+                boxShadow: "0 0 8px rgba(138,94,255,0.8)",
+              }}
+            />
+          </motion.div>
+        )}
+        {isMobile && (
           <div
             className="absolute rounded-full"
             style={{
-              width: 7,
-              height: 7,
-              background: "linear-gradient(90deg, #8A5EFF, #34CBBF)",
-              top: -3.5,
+              width: 170,
+              height: 170,
+              border: "1px solid rgba(138,94,255,0.2)",
+              top: 5,
               left: "50%",
-              marginLeft: -3.5,
-              boxShadow: "0 0 8px rgba(138,94,255,0.8)",
+              marginLeft: -85,
             }}
           />
-        </motion.div>
+        )}
 
-        {/* Middle ring */}
-        <motion.div
-          className="absolute rounded-full"
-          style={{
-            width: 122,
-            height: 122,
-            border: "1px solid rgba(52,203,191,0.25)",
-            top: 29,
-            left: "50%",
-            marginLeft: -61,
-          }}
-          animate={{ rotate: -360 }}
-          transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
-        >
-          {/* Orbiting dot on middle ring */}
-          <div
+        {/* Middle ring — desktop only (second rotating ring adds noticeable jank on mobile) */}
+        {!isMobile && (
+          <motion.div
             className="absolute rounded-full"
             style={{
-              width: 6,
-              height: 6,
-              background: "#34CBBF",
-              bottom: -3,
+              width: 122,
+              height: 122,
+              border: "1px solid rgba(52,203,191,0.25)",
+              top: 29,
               left: "50%",
-              marginLeft: -3,
-              boxShadow: "0 0 8px rgba(52,203,191,0.9)",
+              marginLeft: -61,
             }}
-          />
-        </motion.div>
+            animate={{ rotate: -360 }}
+            transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
+          >
+            {/* Orbiting dot on middle ring */}
+            <div
+              className="absolute rounded-full"
+              style={{
+                width: 6,
+                height: 6,
+                background: "#34CBBF",
+                bottom: -3,
+                left: "50%",
+                marginLeft: -3,
+                boxShadow: "0 0 8px rgba(52,203,191,0.9)",
+              }}
+            />
+          </motion.div>
+        )}
 
-        {/* Inner pulsing core */}
+        {/* Inner pulsing core — drop animated box-shadow on mobile (very expensive) */}
         <motion.div
           className="absolute rounded-full flex items-center justify-center"
           style={{
@@ -153,8 +183,9 @@ export default function LoadingScreen({ onDone }: Props) {
             marginLeft: -38,
             background: "linear-gradient(135deg, rgba(138,94,255,0.3), rgba(52,203,191,0.2))",
             border: "1.5px solid rgba(138,94,255,0.5)",
+            boxShadow: isMobile ? "0 0 20px rgba(138,94,255,0.4)" : undefined,
           }}
-          animate={{ scale: [1, 1.08, 1], boxShadow: ["0 0 16px rgba(138,94,255,0.3)", "0 0 32px rgba(138,94,255,0.6)", "0 0 16px rgba(138,94,255,0.3)"] }}
+          animate={isMobile ? { scale: [1, 1.06, 1] } : { scale: [1, 1.08, 1], boxShadow: ["0 0 16px rgba(138,94,255,0.3)", "0 0 32px rgba(138,94,255,0.6)", "0 0 16px rgba(138,94,255,0.3)"] }}
           transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
         >
           <span style={{ fontSize: 28 }}>🧠</span>
@@ -246,14 +277,20 @@ export default function LoadingScreen({ onDone }: Props) {
               </span>
 
               {isActive && (
-                <motion.span
-                  className="ml-auto text-xs font-semibold"
-                  animate={{ opacity: [1, 0.4, 1] }}
-                  transition={{ repeat: Infinity, duration: 1.2 }}
-                  style={{ color: "#8A5EFF" }}
-                >
-                  Running...
-                </motion.span>
+                isMobile ? (
+                  <span className="ml-auto text-xs font-semibold" style={{ color: "#8A5EFF" }}>
+                    Running...
+                  </span>
+                ) : (
+                  <motion.span
+                    className="ml-auto text-xs font-semibold"
+                    animate={{ opacity: [1, 0.4, 1] }}
+                    transition={{ repeat: Infinity, duration: 1.2 }}
+                    style={{ color: "#8A5EFF" }}
+                  >
+                    Running...
+                  </motion.span>
+                )
               )}
               {isDone && (
                 <span className="ml-auto text-xs" style={{ color: "rgba(52,203,191,0.6)" }}>
