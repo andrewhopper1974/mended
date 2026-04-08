@@ -86,22 +86,37 @@ export default function IntroScreen({ onStart }: Props) {
         <MendedLogo size="lg" />
       </div>
 
-      {/* Sign-in pinned to the true viewport right corner (escapes the
-          880px max-width layout container so it lands in the real corner
-          on desktop, not the edge of the content column). */}
-      <a
-        href="https://app.mended.health/login"
-        className="fixed top-5 right-5 z-50 text-xs font-semibold px-3 py-1.5 rounded-full transition hover:opacity-90"
+      {/* Sign-in pinned to the true viewport right corner, with a short
+          "Already have an account?" prefix so brand-new visitors don't
+          mistake it for a social-login shortcut (Google/Apple/etc). */}
+      <div
+        className="fixed top-5 right-5 z-50 flex items-center gap-2"
         style={{
-          color: "rgba(255,255,255,0.85)",
-          background: "rgba(7,0,28,0.75)",
+          background: "rgba(7,0,28,0.78)",
           backdropFilter: "blur(6px)",
           border: "1px solid rgba(138,94,255,0.35)",
-          letterSpacing: "0.02em",
+          borderRadius: "9999px",
+          padding: "6px 10px 6px 14px",
         }}
       >
-        Sign in
-      </a>
+        <span
+          className="text-[11px] font-medium hidden sm:inline"
+          style={{ color: "rgba(255,255,255,0.6)" }}
+        >
+          Already have an account?
+        </span>
+        <a
+          href="https://app.mended.health/login"
+          className="text-xs font-semibold px-3 py-1 rounded-full transition hover:opacity-90"
+          style={{
+            color: "#ffffff",
+            background: "linear-gradient(90deg, #8A5EFF 0%, #34CBBF 100%)",
+            letterSpacing: "0.02em",
+          }}
+        >
+          Sign in
+        </a>
+      </div>
 
       {/* Divider */}
       <div
