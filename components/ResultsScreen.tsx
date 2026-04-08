@@ -214,7 +214,7 @@ function CtaButton({ onClick, delay = 0 }: { onClick: () => void; delay?: number
         Get started →
       </button>
       <p className="text-center text-xs mt-2" style={{ color: "rgba(255,255,255,0.28)" }}>
-        94,000+ people have already started their journey
+        Built on the clinical research that actually works
       </p>
     </motion.div>
   );
@@ -330,7 +330,7 @@ export default function ResultsScreen({ profile, answers, onSeeProgram }: Props)
             </span>
           </h1>
           <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
-            Based on outcomes from 94,000+ members with patterns and triggers similar to yours.
+            Projection based on MBRP clinical outcomes (Bowen et al., <em>JAMA Psychiatry</em>, 2014) for patterns similar to yours.
           </p>
         </motion.div>
 

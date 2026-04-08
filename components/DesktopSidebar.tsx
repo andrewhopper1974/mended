@@ -82,21 +82,33 @@ export default function DesktopSidebar() {
 
       <div className="relative z-10 max-w-sm">
 
-        {/* Big stat */}
+        {/* Big stat — research-backed positioning */}
         <div className="mb-10">
-          <div
-            className="text-6xl font-bold mb-2 leading-none"
+          <p
+            className="text-xs font-bold uppercase tracking-wider mb-3"
             style={{
-              fontFamily: "var(--font-playfair), Georgia, serif",
-              background: "linear-gradient(135deg, #c4afff 0%, #8A5EFF 40%, #34CBBF 100%)",
+              background: "linear-gradient(90deg, #c4afff 0%, #34CBBF 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
+              letterSpacing: "0.12em",
             }}
           >
-            94,000+
+            Built on clinical research
+          </p>
+          <div
+            className="text-3xl font-bold mb-3 leading-tight"
+            style={{
+              fontFamily: "var(--font-playfair), Georgia, serif",
+              color: "#ffffff",
+            }}
+          >
+            Mindfulness-Based Relapse Prevention.
           </div>
-          <p className="text-base" style={{ color: "rgba(255,255,255,0.6)" }}>
-            people have broken free from alcohol using Mended
+          <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
+            Developed by Bowen, Chawla, and Marlatt at the University of
+            Washington. Published in{" "}
+            <em style={{ color: "rgba(255,255,255,0.8)" }}>JAMA Psychiatry</em>.
+            Mended packages those same techniques into a short daily program.
           </p>
         </div>
 

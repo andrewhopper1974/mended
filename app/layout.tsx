@@ -18,7 +18,7 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: "Break Free From Alcohol",
   description:
-    "Mended uses evidence-based CBT, mindfulness, and Stoic practice to help you break free from alcohol — for good. Take the free 3-minute quiz and get your personalised program. Used by 94,000+ people.",
+    "Mended uses evidence-based CBT, mindfulness, and Stoic practice to help you break free from alcohol — for good. Take the free 3-minute quiz and get your personalised program built on the same techniques clinicians use.",
   openGraph: {
     title: "Break Free From Alcohol",
     description:

@@ -235,8 +235,8 @@ export const QUIZ_FLOW: QuizItem[] = [
   },
   {
     type: "interstitial",
-    stat: "94,000+",
-    copy: "people with answers just like yours have broken free using this program. CBT and mindfulness work on the urge itself — teaching you to recognise it, sit with it, and let it pass instead of fighting it.",
+    stat: "MBRP",
+    copy: "Mindfulness-Based Relapse Prevention — the clinical protocol Mended is built on — was developed at the University of Washington and published in JAMA Psychiatry. It works on the urge itself: teaching you to recognise it, sit with it, and let it pass instead of fighting it.",
   },
   // ─── Commitment closer ────────────────────────────────────────────────────
   {

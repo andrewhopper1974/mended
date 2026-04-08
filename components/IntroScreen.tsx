@@ -123,7 +123,7 @@ export default function IntroScreen({ onStart }: Props) {
           className="text-2xl font-bold leading-tight mb-2"
           style={{ color: "#ffffff", letterSpacing: "-0.01em" }}
         >
-          How{" "}
+          The{" "}
           <span
             style={{
               background: "linear-gradient(90deg, #8A5EFF 0%, #34CBBF 100%)",
@@ -131,9 +131,9 @@ export default function IntroScreen({ onStart }: Props) {
               WebkitTextFillColor: "transparent",
             }}
           >
-            94,000 people
+            clinical techniques
           </span>
-          {" "}quit alcohol for good.
+          {" "}that actually work — in a daily program.
         </h1>
         <p className="text-sm" style={{ color: "rgba(255,255,255,0.45)", letterSpacing: "0.01em" }}>
           Skills-based. Self-paced. Private.
@@ -189,23 +189,47 @@ export default function IntroScreen({ onStart }: Props) {
         </div>
       </motion.div>
 
-      {/* Social proof strip */}
-      <motion.div {...fadeUp(0.05)} className="flex items-center gap-3 mb-6 mt-4">
-        <div className="flex -space-x-2">
-          {["#8A5EFF", "#4675FF", "#34CBBF", "#c4afff"].map((color, i) => (
-            <div
-              key={i}
-              className="w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold"
-              style={{ background: color, borderColor: "#07001c", color: "#fff" }}
-            >
-              {["S", "M", "J", "A"][i]}
-            </div>
-          ))}
+      {/* ── The research behind Mended ─────────────────────────────────── */}
+      <motion.div {...fadeUp(0.05)} className="mb-8 mt-4">
+        <div
+          className="rounded-2xl p-5"
+          style={{
+            background: "linear-gradient(135deg, rgba(138,94,255,0.1) 0%, rgba(52,203,191,0.06) 100%)",
+            border: "1px solid rgba(138,94,255,0.25)",
+          }}
+        >
+          <p
+            className="text-[10px] font-bold uppercase tracking-wider mb-3"
+            style={{
+              background: "linear-gradient(90deg, #8A5EFF 0%, #34CBBF 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              letterSpacing: "0.12em",
+            }}
+          >
+            The research behind mended
+          </p>
+          <h3
+            className="text-base font-bold mb-3 leading-snug"
+            style={{ color: "#ffffff" }}
+          >
+            Built on Mindfulness-Based Relapse Prevention.
+          </h3>
+          <p className="text-sm leading-relaxed mb-3" style={{ color: "rgba(255,255,255,0.78)" }}>
+            MBRP was developed by Bowen, Chawla, and Marlatt at the University
+            of Washington. In their 2014 randomized controlled trial
+            (<em style={{ color: "rgba(255,255,255,0.9)" }}>JAMA Psychiatry</em>),
+            participants in the MBRP program showed significantly fewer heavy
+            drinking days at 6 and 12 month follow-ups compared to standard
+            treatment.
+          </p>
+          <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.78)" }}>
+            Mended takes those same techniques — urge surfing, body-based
+            awareness, the <em style={{ color: "rgba(255,255,255,0.9)" }}>&ldquo;pause&rdquo;</em>{" "}
+            practice — and packages them into a 4- or 12-week self-paced daily
+            program.
+          </p>
         </div>
-        <p className="text-sm" style={{ color: "#ffffff" }}>
-          <span className="font-semibold" style={{ color: "#c4afff" }}>94,000+</span>{" "}
-          people broke free from alcohol
-        </p>
       </motion.div>
 
       {/* Featured testimonial — pulled above the fold */}

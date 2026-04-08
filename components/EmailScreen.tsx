@@ -239,7 +239,7 @@ export default function EmailScreen({
           {[
             { icon: "✨", label: "Fully personalised" },
             { icon: "🔒", label: "Private & secure" },
-            { icon: "⭐", label: "94K+ users" },
+            { icon: "🧠", label: "Clinically researched" },
           ].map((b) => (
             <div
               key={b.label}
