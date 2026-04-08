@@ -4,17 +4,31 @@ import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 
+declare global {
+  interface Window {
+    fbq?: (...args: unknown[]) => void;
+  }
+}
+
 function RedirectHandler() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    // Fire Meta Pixel Purchase event before redirecting
+    if (typeof window !== "undefined" && typeof window.fbq === "function") {
+      window.fbq("track", "Purchase");
+    }
+
     const sessionId = searchParams.get("session_id");
     const destination = sessionId
       ? `https://app.mended.health/welcome?session_id=${sessionId}`
       : "https://app.mended.health/welcome";
 
-    // Redirect immediately — no artificial delay
-    window.location.href = destination;
+    // Small delay so the Pixel request has a chance to flush before we navigate away
+    const t = setTimeout(() => {
+      window.location.href = destination;
+    }, 300);
+    return () => clearTimeout(t);
   }, [searchParams]);
 
   return null;
