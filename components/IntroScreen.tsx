@@ -137,7 +137,7 @@ export default function IntroScreen({ onStart }: Props) {
           className="text-2xl font-bold leading-tight mb-2"
           style={{ color: "#ffffff", letterSpacing: "-0.01em" }}
         >
-          The{" "}
+          What if quitting alcohol had nothing to do with{" "}
           <span
             style={{
               background: "linear-gradient(90deg, #8A5EFF 0%, #34CBBF 100%)",
@@ -145,9 +145,9 @@ export default function IntroScreen({ onStart }: Props) {
               WebkitTextFillColor: "transparent",
             }}
           >
-            clinical techniques
+            willpower
           </span>
-          {" "}that actually work — in a daily program.
+          ?
         </h1>
         <p className="text-sm" style={{ color: "rgba(255,255,255,0.45)", letterSpacing: "0.01em" }}>
           Skills-based. Self-paced. Private.
