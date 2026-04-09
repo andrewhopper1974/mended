@@ -32,7 +32,9 @@ export async function POST(req: NextRequest) {
       ...(promoId && {
         discounts: [{ promotion_code: promoId }],
       }),
-      success_url: `https://app.mended.health/welcome?session_id={CHECKOUT_SESSION_ID}`,
+      // Route through our /success page first so the Meta Pixel Purchase
+      // event can fire before we redirect the user to app.mended.health/welcome.
+      success_url: `${req.nextUrl.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.nextUrl.origin}/?paywall=true&profile=${encodeURIComponent(profile || "")}&email=${encodeURIComponent(email || "")}&plan=${encodeURIComponent(plan || "")}`,
       metadata: {
         profile: profile || "",
