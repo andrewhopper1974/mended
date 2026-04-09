@@ -16,10 +16,14 @@ export async function POST(req: NextRequest) {
   const sig = req.headers.get("stripe-signature");
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+  // Fail closed: refuse to process webhooks in production without a secret.
+  // The only exception is local development (NODE_ENV !== "production"),
+  // where we allow parsing the body directly so you can test with the
+  // Stripe CLI or curl. In production, a missing secret is a hard error.
+  const isProd = process.env.NODE_ENV === "production";
   let event: Stripe.Event;
 
   if (webhookSecret) {
-    // Production: verify Stripe signature
     if (!sig) {
       return NextResponse.json({ error: "Missing stripe-signature header" }, { status: 400 });
     }
@@ -29,15 +33,21 @@ export async function POST(req: NextRequest) {
       console.error("Webhook signature verification failed:", err);
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
-  } else {
-    // Dev/test: no webhook secret configured — parse body directly
-    // WARNING: only acceptable for local testing; always set STRIPE_WEBHOOK_SECRET in production
+  } else if (!isProd) {
+    // Local dev only — no secret set, parse body directly
     console.warn("STRIPE_WEBHOOK_SECRET not set — skipping signature verification (dev mode)");
     try {
       event = JSON.parse(body) as Stripe.Event;
     } catch {
       return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
+  } else {
+    // Production without a webhook secret — refuse to process anything
+    console.error("STRIPE_WEBHOOK_SECRET is not set in production — rejecting webhook");
+    return NextResponse.json(
+      { error: "Webhook not configured" },
+      { status: 500 }
+    );
   }
 
   if (event.type === "checkout.session.completed") {
