@@ -284,40 +284,13 @@ export default function ResultsPreviewScreen({ profile, answers, onEmailSubmit }
             </div>
           </div>
 
-          {/* Gradient overlay on top of blur */}
+          {/* Gradient fade overlay */}
           <div
-            className="absolute inset-0 flex flex-col items-center justify-center"
+            className="absolute inset-0 pointer-events-none"
             style={{
-              background: "linear-gradient(to bottom, rgba(7,0,28,0.3) 0%, rgba(7,0,28,0.95) 50%)",
+              background: "linear-gradient(to bottom, rgba(7,0,28,0.2) 0%, rgba(7,0,28,0.9) 70%)",
             }}
-          >
-            {/* Lock icon */}
-            <div
-              className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-4"
-              style={{
-                background: "linear-gradient(135deg, #8A5EFF22 0%, #34CBBF22 100%)",
-                border: "1px solid rgba(138,94,255,0.3)",
-              }}
-            >
-              🔒
-            </div>
-            <p
-              className="text-lg font-bold text-center mb-1 px-6"
-              style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
-            >
-              Unlock your full personalized plan
-            </p>
-            <p className="text-xs text-center mb-5 px-8" style={{ color: "rgba(255,255,255,0.5)" }}>
-              Enter your email to see your complete recovery timeline, plan, and profile insights.
-            </p>
-            <button
-              onClick={() => document.getElementById("email-capture")?.scrollIntoView({ behavior: "smooth" })}
-              className="btn-cta px-8 py-3.5 text-base font-semibold"
-              style={{ borderRadius: "14px" }}
-            >
-              Get started →
-            </button>
-          </div>
+          />
         </div>
 
         {/* ── Email capture form ── */}
