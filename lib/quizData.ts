@@ -289,7 +289,10 @@ export function getTriggerLabel(
  * Strip leading emoji from an answer option text.
  */
 function stripEmoji(text: string): string {
-  return text.replace(/^[\p{Emoji}\p{Emoji_Presentation}\p{Emoji_Modifier}\p{Emoji_Component}\s]+/u, "").trim();
+  // Strip leading non-letter characters (emojis, spaces, ZWJ sequences)
+  const match = text.match(/[A-Za-z]/);
+  if (!match || match.index === undefined) return text.trim();
+  return text.slice(match.index).trim();
 }
 
 /**
