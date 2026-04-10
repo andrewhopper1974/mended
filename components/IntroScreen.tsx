@@ -211,7 +211,7 @@ export default function IntroScreen({ onStart }: Props) {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.25, duration: 0.5 }}
-        className="w-full lg:max-w-[680px] lg:mx-auto rounded-2xl mb-7 overflow-hidden"
+        className="w-full rounded-2xl mb-7 overflow-hidden"
         style={{
           border: "3px solid rgba(52,203,191,0.5)",
           boxShadow: "0 10px 30px rgba(52,203,191,0.15)",

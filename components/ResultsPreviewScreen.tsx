@@ -174,23 +174,34 @@ export default function ResultsPreviewScreen({ profile, answers, onEmailSubmit }
                 </div>
               );
             })}
-            {/* Blurred milestones */}
-            <div style={{ filter: "blur(6px)", pointerEvents: "none", userSelect: "none" }}>
-              {RECOVERY_MILESTONES.slice(2).map((m, i) => {
-                const t = (i + 2) / 3;
-                const r = Math.round(138 + (52 - 138) * t);
-                const g = Math.round(94 + (203 - 94) * t);
-                const b = Math.round(255 + (191 - 255) * t);
-                const color = `rgb(${r},${g},${b})`;
-                return (
-                  <div key={i} className="flex items-center gap-3 mb-2.5">
-                    <div className="w-16 flex-shrink-0">
-                      <span className="text-xs font-bold" style={{ color }}>{m.label}</span>
+            {/* Blurred milestones with Get started overlay */}
+            <div className="relative">
+              <div style={{ filter: "blur(6px)", pointerEvents: "none", userSelect: "none" }}>
+                {RECOVERY_MILESTONES.slice(2).map((m, i) => {
+                  const t = (i + 2) / 3;
+                  const r = Math.round(138 + (52 - 138) * t);
+                  const g = Math.round(94 + (203 - 94) * t);
+                  const b = Math.round(255 + (191 - 255) * t);
+                  const color = `rgb(${r},${g},${b})`;
+                  return (
+                    <div key={i} className="flex items-center gap-3 mb-2.5">
+                      <div className="w-16 flex-shrink-0">
+                        <span className="text-xs font-bold" style={{ color }}>{m.label}</span>
+                      </div>
+                      <span className="text-xs" style={{ color: "rgba(255,255,255,0.55)" }}>{m.desc}</span>
                     </div>
-                    <span className="text-xs" style={{ color: "rgba(255,255,255,0.55)" }}>{m.desc}</span>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <button
+                  onClick={() => document.getElementById("email-capture")?.scrollIntoView({ behavior: "smooth" })}
+                  className="btn-cta px-6 py-3 text-sm font-semibold"
+                  style={{ borderRadius: "12px" }}
+                >
+                  Get started →
+                </button>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -299,11 +310,19 @@ export default function ResultsPreviewScreen({ profile, answers, onEmailSubmit }
             <p className="text-xs text-center mb-5 px-8" style={{ color: "rgba(255,255,255,0.5)" }}>
               Enter your email to see your complete recovery timeline, plan, and profile insights.
             </p>
+            <button
+              onClick={() => document.getElementById("email-capture")?.scrollIntoView({ behavior: "smooth" })}
+              className="btn-cta px-8 py-3.5 text-base font-semibold"
+              style={{ borderRadius: "14px" }}
+            >
+              Get started →
+            </button>
           </div>
         </div>
 
         {/* ── Email capture form ── */}
         <motion.div
+          id="email-capture"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.5 }}

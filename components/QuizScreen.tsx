@@ -121,7 +121,7 @@ export default function QuizScreen({
         style={{ background: "#07001c" }}
       >
         <div className="flex justify-center pt-3 pb-1">
-          <MendedLogo size="sm" />
+          <MendedLogo size="md" />
         </div>
         <div className="flex items-center justify-between px-4 py-3">
           <button
