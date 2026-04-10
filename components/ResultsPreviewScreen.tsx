@@ -193,7 +193,7 @@ export default function ResultsPreviewScreen({ profile, answers, onEmailSubmit }
                   );
                 })}
               </div>
-              <div className="absolute inset-0 flex items-center justify-center">
+              <div className="absolute inset-0 flex items-end justify-center pb-1">
                 <button
                   onClick={() => document.getElementById("email-capture")?.scrollIntoView({ behavior: "smooth" })}
                   className="btn-cta px-6 py-3 text-sm font-semibold"
