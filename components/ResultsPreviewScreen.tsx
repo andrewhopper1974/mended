@@ -240,35 +240,89 @@ export default function ResultsPreviewScreen({ profile, answers, onEmailSubmit }
           </motion.div>
         )}
 
-        {/* ── Blurred teaser of full results ── */}
-        <div className="relative">
+        {/* ── Teaser → blur: show enough to create open loop ── */}
+        <div className="relative overflow-hidden">
+          {/* Plan card — visible header + first step, then blur */}
           <div
+            className="rounded-2xl p-5"
             style={{
-              filter: "blur(8px)",
-              pointerEvents: "none",
-              userSelect: "none",
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
             }}
           >
-            {/* Fake plan card outline */}
-            <div
-              className="rounded-2xl p-5 mb-4"
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.08)",
-              }}
-            >
-              <p className="text-base font-bold mb-3 text-center">Your 12-week recovery plan</p>
-              <div className="space-y-3">
-                {["Weeks 1–2: CBT foundations", "Weeks 3–5: Mindfulness and urge surfing", "Weeks 6–8: Building new rituals"].map((t) => (
-                  <div key={t} className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full" style={{ background: "rgba(138,94,255,0.15)" }} />
-                    <p className="text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>{t}</p>
-                  </div>
-                ))}
+            <p className="text-base font-bold mb-4 text-center">Your 12-week recovery plan</p>
+
+            {/* Visible first step — hooks them into the sequence */}
+            <div className="flex gap-3 mb-1">
+              <div className="flex flex-col items-center" style={{ width: 36 }}>
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ background: "rgba(138,94,255,0.15)", border: "1.5px solid #8A5EFF" }}
+                >
+                  <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+                    <path d="M1 5L4.5 8.5L11 1.5" stroke="#8A5EFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <div className="w-px flex-1 mt-0.5" style={{ background: "rgba(255,255,255,0.09)", minHeight: 20 }} />
+              </div>
+              <div style={{ paddingTop: 4, paddingBottom: 16 }}>
+                <p className="text-sm font-bold">Weeks 1–2</p>
+                <p className="text-xs leading-snug mt-0.5" style={{ color: "rgba(255,255,255,0.48)" }}>
+                  CBT foundations — mapping your triggers and the thoughts that drive them
+                </p>
               </div>
             </div>
 
-            {/* Fake profile card */}
+            {/* Progressively blurred remaining steps — Zeigarnik effect */}
+            <div style={{ filter: "blur(3px)", pointerEvents: "none", userSelect: "none" }}>
+              <div className="flex gap-3 mb-1">
+                <div className="flex flex-col items-center" style={{ width: 36 }}>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ background: "rgba(100,80,200,0.15)", border: "1.5px solid rgb(100,140,230)" }}>
+                    <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+                      <path d="M1 5L4.5 8.5L11 1.5" stroke="rgb(100,140,230)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                  <div className="w-px flex-1 mt-0.5" style={{ background: "rgba(255,255,255,0.09)", minHeight: 20 }} />
+                </div>
+                <div style={{ paddingTop: 4, paddingBottom: 16 }}>
+                  <p className="text-sm font-bold">Weeks 3–5</p>
+                  <p className="text-xs leading-snug mt-0.5" style={{ color: "rgba(255,255,255,0.48)" }}>
+                    Mindfulness and urge surfing — learning to ride cravings without acting on them
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ filter: "blur(6px)", pointerEvents: "none", userSelect: "none" }}>
+              <div className="flex gap-3 mb-1">
+                <div className="flex flex-col items-center" style={{ width: 36 }}>
+                  <div className="w-8 h-8 rounded-full" style={{ background: "rgba(52,180,180,0.15)", border: "1.5px solid rgb(52,180,180)" }} />
+                  <div className="w-px flex-1 mt-0.5" style={{ background: "rgba(255,255,255,0.09)", minHeight: 20 }} />
+                </div>
+                <div style={{ paddingTop: 4, paddingBottom: 16 }}>
+                  <p className="text-sm font-bold">Weeks 6–8</p>
+                  <p className="text-xs leading-snug mt-0.5" style={{ color: "rgba(255,255,255,0.48)" }}>
+                    Building new evening, social, and stress-relief rituals
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <div className="flex flex-col items-center" style={{ width: 36 }}>
+                  <div className="w-8 h-8 rounded-full" style={{ background: "rgba(52,203,191,0.15)", border: "1.5px solid #34CBBF" }} />
+                </div>
+                <div style={{ paddingTop: 4 }}>
+                  <p className="text-sm font-bold">Weeks 9–12</p>
+                  <p className="text-xs leading-snug mt-0.5" style={{ color: "rgba(255,255,255,0.48)" }}>
+                    Reinforcement and integration — making your new identity permanent
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Profile card — partially visible, fades out */}
+          <div className="mt-4 relative">
             <div
               className="rounded-2xl p-5"
               style={{
@@ -277,20 +331,19 @@ export default function ResultsPreviewScreen({ profile, answers, onEmailSubmit }
               }}
             >
               <p className="text-xs font-semibold mb-1" style={{ color: "rgba(196,175,255,0.55)" }}>YOUR DRINKER PROFILE</p>
-              <p className="text-lg font-bold mb-2">{data.name}</p>
+              <p className="text-lg font-bold mb-2" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>{data.name}</p>
               <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.58)" }}>
-                {data.description.slice(0, 120)}...
+                {data.headline}
               </p>
             </div>
+            {/* Fade overlay on profile card */}
+            <div
+              className="absolute inset-0 pointer-events-none rounded-2xl"
+              style={{
+                background: "linear-gradient(to bottom, transparent 0%, rgba(7,0,28,0.95) 90%)",
+              }}
+            />
           </div>
-
-          {/* Gradient fade overlay */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: "linear-gradient(to bottom, rgba(7,0,28,0.2) 0%, rgba(7,0,28,0.9) 70%)",
-            }}
-          />
         </div>
 
         {/* ── Email capture form ── */}
