@@ -34,6 +34,13 @@ const OTHER_TESTIMONIALS = [
   },
 ];
 
+const BENEFITS = [
+  "Understand exactly why you drink — and what's actually driving it",
+  "Rewire the automatic thoughts that trigger cravings",
+  "Get a personalized plan based on your specific drinking patterns",
+  "No willpower required — just the right skills applied consistently",
+];
+
 function TestimonialCard({ text, name, tag }: { text: string; name: string; tag: string }) {
   return (
     <div
@@ -81,60 +88,42 @@ export default function IntroScreen({ onStart }: Props) {
       className="flex flex-col min-h-screen px-5 pt-8 pb-10"
       style={{ background: "#07001c" }}
     >
+      {/* Sign in — minimal top-right button */}
+      <a
+        href="https://app.mended.health/login"
+        className="fixed top-4 right-4 z-50 text-xs font-medium px-3 py-1.5 rounded-full transition hover:opacity-80"
+        style={{
+          color: "rgba(255,255,255,0.55)",
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.1)",
+        }}
+      >
+        Sign in
+      </a>
+
       {/* Logo centered */}
       <div className="flex items-center justify-center mb-5">
         <MendedLogo size="lg" />
       </div>
 
-      {/* Sign-in pinned to the true viewport right corner, with a short
-          "Already have an account?" prefix so brand-new visitors don't
-          mistake it for a social-login shortcut (Google/Apple/etc). */}
-      <div
-        className="fixed top-5 right-5 z-50 flex items-center gap-2"
-        style={{
-          background: "rgba(7,0,28,0.78)",
-          backdropFilter: "blur(6px)",
-          border: "1px solid rgba(138,94,255,0.35)",
-          borderRadius: "9999px",
-          padding: "6px 10px 6px 14px",
-        }}
-      >
-        <span
-          className="text-[11px] font-medium hidden sm:inline"
-          style={{ color: "rgba(255,255,255,0.6)" }}
-        >
-          Already have an account?
-        </span>
-        <a
-          href="https://app.mended.health/login"
-          className="signin-pill text-xs font-semibold px-3 py-1 rounded-full transition hover:opacity-90"
-          style={{
-            color: "#ffffff",
-            letterSpacing: "0.02em",
-          }}
-        >
-          Sign in
-        </a>
-      </div>
-
       {/* Divider */}
       <div
-        className="mb-7 mx-auto"
+        className="mb-6 mx-auto"
         style={{
           width: "60%", height: 1,
           background: "linear-gradient(90deg, transparent 0%, #8A5EFF 40%, #34CBBF 60%, transparent 100%)",
         }}
       />
 
-      {/* Hook headline — above the fold */}
+      {/* Hook headline */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05, duration: 0.5 }}
-        className="mb-6 text-center"
+        className="mb-5 text-center"
       >
         <h1
-          className="text-2xl font-bold leading-tight mb-2"
+          className="text-2xl font-bold leading-tight"
           style={{ color: "#ffffff", letterSpacing: "-0.01em" }}
         >
           What if quitting alcohol had nothing to do with{" "}
@@ -149,28 +138,48 @@ export default function IntroScreen({ onStart }: Props) {
           </span>
           ?
         </h1>
-        <p className="text-sm" style={{ color: "rgba(255,255,255,0.45)", letterSpacing: "0.01em" }}>
-          Skills-based. Self-paced. Private.
-        </p>
       </motion.div>
 
-      {/* Hero image */}
+      {/* Benefit bullets — replaces hero image */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.1, duration: 0.5 }}
-        className="w-full lg:max-w-[680px] lg:mx-auto rounded-2xl mb-7 overflow-hidden"
-        style={{
-          border: "3px solid rgba(52,203,191,0.5)",
-          boxShadow: "0 10px 30px rgba(52,203,191,0.15)",
-        }}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.45 }}
+        className="mb-6 space-y-2.5"
       >
-        <img
-          src="/images/hero.png"
-          alt="Break free from alcohol"
-          className="w-full h-full object-cover"
-          onError={(e) => { e.currentTarget.style.display = "none"; }}
-        />
+        {BENEFITS.map((benefit, i) => (
+          <div
+            key={i}
+            className="flex items-start gap-3 px-4 py-3 rounded-xl"
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.07)",
+            }}
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              className="flex-shrink-0 mt-0.5"
+            >
+              <circle cx="9" cy="9" r="9" fill="rgba(52,203,191,0.15)" />
+              <path
+                d="M5.5 9L8 11.5L12.5 6.5"
+                stroke="#34CBBF"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span
+              className="text-sm leading-snug font-medium"
+              style={{ color: "rgba(255,255,255,0.82)" }}
+            >
+              {benefit}
+            </span>
+          </div>
+        ))}
       </motion.div>
 
       {/* CTA — single start button */}
@@ -189,18 +198,12 @@ export default function IntroScreen({ onStart }: Props) {
         </button>
 
         {/* Risk reversal */}
-        <div className="flex items-center justify-center gap-2 mt-4">
-          {[`${TOTAL_QUESTIONS} questions`, "3 minutes", "Free"].map((item, i) => (
-            <span key={item} className="flex items-center gap-2">
-              {i > 0 && (
-                <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "10px" }}>●</span>
-              )}
-              <span className="text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>
-                {item}
-              </span>
-            </span>
-          ))}
-        </div>
+        <p
+          className="text-center text-xs mt-3"
+          style={{ color: "rgba(255,255,255,0.4)" }}
+        >
+          Find out why willpower keeps failing you — takes 3 minutes
+        </p>
       </motion.div>
 
       {/* ── The research behind Mended ─────────────────────────────────── */}
@@ -246,7 +249,7 @@ export default function IntroScreen({ onStart }: Props) {
         </div>
       </motion.div>
 
-      {/* Featured testimonial — pulled above the fold */}
+      {/* Featured testimonial */}
       <motion.div {...fadeUp(0.1)} className="mb-8">
         <TestimonialCard {...SARAH} />
       </motion.div>

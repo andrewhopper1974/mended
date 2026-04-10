@@ -6,7 +6,6 @@ import ProgressBar from "@/components/ProgressBar";
 import MendedLogo from "@/components/MendedLogo";
 import {
   vibrate,
-  getPushExcerpt,
   getTriggerLabel,
   PROFILES,
   type Profile,
@@ -30,6 +29,9 @@ export default function EmailScreen({
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  // SECURITY: honeypot — visually hidden, only bots fill it. The server
+  // pretends success when populated so bots can't tell they were caught.
+  const [website, setWebsite] = useState("");
 
   const isValidEmail = (e: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
@@ -44,12 +46,12 @@ export default function EmailScreen({
     setLoading(true);
     vibrate([40, 15, 40, 15, 80]);
 
-    // Fire-and-forget MailerLite subscribe
+    // Fire-and-forget MailerLite subscribe (honeypot value forwarded)
     try {
       fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim() }),
+        body: JSON.stringify({ email: email.trim(), website }),
       }).catch(() => {});
     } catch (_) {}
 
@@ -60,7 +62,6 @@ export default function EmailScreen({
 
   // Build personalization chips — only show what we can trust
   const triggerLabel = getTriggerLabel(answers, profile);
-  const pushExcerpt = getPushExcerpt(answers); // null on gibberish
   const profileName = PROFILES[profile].name;
 
   const chips: { label: string; value: string; color: string }[] = [];
@@ -68,9 +69,6 @@ export default function EmailScreen({
     chips.push({ label: "Your trigger", value: triggerLabel, color: "#8A5EFF" });
   }
   chips.push({ label: "Your profile", value: profileName, color: "#34CBBF" });
-  if (pushExcerpt) {
-    chips.push({ label: "Your why", value: `"${pushExcerpt}"`, color: "#c4afff" });
-  }
 
   return (
     <motion.div
@@ -176,6 +174,29 @@ export default function EmailScreen({
             </div>
           ))}
         </motion.div>
+
+        {/* Honeypot — visually hidden + aria-hidden + tabindex=-1 */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            left: "-9999px",
+            width: "1px",
+            height: "1px",
+            overflow: "hidden",
+          }}
+        >
+          <label htmlFor="website">Website</label>
+          <input
+            id="website"
+            name="website"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
+          />
+        </div>
 
         {/* Email input */}
         <div className="mb-4">

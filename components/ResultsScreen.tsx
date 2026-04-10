@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { PROFILES, type Profile, vibrate } from "@/lib/quizData";
+import { PROFILES, extractAnswerInsights, getTriggerLabel, vibrate, type Profile } from "@/lib/quizData";
+import RecoveryChart from "@/components/RecoveryChart";
 import MendedLogo from "@/components/MendedLogo";
 
 interface Props {
@@ -25,7 +26,7 @@ const WEEK_PLAN = [
   { week: "Weeks 11–12", desc: "Reinforcement and integration — making your new identity feel permanent" },
 ];
 
-const PROFILE_REMOVALS: Record<Profile, { trigger: string; belief: string; habit: string }> = {
+const PROFILE_REMOVALS_FALLBACK: Record<Profile, { trigger: string; belief: string; habit: string }> = {
   "stress-escapist": {
     trigger: "Stress & anxiety drinking",
     belief: '"I need alcohol to cope with pressure"',
@@ -61,143 +62,25 @@ const TESTIMONIALS = [
   },
 ];
 
-function RecoveryChart() {
-  const W = 340;
-  const H = 178;
-  const padL = 30;
-  const padR = 30;
-  const padT = 44;
-  const padB = 30;
-  const chartW = W - padL - padR;
-  const chartH = H - padT - padB;
-
-  const x0 = padL;
-  const x1 = padL + chartW;
-  // curve goes UP: y_start = bottom, y_end = top
-  const yStart = padT + chartH - 6;
-  const yEnd   = padT + 6;
-  const yWillpower = padT + chartH * 0.5; // willpower plateaus halfway
-  const yBottom = padT + chartH;
-
-  // Mended: S-curve rising steeply from bottom-left to top-right
-  const mendedPath = `M ${x0} ${yStart} C ${x0 + chartW * 0.3} ${yStart}, ${x0 + chartW * 0.7} ${yEnd}, ${x1} ${yEnd}`;
-  const mendedFill = `${mendedPath} L ${x1} ${yBottom} L ${x0} ${yBottom} Z`;
-
-  // Willpower: rises a little then plateaus much lower
-  const compPath = `M ${x0} ${yStart} C ${x0 + chartW * 0.35} ${yStart - 10}, ${x0 + chartW * 0.65} ${yWillpower + 10}, ${x1} ${yWillpower}`;
-
-  // 3-month / 12-week timeline labels
-  const xLabels = ["Start", "Week 4", "Week 8", "Week 12"];
-
-  // Pill geometry — both pills share the same dark + gradient-stroke style
-  const startPillW = 54;
-  const endPillW   = 84;
-  const pillH      = 19;
-
-  // Clamp pill x so it never overflows the viewBox
-  const startPillX = Math.max(2, x0 - startPillW / 2);
-  const endPillX   = Math.min(W - endPillW - 2, x1 - endPillW / 2);
-  const startTextX = startPillX + startPillW / 2;
-  const endTextX   = endPillX + endPillW / 2;
-
-  return (
-    <svg width="100%" viewBox={`0 0 ${W} ${H + 8}`} className="overflow-visible">
-      <defs>
-        <linearGradient id="rLineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#8A5EFF" />
-          <stop offset="100%" stopColor="#34CBBF" />
-        </linearGradient>
-        <linearGradient id="rFillGrad" x1="0%" y1="100%" x2="0%" y2="0%">
-          <stop offset="0%" stopColor="#8A5EFF" stopOpacity="0.02" />
-          <stop offset="100%" stopColor="#34CBBF" stopOpacity="0.22" />
-        </linearGradient>
-        <linearGradient id="rStartPillStroke" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#8A5EFF" stopOpacity="0.85" />
-          <stop offset="100%" stopColor="#8A5EFF" stopOpacity="0.35" />
-        </linearGradient>
-        <linearGradient id="rEndPillStroke" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#8A5EFF" stopOpacity="0.85" />
-          <stop offset="100%" stopColor="#8A5EFF" stopOpacity="0.35" />
-        </linearGradient>
-        {/* Soft aura halo for the alcohol-free pill */}
-        <radialGradient id="rEndPillAura" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#c4afff" stopOpacity="0.55" />
-          <stop offset="55%" stopColor="#8A5EFF" stopOpacity="0.18" />
-          <stop offset="100%" stopColor="#8A5EFF" stopOpacity="0" />
-        </radialGradient>
-        <filter id="rEndPillGlow" x="-60%" y="-200%" width="220%" height="500%">
-          <feGaussianBlur stdDeviation="3.5" />
-        </filter>
-      </defs>
-
-      {/* Grid lines */}
-      {[0.25, 0.5, 0.75].map((t) => (
-        <line key={t} x1={padL} y1={padT + chartH * t} x2={padL + chartW} y2={padT + chartH * t}
-          stroke="rgba(255,255,255,0.06)" strokeWidth="1" strokeDasharray="4 4" />
-      ))}
-
-      {/* Baseline */}
-      <line x1={padL} y1={yBottom} x2={padL + chartW} y2={yBottom}
-        stroke="rgba(255,255,255,0.10)" strokeWidth="1" />
-
-      {/* Fill under Mended curve */}
-      <path d={mendedFill} fill="url(#rFillGrad)" />
-
-      {/* Willpower dashed line */}
-      <path d={compPath} fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" strokeDasharray="6 4" />
-
-      {/* Mended line */}
-      <path d={mendedPath} fill="none" stroke="url(#rLineGrad)" strokeWidth="2.5" strokeLinecap="round" />
-
-      {/* Start dot — bottom left */}
-      <circle cx={x0} cy={yStart} r="4" fill="#8A5EFF" />
-      <rect x={startPillX} y={yStart - 31} width={startPillW} height={pillH} rx={pillH / 2}
-        fill="#1e1245" stroke="url(#rStartPillStroke)" strokeWidth="1.3" />
-      <text x={startTextX} y={yStart - 18}
-        textAnchor="middle" fill="#ffffff" fontSize="10" fontWeight="600"
-        fontFamily="var(--font-playfair), Georgia, serif"
-        fontStyle="italic" letterSpacing="0.4">Today</text>
-
-      {/* End dot — top right */}
-      <circle cx={x1} cy={yEnd} r="4.5" fill="#8A5EFF" />
-      {/* Soft aura behind the alcohol-free pill */}
-      <ellipse
-        cx={endPillX + endPillW / 2}
-        cy={yEnd - 31 + pillH / 2}
-        rx={endPillW / 2 + 14}
-        ry={pillH / 2 + 10}
-        fill="url(#rEndPillAura)"
-        filter="url(#rEndPillGlow)"
-      />
-      <rect x={endPillX} y={yEnd - 31} width={endPillW} height={pillH} rx={pillH / 2}
-        fill="#1e1245" stroke="url(#rEndPillStroke)" strokeWidth="1.3" />
-      <text x={endTextX} y={yEnd - 18}
-        textAnchor="middle" fill="#ffffff" fontSize="10" fontWeight="600"
-        fontFamily="var(--font-playfair), Georgia, serif"
-        fontStyle="italic" letterSpacing="0.4">Alcohol-free</text>
-
-      {/* X-axis tick marks + labels */}
-      {xLabels.map((label, i) => {
-        const total = xLabels.length - 1;
-        const x = padL + (chartW / total) * i;
-        const anchor = i === 0 ? "start" : i === total ? "end" : "middle";
-        const tickX = i === 0 ? x + 0.5 : i === total ? x - 0.5 : x;
-        return (
-          <g key={label}>
-            <line x1={tickX} y1={yBottom + 2} x2={tickX} y2={yBottom + 6}
-              stroke="rgba(255,255,255,0.25)" strokeWidth="1" strokeLinecap="round" />
-            <text x={x} y={yBottom + 18}
-              textAnchor={anchor} fill="rgba(255,255,255,0.6)" fontSize="9"
-              fontWeight="700" letterSpacing="1.2"
-              style={{ textTransform: "uppercase" }}>
-              {label}
-            </text>
-          </g>
-        );
-      })}
-    </svg>
-  );
-}
+// Insight descriptions keyed to the program's approach
+const INSIGHT_COPY: Record<string, { intro: string; program: string }> = {
+  trigger: {
+    intro: "Your primary trigger is",
+    program: "Your program targets this specific trigger pattern with CBT exercises designed to interrupt the automatic response before it starts.",
+  },
+  cost: {
+    intro: "You said alcohol costs you",
+    program: "Recovery means reclaiming exactly this. Most members report measurable improvements here within the first 4 weeks.",
+  },
+  motivation: {
+    intro: "What matters most to you",
+    program: "This becomes the foundation of your program — every session connects back to this core motivation.",
+  },
+  commitment: {
+    intro: "Your commitment level",
+    program: "This level of readiness is exactly what the program is designed for. You don't need more willpower — just the right framework.",
+  },
+};
 
 function CtaButton({ onClick, delay = 0 }: { onClick: () => void; delay?: number }) {
   return (
@@ -222,7 +105,24 @@ function CtaButton({ onClick, delay = 0 }: { onClick: () => void; delay?: number
 
 export default function ResultsScreen({ profile, answers, onSeeProgram }: Props) {
   const data = PROFILES[profile];
-  const removals = PROFILE_REMOVALS[profile];
+  const fallbackRemovals = PROFILE_REMOVALS_FALLBACK[profile];
+  const insights = answers ? extractAnswerInsights(answers) : null;
+
+  // Dynamic removals — use actual answers when available
+  const triggerLabel = answers ? getTriggerLabel(answers, profile) : fallbackRemovals.trigger;
+  const removals = {
+    trigger: triggerLabel,
+    habit: insights?.drinkingPattern || fallbackRemovals.habit,
+    belief: fallbackRemovals.belief,
+  };
+
+  // Build insight cards from answers
+  const insightCards = insights ? [
+    insights.triggerLabel && { key: "trigger", value: insights.triggerLabel, ...INSIGHT_COPY.trigger },
+    insights.alcoholCost && { key: "cost", value: insights.alcoholCost, ...INSIGHT_COPY.cost },
+    insights.motivation && { key: "motivation", value: insights.motivation, ...INSIGHT_COPY.motivation },
+    insights.commitmentLevel && { key: "commitment", value: insights.commitmentLevel, ...INSIGHT_COPY.commitment },
+  ].filter(Boolean) as { key: string; value: string; intro: string; program: string }[] : [];
 
   const handleSeeProgram = () => {
     vibrate([50, 20, 80]);
@@ -308,6 +208,44 @@ export default function ResultsScreen({ profile, answers, onSeeProgram }: Props)
         {/* ── CTA #1 — right under chart ── */}
         <CtaButton onClick={handleSeeProgram} delay={0.3} />
 
+        {/* ── Your Answers Tell Us — personalized insight cards ── */}
+        {insightCards.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35, duration: 0.5 }}
+            className="space-y-3"
+          >
+            <p className="text-xs font-semibold tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.3)" }}>
+              YOUR ANSWERS TELL US
+            </p>
+            {insightCards.map((card, i) => {
+              const colors = ["#8A5EFF", "#34CBBF", "#c4afff", "#4675FF"];
+              const color = colors[i % colors.length];
+              return (
+                <div
+                  key={card.key}
+                  className="rounded-2xl px-4 py-4"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    border: `1px solid ${color}33`,
+                  }}
+                >
+                  <p className="text-xs mb-1" style={{ color: "rgba(255,255,255,0.45)" }}>
+                    {card.intro}
+                  </p>
+                  <p className="text-base font-bold leading-snug mb-2" style={{ color }}>
+                    {card.value}
+                  </p>
+                  <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
+                    {card.program}
+                  </p>
+                </div>
+              );
+            })}
+          </motion.div>
+        )}
+
         {/* ── Headline ── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -318,7 +256,9 @@ export default function ResultsScreen({ profile, answers, onSeeProgram }: Props)
             className="text-3xl font-bold leading-tight mb-2"
             style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
           >
-            Based on your answers, you can rebuild your relationship with alcohol in{" "}
+            Based on your{" "}
+            {insights?.triggerLabel ? insights.triggerLabel.toLowerCase() : "answers"}
+            {" "}pattern, you can rebuild your relationship with alcohol in{" "}
             <span
               style={{
                 background: "linear-gradient(90deg, #34CBBF 0%, #8A5EFF 100%)",

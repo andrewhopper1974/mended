@@ -5,7 +5,7 @@ import { AnimatePresence } from "framer-motion";
 import IntroScreen from "@/components/IntroScreen";
 import QuizScreen from "@/components/QuizScreen";
 import InterstitialScreen from "@/components/InterstitialScreen";
-import EmailScreen from "@/components/EmailScreen";
+import ResultsPreviewScreen from "@/components/ResultsPreviewScreen";
 import LoadingScreen from "@/components/LoadingScreen";
 import ResultsScreen from "@/components/ResultsScreen";
 import PaywallScreen from "@/components/PaywallScreen";
@@ -15,7 +15,7 @@ import type { Profile } from "@/lib/quizData";
 export type AppScreen =
   | "intro"
   | "quiz"
-  | "email"
+  | "results-preview"
   | "loading"
   | "results"
   | "paywall";
@@ -47,22 +47,18 @@ export default function Home() {
   }, []);
 
   // Advance helper — walks quizIndex forward, switching screen when hitting
-  // an email checkpoint or the end of the flow.
+  // the end of the flow.
   const advanceFrom = useCallback(
     (fromIndex: number) => {
       const next = fromIndex + 1;
       if (next >= QUIZ_FLOW.length) {
-        // End of quiz → email capture → build program → results
-        setScreen("email");
+        // End of quiz → results preview with email gate
+        setScreen("results-preview");
         return;
       }
       const nextItem = QUIZ_FLOW[next];
       setQuizIndex(next);
-      if (nextItem.type === "email") {
-        setScreen("email");
-      } else {
-        setScreen("quiz");
-      }
+      setScreen("quiz");
     },
     []
   );
@@ -88,18 +84,22 @@ export default function Home() {
 
   const handleBack = useCallback(() => {
     setDirection(-1);
+    if (screen === "results-preview") {
+      // Go back to last quiz question
+      setQuizIndex(QUIZ_FLOW.length - 1);
+      setScreen("quiz");
+      return;
+    }
     if (quizIndex > 0) {
       const prevIdx = quizIndex - 1;
-      const prevItem = QUIZ_FLOW[prevIdx];
       setQuizIndex(prevIdx);
-      if (prevItem.type === "email") setScreen("email");
-      else setScreen("quiz");
+      setScreen("quiz");
     } else {
       setScreen("intro");
     }
-  }, [quizIndex]);
+  }, [quizIndex, screen]);
 
-  const handleEmailSubmit = useCallback(
+  const handleResultsPreviewEmail = useCallback(
     (submittedEmail: string) => {
       setEmail(submittedEmail);
       const assignedProfile = assignProfile(answers);
@@ -116,7 +116,6 @@ export default function Home() {
         }),
       }).catch(() => {});
 
-      // Email sits at the end of the quiz → build program → results
       setDirection(1);
       setScreen("loading");
     },
@@ -124,7 +123,6 @@ export default function Home() {
   );
 
   const handleLoadingDone = useCallback(() => {
-    // Re-assign profile at the end in case more answers were given after email
     const finalProfile = assignProfile(answers);
     setProfile(finalProfile);
     setScreen("results");
@@ -134,7 +132,7 @@ export default function Home() {
     setScreen("paywall");
   }, []);
 
-  // Progress calculation — only count real questions (not interstitials/email)
+  // Progress calculation — only count real questions (not interstitials)
   const questionItems = QUIZ_FLOW.filter(
     (item) => item.type === "question" || item.type === "open-ended"
   );
@@ -143,7 +141,6 @@ export default function Home() {
   if (currentItem?.type === "question" || currentItem?.type === "open-ended") {
     questionNumber = questionItems.findIndex((q) => q === currentItem) + 1;
   } else {
-    // For interstitial / email, show count of questions completed so far
     let count = 0;
     for (let i = 0; i <= quizIndex; i++) {
       const it = QUIZ_FLOW[i];
@@ -189,14 +186,12 @@ export default function Home() {
         </>
       )}
 
-      {screen === "email" && (
-        <EmailScreen
-          key="email"
-          onSubmit={handleEmailSubmit}
-          onBack={handleBack}
-          answers={answers}
+      {screen === "results-preview" && (
+        <ResultsPreviewScreen
+          key="results-preview"
           profile={assignProfile(answers)}
-          progress={displayProgress}
+          answers={answers}
+          onEmailSubmit={handleResultsPreviewEmail}
         />
       )}
 
